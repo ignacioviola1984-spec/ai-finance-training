@@ -1,0 +1,13 @@
+account_code,account_name,type
+1000,Cash and equivalents,Asset
+1100,Accounts receivable,Asset
+1500,"Fixed assets, net",Asset
+2000,Accounts payable,Liability
+2500,Deferred revenue,Liability
+3000,Paid-in capital,Equity
+3900,Retained earnings,Equity
+4000,Revenue,Revenue
+5000,Cost of revenue,Expense
+6000,Sales & marketing,Expense
+6100,Research & development,Expense
+6200,General & admin,Expense
