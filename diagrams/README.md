@@ -12,3 +12,5 @@ file to view).
 4. **`04_operating_model_v2.svg`** — The AI Finance Operating Model v2:
    orchestrator + sub-agents + deterministic checks + escalation engine +
    human-in-the-loop gate + audit trail. (Phase 3.3)
+5. **`05_rag_workflow.svg`** — The RAG workflow, the point where it failed
+   (cross-lingual retrieval), and how it was diagnosed and resolved. (Phase 4)

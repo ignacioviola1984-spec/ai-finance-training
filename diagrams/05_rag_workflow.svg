@@ -1,0 +1,98 @@
+<svg viewBox="0 0 880 780" xmlns="http://www.w3.org/2000/svg" role="img" font-family="ui-sans-serif, system-ui, sans-serif">
+  <title>Workflow de RAG: pipeline, falla y fix</title>
+  <desc>Pipeline de RAG (ingesta y consulta), el punto donde fallo (retrieval cross-lingual), y la historia de como se resolvio: el modelo multilingue no cargo por un segfault en Python 3.14, asi que se uso el modelo en ingles con consultas en ingles.</desc>
+
+  <style>
+    .lbl{fill:var(--text-primary,#1a1a1a)} .sub{fill:var(--text-secondary,#6b6b6b);font-size:11px}
+    .ttl{font-size:12.5px;font-weight:700}
+    .code{fill:var(--bg-secondary,#eef1f0);stroke:var(--text-secondary,#6b6b6b);stroke-width:1.5}
+    .ai{fill:var(--bg-secondary,#f0ece3);stroke:var(--accent,#cc785c);stroke-width:2}
+    .fail{fill:var(--bg-secondary,#f0ece3);stroke:var(--accent,#cc785c);stroke-width:2.5;stroke-dasharray:5 3}
+    .panel{fill:var(--bg-secondary,#f4f3ee);stroke:var(--border,#d8d5cc);stroke-width:1.4}
+    .flow{stroke:var(--text-secondary,#6b6b6b);stroke-width:1.7;fill:none}
+    .note{fill:var(--text-secondary,#8a8a8a);font-size:10.5px;font-style:italic}
+    .acc{fill:var(--accent,#cc785c);font-size:11px;font-weight:700}
+  </style>
+
+  <text x="30" y="26" class="lbl ttl" font-size="16">RAG Workflow — pipeline, donde fallo y como lo resolvi</text>
+  <text x="30" y="44" class="sub">Finance Document Intelligence (document-intelligence/)</text>
+
+  <text x="30" y="74" class="acc">INGESTA (una vez)</text>
+  <rect x="30" y="82" width="180" height="44" rx="9" class="code"/>
+  <text x="120" y="101" text-anchor="middle" class="lbl ttl">Documentos</text>
+  <text x="120" y="116" text-anchor="middle" class="sub">contratos, policy</text>
+  <rect x="250" y="82" width="180" height="44" rx="9" class="code"/>
+  <text x="340" y="101" text-anchor="middle" class="lbl ttl">Chunking</text>
+  <text x="340" y="116" text-anchor="middle" class="sub">trocear en parrafos</text>
+  <rect x="470" y="82" width="180" height="44" rx="9" class="code"/>
+  <text x="560" y="101" text-anchor="middle" class="lbl ttl">Embeddings</text>
+  <text x="560" y="116" text-anchor="middle" class="sub">texto -&gt; vector (PyTorch)</text>
+  <rect x="690" y="82" width="160" height="44" rx="9" class="code"/>
+  <text x="770" y="101" text-anchor="middle" class="lbl ttl">Indice vectorial</text>
+  <text x="770" y="116" text-anchor="middle" class="sub">vectores guardados</text>
+  <path class="flow" d="M210 104 L248 104" marker-end="url(#a)"/>
+  <path class="flow" d="M430 104 L468 104" marker-end="url(#a)"/>
+  <path class="flow" d="M650 104 L688 104" marker-end="url(#a)"/>
+
+  <text x="30" y="166" class="acc">CONSULTA (cada pregunta)</text>
+  <rect x="30" y="174" width="150" height="48" rx="9" class="code"/>
+  <text x="105" y="194" text-anchor="middle" class="lbl ttl">Pregunta</text>
+  <text x="105" y="210" text-anchor="middle" class="sub">"plazo de pago?"</text>
+  <rect x="205" y="174" width="150" height="48" rx="9" class="code"/>
+  <text x="280" y="194" text-anchor="middle" class="lbl ttl">Embed pregunta</text>
+  <text x="280" y="210" text-anchor="middle" class="sub">misma a vector</text>
+  <rect x="380" y="172" width="170" height="52" rx="9" class="fail"/>
+  <text x="465" y="191" text-anchor="middle" class="lbl ttl">Retrieve top-k</text>
+  <text x="465" y="207" text-anchor="middle" class="acc">aca fallo</text>
+  <rect x="575" y="174" width="120" height="48" rx="9" class="ai"/>
+  <text x="635" y="194" text-anchor="middle" class="lbl ttl">Claude</text>
+  <text x="635" y="210" text-anchor="middle" class="sub">responde grounded</text>
+  <rect x="715" y="174" width="135" height="48" rx="9" class="ai"/>
+  <text x="782" y="194" text-anchor="middle" class="lbl ttl">Respuesta</text>
+  <text x="782" y="210" text-anchor="middle" class="sub">con cita [doc]</text>
+
+  <path class="flow" d="M180 198 L203 198" marker-end="url(#a)"/>
+  <path class="flow" d="M355 198 L378 198" marker-end="url(#a)"/>
+  <path class="flow" d="M550 198 L573 198" marker-end="url(#a)"/>
+  <path class="flow" d="M695 198 L713 198" marker-end="url(#a)"/>
+  <path class="flow" d="M770 126 L770 150 L465 150 L465 170" marker-end="url(#a)" stroke-dasharray="3 3"/>
+  <text x="540" y="144" class="note">el retrieve consulta el indice</text>
+
+  <rect x="30" y="244" width="820" height="40" rx="9" class="panel"/>
+  <text x="44" y="262" class="lbl ttl">Camino de extraccion (contraste):</text>
+  <text x="44" y="277" class="sub">para sacar campos de UN documento, se pasa el doc entero a Claude, sin retrieval. Por eso la extraccion nunca fallo: no depende de la busqueda.</text>
+
+  <rect x="30" y="300" width="820" height="300" rx="10" class="panel"/>
+  <text x="44" y="324" class="lbl ttl" font-size="13">Donde fallo y como lo resolvi</text>
+
+  <text x="44" y="352" class="acc">1 - Sintoma</text>
+  <text x="60" y="370" class="sub">Pregunta en espanol sobre documentos en ingles. El retrieve trajo los fragmentos equivocados.</text>
+  <text x="60" y="386" class="sub">Clave: Claude NO invento. Dijo "no puedo responder con esto". La extraccion (full-doc) si lo tenia bien.</text>
+
+  <text x="44" y="416" class="acc">2 - Diagnostico</text>
+  <text x="60" y="434" class="sub">La falla era de RETRIEVAL, no de generacion. Y era cross-lingual: query en espanol, corpus en ingles,</text>
+  <text x="60" y="450" class="sub">con un modelo de embeddings centrado en ingles. La busqueda no acercaba la pregunta al fragmento.</text>
+
+  <text x="44" y="480" class="acc">3 - Fix</text>
+  <text x="60" y="498" class="sub">Fix correcto: modelo de embeddings multilingue. Pero NO cargo: segfault con Python 3.14 + torch 2.12</text>
+  <text x="60" y="514" class="sub">(entorno bleeding-edge; un segfault no se atrapa en codigo). Resolucion pragmatica: modelo en ingles</text>
+  <text x="60" y="530" class="sub">(estable) + consultas en ingles. Caminos sin torch anotados: model2vec multilingue o embedder hosteado.</text>
+
+  <line x1="44" y1="548" x2="836" y2="548" stroke="var(--border,#d8d5cc)"/>
+  <text x="44" y="568" class="acc">Leccion</text>
+  <text x="104" y="568" class="sub">un numero correcto puede dar una respuesta equivocada si el retrieval falla.</text>
+  <text x="44" y="584" class="sub">A ojo no se ve. Solo un eval set lo detecta de forma sistematica. Por eso existe la Fase 5.</text>
+
+  <rect x="30" y="620" width="14" height="14" rx="3" class="code"/>
+  <text x="50" y="631" class="sub">Codigo / datos</text>
+  <rect x="180" y="620" width="14" height="14" rx="3" class="ai"/>
+  <text x="200" y="631" class="sub">Claude (genera)</text>
+  <rect x="330" y="620" width="14" height="14" rx="3" class="fail"/>
+  <text x="350" y="631" class="sub">Punto de falla</text>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="var(--text-secondary,#6b6b6b)"/>
+    </marker>
+  </defs>
+</svg>
