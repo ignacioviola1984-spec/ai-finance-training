@@ -1,0 +1,104 @@
+<svg viewBox="0 0 860 760" xmlns="http://www.w3.org/2000/svg" role="img" font-family="ui-sans-serif, system-ui, sans-serif">
+  <title>AI Finance Operating Model v2</title>
+  <desc>Pipeline de cierre: datos deterministicos y check de codigo, dos sub-agentes (revision de cierre y forecast de caja), motor de escalamiento, gate human-in-the-loop, y sub-agente de reporting al board. Un audit trail registra cada paso.</desc>
+
+  <style>
+    .lbl{fill:var(--text-primary,#1a1a1a)} .sub{fill:var(--text-secondary,#6b6b6b);font-size:11.5px}
+    .ttl{font-size:13px;font-weight:700}
+    .code{fill:var(--bg-secondary,#eef1f0);stroke:var(--text-secondary,#6b6b6b);stroke-width:1.6}
+    .agent{fill:var(--bg-secondary,#f0ece3);stroke:var(--accent,#cc785c);stroke-width:2}
+    .human{fill:var(--bg-secondary,#f4f3ee);stroke:var(--text-primary,#1a1a1a);stroke-width:2.5}
+    .out{fill:var(--bg-secondary,#f0ece3);stroke:var(--accent,#cc785c);stroke-width:2}
+    .rail{fill:var(--bg-secondary,#f4f3ee);stroke:var(--border,#d8d5cc);stroke-width:1.4}
+    .flow{stroke:var(--text-secondary,#6b6b6b);stroke-width:1.8;fill:none}
+    .note{fill:var(--text-secondary,#8a8a8a);font-size:10.5px;font-style:italic}
+    .ev{fill:var(--text-secondary,#6b6b6b);font-size:10.5px}
+    .alta{fill:var(--accent,#cc785c);font-size:10.5px;font-weight:700}
+  </style>
+
+  <text x="30" y="28" class="lbl ttl" font-size="16">AI Finance Operating Model v2  ·  cierre 2026-05</text>
+  <text x="30" y="46" class="sub">orquestador + sub-agentes + controles de codigo + validacion humana</text>
+
+  <rect x="610" y="64" width="220" height="600" rx="10" class="rail"/>
+  <text x="720" y="86" text-anchor="middle" class="lbl ttl">AUDIT TRAIL</text>
+  <text x="720" y="102" text-anchor="middle" class="sub">audit_log.jsonl · 9 eventos</text>
+  <line x1="626" y1="112" x2="814" y2="112" stroke="var(--border,#d8d5cc)"/>
+  <text x="628" y="132" class="ev">inicio              ok</text>
+  <text x="628" y="156" class="ev">check_pnl           ok</text>
+  <text x="628" y="180" class="ev">close_review        ok</text>
+  <text x="628" y="204" class="ev">cash_forecast       ok</text>
+  <text x="628" y="228" class="alta">escalamiento      ALTA</text>
+  <text x="628" y="250" class="alta">escalamiento      ALTA</text>
+  <text x="628" y="274" class="ev">hitl          aprobado</text>
+  <text x="628" y="298" class="ev">reporting           ok</text>
+  <text x="628" y="322" class="ev">fin                 ok</text>
+  <text x="628" y="356" class="note">cada etapa se registra</text>
+  <text x="628" y="372" class="note">con timestamp y estado</text>
+
+  <rect x="180" y="64" width="300" height="50" rx="9" class="code"/>
+  <text x="330" y="84" text-anchor="middle" class="lbl ttl">1 · Datos deterministicos (finance_core)</text>
+  <text x="330" y="102" text-anchor="middle" class="sub">P&amp;L, caja, cartera · numeros por codigo</text>
+
+  <rect x="210" y="132" width="240" height="44" rx="9" class="code"/>
+  <text x="330" y="151" text-anchor="middle" class="lbl ttl">2 · Check de consistencia</text>
+  <text x="330" y="167" text-anchor="middle" class="sub">si falla, frena antes de gastar tokens</text>
+
+  <rect x="180" y="194" width="300" height="50" rx="9" class="agent"/>
+  <text x="330" y="214" text-anchor="middle" class="lbl ttl">3 · Sub-agente: revision de cierre</text>
+  <text x="330" y="232" text-anchor="middle" class="sub">resume el cierre + levanta flags</text>
+
+  <rect x="180" y="262" width="300" height="50" rx="9" class="agent"/>
+  <text x="330" y="282" text-anchor="middle" class="lbl ttl">4 · Sub-agente: forecast de caja</text>
+  <text x="330" y="300" text-anchor="middle" class="sub">runway 9.4 meses (calculado por codigo)</text>
+
+  <rect x="180" y="330" width="300" height="56" rx="9" class="code"/>
+  <text x="330" y="350" text-anchor="middle" class="lbl ttl">5 · Motor de escalamiento</text>
+  <text x="330" y="367" text-anchor="middle" class="alta">ALTA: perdida operativa</text>
+  <text x="330" y="381" text-anchor="middle" class="alta">ALTA: 97% de cartera vencida</text>
+
+  <rect x="170" y="404" width="320" height="58" rx="9" class="human"/>
+  <text x="330" y="426" text-anchor="middle" class="lbl ttl">6 · GATE human-in-the-loop</text>
+  <text x="330" y="444" text-anchor="middle" class="sub">"Aprobas continuar al board? [s/N]"  ·  vos decidis</text>
+
+  <rect x="180" y="480" width="300" height="50" rx="9" class="agent"/>
+  <text x="330" y="500" text-anchor="middle" class="lbl ttl">7 · Sub-agente: reporting</text>
+  <text x="330" y="518" text-anchor="middle" class="sub">teje cierre + caja en un resumen</text>
+
+  <rect x="180" y="548" width="300" height="50" rx="9" class="out"/>
+  <text x="330" y="568" text-anchor="middle" class="lbl ttl">8 · Resumen para el board</text>
+  <text x="330" y="586" text-anchor="middle" class="sub">salida final, lista para decidir</text>
+
+  <path class="flow" d="M330 114 L330 130" marker-end="url(#a)"/>
+  <path class="flow" d="M330 176 L330 192" marker-end="url(#a)"/>
+  <path class="flow" d="M330 244 L330 260" marker-end="url(#a)"/>
+  <path class="flow" d="M330 312 L330 328" marker-end="url(#a)"/>
+  <path class="flow" d="M330 386 L330 402" marker-end="url(#a)"/>
+  <path class="flow" d="M330 462 L330 478" marker-end="url(#a)"/>
+  <path class="flow" d="M330 530 L330 546" marker-end="url(#a)"/>
+
+  <path class="flow" d="M170 433 L120 433 L120 560" marker-end="url(#a)" stroke-dasharray="6 4"/>
+  <rect x="40" y="560" width="160" height="46" rx="9" class="code"/>
+  <text x="120" y="580" text-anchor="middle" class="sub">si NO aprobas:</text>
+  <text x="120" y="596" text-anchor="middle" class="sub">frena, no hay board</text>
+
+  <path class="flow" d="M480 95 L604 130" stroke-dasharray="3 3"/>
+  <text x="496" y="116" class="note">registra ↗</text>
+
+  <rect x="30" y="664" width="14" height="14" rx="3" class="code"/>
+  <text x="50" y="675" class="sub">Codigo (deterministico)</text>
+  <rect x="230" y="664" width="14" height="14" rx="3" class="agent"/>
+  <text x="250" y="675" class="sub">Sub-agente (Claude)</text>
+  <rect x="420" y="664" width="14" height="14" rx="3" class="human"/>
+  <text x="440" y="675" class="sub">Humano (vos)</text>
+  <rect x="560" y="664" width="14" height="14" rx="3" class="rail"/>
+  <text x="580" y="675" class="sub">Registro / trazabilidad</text>
+
+  <text x="30" y="706" class="note">Principio: los numeros los calcula el codigo; los sub-agentes razonan y redactan; los controles y el humano deciden si avanza.</text>
+  <text x="30" y="724" class="note">Confiabilidad por diseno: nada llega al board sin pasar el check de datos, el motor de escalamiento y tu visto bueno.</text>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="var(--text-secondary,#6b6b6b)"/>
+    </marker>
+  </defs>
+</svg>

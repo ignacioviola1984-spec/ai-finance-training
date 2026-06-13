@@ -49,11 +49,22 @@ Bitacora de avance, fase por fase.
   ~97% estaba vencido. Numeros exactos, interpretacion enganosa. Por eso
   importan evals + human-in-the-loop.
 
+### Fase 3.2 — Orquestador con sub-agents  [OK]
+- orchestration/orchestrator.py: coordinador que corre 3 sub-agentes
+  (close review, cash forecast, reporting) y pasa estado entre ellos.
+- finance_core.py: numeros crudos deterministicos (runway = caja / burn).
+
+### Fase 3.3 — Checks, audit trail y escalamiento (HITL)  [OK]
+- orchestration/operating_model.py: "AI Finance Operating Model v2".
+- Checks deterministicos entre etapas, audit trail (audit_log.jsonl),
+  reglas de escalamiento por severidad, gate human-in-the-loop.
+- Corrida real: 2 escalamientos ALTA -> freno -> aprobacion humana -> board.
+
 ## Siguiente
 
-### Fase 3.2 / 3.3 — Orquestador con sub-agents + controles
-- Orquestador + sub-agent por etapa (close, cash forecast, reporting).
-- Checks entre etapas, audit trail, escalamiento (human-in-the-loop).
+### Fase 4 — RAG + embeddings para finanzas document-heavy
+- Busqueda semantica sobre documentos; extraccion estructurada.
+- Criterio: cuando RAG vs todo en contexto.
 
 ## Notas
 - Background: 17 anios en finanzas senior. Plan Max 5x.

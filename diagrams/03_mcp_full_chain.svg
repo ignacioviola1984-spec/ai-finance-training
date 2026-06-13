@@ -1,0 +1,78 @@
+<svg viewBox="0 0 820 700" xmlns="http://www.w3.org/2000/svg" role="img" font-family="ui-sans-serif, system-ui, sans-serif">
+  <title>Cadena completa MCP con el humano</title>
+  <desc>El CFO habla en castellano a Claude. Claude (cliente) traduce a MCP vía el SDK, viaja por stdio, llega al server finance-mcp vía su SDK, el código consolida y la respuesta vuelve hasta el CFO.</desc>
+
+  <style>
+    .lbl { fill: var(--text-primary, #1a1a1a); }
+    .sub { fill: var(--text-secondary, #6b6b6b); font-size: 12px; }
+    .ttl { font-size: 14px; font-weight: 700; }
+    .human { fill: var(--bg-secondary, #f4f3ee); stroke: var(--text-primary, #1a1a1a); stroke-width: 2; }
+    .claude{ fill: var(--bg-secondary, #f0ece3); stroke: var(--accent, #cc785c); stroke-width: 2; }
+    .sdk  { fill: var(--bg-secondary, #f0ece3); stroke: var(--accent, #cc785c); stroke-width: 1.5; stroke-dasharray: 5 3; }
+    .yours{ fill: var(--bg-secondary, #eef1f0); stroke: var(--text-secondary, #6b6b6b); stroke-width: 2; }
+    .wire { fill: var(--bg-secondary, #f4f3ee); stroke: var(--border, #d8d5cc); stroke-width: 1.5; }
+    .down { stroke: var(--accent, #cc785c); stroke-width: 2; fill: none; }
+    .up   { stroke: var(--text-secondary, #6b6b6b); stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
+    .note { fill: var(--text-secondary, #8a8a8a); font-size: 11px; font-style: italic; }
+    .tag  { fill: var(--accent, #cc785c); font-size: 11px; font-weight: 700; }
+  </style>
+
+  <rect x="270" y="20" width="280" height="58" rx="10" class="human"/>
+  <text x="410" y="44" text-anchor="middle" class="lbl ttl">CFO (humano)</text>
+  <text x="410" y="63" text-anchor="middle" class="sub">habla castellano: "traeme el P&amp;L de mayo"</text>
+
+  <rect x="270" y="118" width="280" height="62" rx="10" class="claude"/>
+  <text x="410" y="143" text-anchor="middle" class="lbl ttl">CLAUDE — cliente MCP</text>
+  <text x="410" y="163" text-anchor="middle" class="sub">traduce el pedido a una llamada de tool</text>
+
+  <rect x="290" y="210" width="240" height="46" rx="9" class="sdk"/>
+  <text x="410" y="238" text-anchor="middle" class="sub">SDK (cliente): arma el mensaje MCP</text>
+
+  <rect x="210" y="296" width="400" height="56" rx="10" class="wire"/>
+  <text x="410" y="320" text-anchor="middle" class="lbl ttl">El caño: stdio</text>
+  <text x="410" y="339" text-anchor="middle" class="sub">los mensajes MCP viajan local (entrada/salida)</text>
+
+  <rect x="290" y="392" width="240" height="46" rx="9" class="sdk"/>
+  <text x="410" y="420" text-anchor="middle" class="sub">SDK (server): recibe y desempaca</text>
+
+  <rect x="270" y="478" width="280" height="62" rx="10" class="yours"/>
+  <text x="410" y="503" text-anchor="middle" class="lbl ttl">SERVER finance-mcp</text>
+  <text x="410" y="523" text-anchor="middle" class="sub">corre tu get_pnl: consolida 6 entidades</text>
+
+  <rect x="270" y="580" width="280" height="54" rx="10" class="yours"/>
+  <text x="410" y="603" text-anchor="middle" class="lbl ttl">Tus datos (CSV / ERP)</text>
+  <text x="410" y="621" text-anchor="middle" class="sub">P&amp;L, balance, FX de cierre</text>
+
+  <path class="down" d="M250 78 L250 600 L262 600" marker-end="url(#down)"/>
+  <text x="150" y="300" class="tag">BAJA (pedido)</text>
+  <text x="150" y="318" class="note">castellano →</text>
+  <text x="150" y="332" class="note">llamada → mensaje</text>
+  <text x="150" y="346" class="note">→ ejecuta</text>
+
+  <path class="up" d="M570 600 L570 70 L548 70" marker-end="url(#up)"/>
+  <text x="600" y="300" class="sub" font-weight="700">SUBE (respuesta)</text>
+  <text x="600" y="318" class="note">dato consolidado →</text>
+  <text x="600" y="332" class="note">vuelve por el caño →</text>
+  <text x="600" y="346" class="note">Claude lo explica</text>
+  <text x="600" y="360" class="note">al CFO en castellano</text>
+
+  <rect x="40" y="650" width="15" height="15" rx="3" class="human"/>
+  <text x="62" y="662" class="sub">Humano</text>
+  <rect x="150" y="650" width="15" height="15" rx="3" class="claude"/>
+  <text x="172" y="662" class="sub">Claude (cliente)</text>
+  <rect x="300" y="650" width="15" height="15" rx="3" class="yours"/>
+  <text x="322" y="662" class="sub">Lo tuyo (server + datos)</text>
+  <rect x="520" y="650" width="15" height="15" rx="3" class="sdk"/>
+  <text x="542" y="662" class="sub">SDK (traductor)</text>
+  <rect x="660" y="650" width="15" height="15" rx="3" class="wire"/>
+  <text x="682" y="662" class="sub">Caño (stdio)</text>
+
+  <defs>
+    <marker id="down" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="var(--accent, #cc785c)"/>
+    </marker>
+    <marker id="up" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="var(--text-secondary, #6b6b6b)"/>
+    </marker>
+  </defs>
+</svg>

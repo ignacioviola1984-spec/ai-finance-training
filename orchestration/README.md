@@ -17,6 +17,35 @@ Run it (needs `ANTHROPIC_API_KEY` in the repo-root `.env`):
 python patterns.py
 ```
 
+## `orchestrator.py`
+
+An orchestrator that coordinates three specialized sub-agents in sequence,
+passing each one's output to the next, like a month-end close:
+
+1. **close review** — summarizes the close and raises risk flags
+2. **cash forecast** — projects runway (the number is computed in code)
+3. **reporting** — writes a board-ready summary from the two above
+
+Each sub-agent has its own system prompt and a defined input/output.
+
+## `operating_model.py` — AI Finance Operating Model v2
+
+The orchestrator plus a reliability layer:
+
+- **Deterministic checks** between stages (validate data before spending tokens)
+- **Audit trail** — every step logged with a timestamp to `audit_log.jsonl`
+- **Escalation rules** by severity (operating loss, overdue AR, low runway)
+- **Human-in-the-loop gate** — if serious escalations exist, it stops and
+  asks for human approval before issuing the board report
+
+This is the pattern of a trustworthy agentic system: the model does the
+work, but code controls and a human signs off at the critical points.
+
+## `finance_core.py`
+
+Deterministic finance math (raw numbers, no model) read from the shared
+`finance-mcp/data`. Keeps a single source of data across the project.
+
 ## Design principle
 
 Numbers are computed by code (deterministic). The model only observes,

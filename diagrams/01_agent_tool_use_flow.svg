@@ -1,0 +1,85 @@
+<svg viewBox="0 0 780 560" xmlns="http://www.w3.org/2000/svg" role="img" font-family="ui-sans-serif, system-ui, sans-serif">
+  <title>Flujo de un agente con tool use</title>
+  <desc>Vos escribís el programa. En runtime: la pregunta va a Claude que decide qué herramienta usar; tu código la ejecuta contra la API real y devuelve el dato; Claude redacta la respuesta final. Claude nunca ejecuta ni toca internet.</desc>
+
+  <style>
+    .lbl   { fill: var(--text-primary, #1a1a1a); }
+    .sub   { fill: var(--text-secondary, #6b6b6b); font-size: 12px; }
+    .box   { fill: var(--bg-secondary, #f4f3ee); stroke: var(--border, #d8d5cc); stroke-width: 1.5; }
+    .brain { fill: var(--bg-secondary, #f0ece3); stroke: var(--accent, #cc785c); stroke-width: 2; }
+    .hands { fill: var(--bg-secondary, #eef1f0); stroke: var(--text-secondary, #6b6b6b); stroke-width: 2; }
+    .ttl   { font-size: 14px; font-weight: 700; }
+    .flow  { stroke: var(--text-secondary, #6b6b6b); stroke-width: 1.6; fill: none; }
+    .step  { fill: var(--accent, #cc785c); font-size: 12px; font-weight: 700; }
+    .note  { fill: var(--text-secondary, #8a8a8a); font-size: 11px; font-style: italic; }
+  </style>
+
+  <rect x="230" y="14" width="320" height="46" rx="10" class="box"/>
+  <text x="390" y="34" text-anchor="middle" class="lbl ttl">VOS (autor)</text>
+  <text x="390" y="51" text-anchor="middle" class="sub">escribís el programa y definís las reglas</text>
+  <path class="flow" d="M390 60 L390 84" marker-end="url(#a)"/>
+  <text x="404" y="78" class="note">construye ↓</text>
+
+  <text x="40" y="104" class="sub" font-weight="700">En runtime (programa corriendo):</text>
+
+  <rect x="40" y="120" width="200" height="64" rx="10" class="box"/>
+  <text x="140" y="146" text-anchor="middle" class="lbl ttl">Pregunta</text>
+  <text x="140" y="166" text-anchor="middle" class="sub">"¿1500 USD en EUR?"</text>
+
+  <rect x="290" y="110" width="200" height="84" rx="10" class="brain"/>
+  <text x="390" y="140" text-anchor="middle" class="lbl ttl">CLAUDE — cerebro</text>
+  <text x="390" y="160" text-anchor="middle" class="sub">decide qué herramienta</text>
+  <text x="390" y="176" text-anchor="middle" class="sub">usar y con qué datos</text>
+
+  <rect x="540" y="110" width="200" height="84" rx="10" class="hands"/>
+  <text x="640" y="140" text-anchor="middle" class="lbl ttl">TU CÓDIGO — manos</text>
+  <text x="640" y="160" text-anchor="middle" class="sub">ejecuta get_rate</text>
+  <text x="640" y="176" text-anchor="middle" class="sub">(la única que actúa)</text>
+
+  <rect x="540" y="270" width="200" height="64" rx="10" class="box"/>
+  <text x="640" y="296" text-anchor="middle" class="lbl ttl">API real</text>
+  <text x="640" y="316" text-anchor="middle" class="sub">Frankfurter → 0.86453</text>
+
+  <path class="flow" d="M240 152 L286 152" marker-end="url(#a)"/>
+  <text x="263" y="142" text-anchor="middle" class="step">1</text>
+
+  <path class="flow" d="M490 138 L536 138" marker-end="url(#a)"/>
+  <text x="513" y="128" text-anchor="middle" class="step">2</text>
+  <text x="513" y="184" text-anchor="middle" class="note">"usá get_rate"</text>
+
+  <path class="flow" d="M640 194 L640 266" marker-end="url(#a)"/>
+  <text x="654" y="234" class="step">3</text>
+
+  <path class="flow" d="M672 266 L672 198" marker-end="url(#a)"/>
+  <text x="700" y="234" class="note">dato</text>
+
+  <path class="flow" d="M536 168 L494 168" marker-end="url(#a)"/>
+  <text x="513" y="210" text-anchor="middle" class="step">4</text>
+  <text x="513" y="226" text-anchor="middle" class="note">le devuelve el número</text>
+
+  <path class="flow" d="M390 194 L390 250" marker-end="url(#a)"/>
+  <text x="404" y="226" class="step">5</text>
+
+  <rect x="250" y="256" width="280" height="64" rx="10" class="brain"/>
+  <text x="390" y="282" text-anchor="middle" class="lbl ttl">Respuesta final</text>
+  <text x="390" y="302" text-anchor="middle" class="sub">"1.500 USD = 1.296,80 EUR"</text>
+
+  <rect x="40" y="372" width="700" height="58" rx="10" class="box"/>
+  <text x="60" y="397" class="lbl ttl">Regla de oro</text>
+  <text x="60" y="417" class="sub">Claude solo PIENSA y DECIDE. Nunca ejecuta código ni toca internet. El que actúa es siempre tu código.</text>
+
+  <rect x="40" y="452" width="16" height="16" rx="3" class="brain"/>
+  <text x="64" y="464" class="sub">Claude = decide (cerebro)</text>
+  <rect x="250" y="452" width="16" height="16" rx="3" class="hands"/>
+  <text x="274" y="464" class="sub">Tu código = ejecuta (manos)</text>
+  <rect x="470" y="452" width="16" height="16" rx="3" class="box"/>
+  <text x="494" y="464" class="sub">Datos / partes externas</text>
+
+  <text x="40" y="500" class="note">El ciclo 2→3→4 (pedir → ejecutar → devolver) se repite tantas veces como herramientas necesite. Ese loop es TODO agente.</text>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="var(--text-secondary, #6b6b6b)"/>
+    </marker>
+  </defs>
+</svg>
