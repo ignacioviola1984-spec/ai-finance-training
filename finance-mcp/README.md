@@ -65,5 +65,5 @@ mcp dev server.py              # opens the MCP Inspector in the browser
 
 ## Notes
 
-Part of the `ai-finance-training` repo. Data is fictional; the architecture
-and accounting logic are real and built to be pointed at production data.
+Synthetic data; the architecture and accounting logic are built to point at
+production data.

@@ -1,7 +1,7 @@
 # Diagrams
 
-Conceptual diagrams built while learning, one per milestone. Each renders
-on GitHub (click a file to view).
+Architecture diagrams, one per project. Each renders on GitHub (click a
+file to view).
 
 1. **`01_agent_tool_use_flow.svg`** — How an agent with tool use works:
    the model decides, your code executes. (Phase 1.2)

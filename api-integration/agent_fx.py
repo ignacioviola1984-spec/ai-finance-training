@@ -11,8 +11,8 @@ import requests
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
-load_dotenv()                       # lee el archivo .env
-client = Anthropic()                # toma la key de ANTHROPIC_API_KEY
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env"))
+client = Anthropic()                # toma la key de ANTHROPIC_API_KEY (del .env de la raiz)
 
 API = "https://api.frankfurter.dev/v1"
 
