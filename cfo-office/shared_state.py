@@ -13,6 +13,17 @@ que y cuando.
 import datetime
 import json
 import os
+import sys
+
+# La consola de Windows usa cp1252 por defecto y no puede imprimir caracteres
+# que el modelo suele devolver (≤, —, etc.). Forzamos UTF-8 en stdout/stderr
+# para que el board pack se imprima sin romper. Lo hace shared_state porque lo
+# importan todos los agentes (office y standalone).
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 STATE_PATH = os.path.join(HERE, "cfo_state.json")

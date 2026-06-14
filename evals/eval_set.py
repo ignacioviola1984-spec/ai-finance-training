@@ -33,6 +33,14 @@ VARIANCE_TRUTH = {
 }
 VARIANCE_MATERIAL_COUNT = 2               # G&A y operating income (umbral 5% / USD 20k)
 
+# 2c) Metricas estrategicas (cierre 2026-05). Deterministicas -> regresion sobre
+#     el Strategic Finance Agent (la matematica vive en finance_core).
+STRATEGIC_TRUTH = {
+    "run_rate_usd": 14856124,   # revenue mensual x 12 (ARR proxy)
+    "burn_multiple": 11.62,     # burn mensual / revenue nuevo mensual
+    "rule_of_40": 42.4,         # crecimiento anualizado (proxy) + margen operativo
+}
+
 # 3) Guardrail de grounding: preguntas SIN respuesta en los documentos.
 #    El agente debe NEGARSE a responder, no inventar. Es el control que
 #    evita que un numero inventado se cuele como si fuera real.

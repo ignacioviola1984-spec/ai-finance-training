@@ -47,11 +47,17 @@ def pnl_usd(period):
     rev = agg.get("4000", 0.0)
     cogs = agg.get("5000", 0.0)
     gross = rev - cogs
-    opex = agg.get("6000", 0.0) + agg.get("6100", 0.0) + agg.get("6200", 0.0)
+    sm = agg.get("6000", 0.0)
+    rd = agg.get("6100", 0.0)
+    ga = agg.get("6200", 0.0)
+    opex = sm + rd + ga
     return {
         "revenue": rev,
         "cogs": cogs,
         "gross": gross,
+        "sm": sm,
+        "rd": rd,
+        "ga": ga,
         "opex": opex,
         "operating_income": gross - opex,
     }
@@ -191,3 +197,69 @@ def material_variances(period, pct_threshold=5.0, usd_threshold=20000.0):
         if abs(v["var_pct"]) >= pct_threshold and abs(v["var"]) >= usd_threshold:
             out.append(v)
     return out
+
+
+# --------------------------------------------------------------------------
+# Metricas estrategicas (Strategic Finance). Numeros deterministicos, sin
+# cliente: el agente solo las narra; el eval harness las puede testear.
+# --------------------------------------------------------------------------
+
+PERIODS = sorted({r["period"] for r in _PNL})
+
+
+def _avg_mom_growth(values):
+    growths = [(values[i] / values[i - 1] - 1) for i in range(1, len(values))
+               if values[i - 1]]
+    return sum(growths) / len(growths) if growths else 0.0
+
+
+def strategic_scenarios(rev_latest, base_growth, op_margin):
+    """3 escenarios de crecimiento; el margen se mantiene constante a proposito:
+    crecer mueve el run-rate y el Rule of 40, pero no el margen, que es el
+    verdadero cuello de botella estructural."""
+    out = []
+    for name, g in [("Bajo", base_growth * 0.5), ("Base", base_growth), ("Alto", base_growth * 1.5)]:
+        ann = (1 + g) ** 12 - 1
+        out.append({
+            "name": name, "mom_growth": g,
+            "run_rate_12m": rev_latest * ((1 + g) ** 12) * 12,
+            "rule_of_40": ann * 100 + op_margin * 100,
+        })
+    return out
+
+
+def strategic_metrics(periods=None):
+    """Metricas SaaS estrategicas, todas deterministicas:
+    run-rate (ARR proxy), Rule of 40, burn multiple, magic number, mix de
+    gasto, gap de margen a breakeven y escenarios de crecimiento.
+
+    El crecimiento se anualiza componiendo el promedio MoM (proxy; no hay
+    historico YoY con pocos meses). burn_multiple/magic_number son None si no
+    hay revenue nuevo o S&M previo (evita dividir por cero).
+    """
+    periods = periods or PERIODS
+    series = {p: pnl_usd(p) for p in periods}
+    rev = [series[p]["revenue"] for p in periods]
+    op = [series[p]["operating_income"] for p in periods]
+    sm = [series[p]["sm"] for p in periods]
+    rev_latest, rev_prev, op_latest, sm_prev = rev[-1], rev[-2], op[-1], sm[-2]
+    latest = series[periods[-1]]
+
+    g = _avg_mom_growth(rev)
+    ann_growth = (1 + g) ** 12 - 1
+    op_margin = (op_latest / rev_latest) if rev_latest else 0.0
+    net_new = rev_latest - rev_prev
+    burn = -op_latest if op_latest < 0 else 0.0
+    return {
+        "run_rate": rev_latest * 12,
+        "mom_growth": g, "ann_growth": ann_growth,
+        "op_margin": op_margin,
+        "rule_of_40": ann_growth * 100 + op_margin * 100,
+        "net_new_rev": net_new, "monthly_burn": burn,
+        "burn_multiple": (burn / net_new) if net_new > 0 else None,
+        "magic_number": (net_new / sm_prev) if sm_prev > 0 else None,
+        "mix": {k: (latest[k] / rev_latest if rev_latest else 0.0)
+                for k in ("cogs", "sm", "rd", "ga")},
+        "breakeven_gap_pp": (-op_margin * 100) if op_margin < 0 else 0.0,
+        "scenarios": strategic_scenarios(rev_latest, g, op_margin),
+    }

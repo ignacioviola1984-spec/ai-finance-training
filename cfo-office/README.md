@@ -16,7 +16,8 @@ and writes prose. It never invents a figure.
 | **Controller** | `controller_agent.py` | Close review: P&L internal consistency, margins, AR overdue, risk flags |
 | **Treasury** | `treasury_agent.py` | Liquidity: cash, monthly burn, runway |
 | **FP&A** | `fpa_agent.py` | Forecast (next period), MoM variance, **budget-vs-actual** variance, anomalies |
-| **CFO** | `cfo_orchestrator.py` | Runs the three, reconciles them, consolidates escalations, single HITL, board pack |
+| **Strategic Finance** | `strategic_finance_agent.py` | Run-rate, Rule of 40, burn multiple, magic number, growth scenarios, path to breakeven |
+| **CFO** | `cfo_orchestrator.py` | Runs the others, reconciles them, consolidates escalations, single HITL, board pack |
 
 ## The shared state (`shared_state.py`)
 
@@ -30,13 +31,14 @@ makes the system auditable: you can see who wrote what, and when.
 
 ```
 CFO orchestrator
-  ├─ 1) Controller.run(ctx)   → close, margins, AR        + flags
-  ├─ 2) Treasury.run(ctx)     → cash, burn, runway        + flags
+  ├─ 1) Controller.run(ctx)   → close, margins, AR             + flags
+  ├─ 2) Treasury.run(ctx)     → cash, burn, runway             + flags
   ├─ 3) FP&A.run(ctx)         → forecast, variances, anomalies + flags
-  ├─ 4) cross_checks(ctx)     → agents must agree on shared numbers
-  ├─ 5) gather_escalations    → consolidate flags by severity
-  ├─ 6) hitl_gate             → ONE human approval if serious flags
-  └─ 7) board pack + actions  → consolidated, fixed only on approval
+  ├─ 4) Strategic.run(ctx)    → run-rate, efficiency, breakeven + flags
+  ├─ 5) cross_checks(ctx)     → agents must agree on shared numbers
+  ├─ 6) gather_escalations    → consolidate flags by severity
+  ├─ 7) hitl_gate             → ONE human approval if serious flags
+  └─ 8) board pack + actions  → consolidated, fixed only on approval
 ```
 
 Run the whole office (needs `ANTHROPIC_API_KEY` in the repo-root `.env`):
@@ -62,7 +64,9 @@ suppressed so there is exactly **one** CFO gate, not four.
   gate for solo use.
 - **Escalations don't double-count.** Controller escalates the operating loss
   and overdue AR; Treasury escalates runway; FP&A escalates only *unfavorable*
-  material variances vs budget. Each risk has one owner.
+  material variances vs budget; Strategic Finance owns the *trajectory/
+  efficiency* lens (capital efficiency and whether growth alone reaches
+  breakeven) that none of the others cover. Each risk has one owner.
 - **Two variance lenses in FP&A.** MoM ("how did we move vs last month") and
   budget-vs-actual ("did we hit the plan") answer different questions; the
   office reports both. Budget-vs-actual reuses the verified `finance_core`

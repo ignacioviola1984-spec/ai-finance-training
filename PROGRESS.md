@@ -113,6 +113,29 @@ Bitacora de avance, fase por fase.
   con varianza) quedo descartado; la arquitectura elegida es el office. La
   capacidad de varianza vive en finance_core (compartida) y la usa el office.
 
+### Fase 7.1 — Strategic Finance Agent  [OK]
+- cfo-office/strategic_finance_agent.py: 4to agente del office. Lente de
+  trayectoria y eficiencia (no de cierre): run-rate (ARR proxy), Rule of 40,
+  burn multiple, magic number, mix de gasto, gap de margen a breakeven y 3
+  escenarios de crecimiento. La matematica vive en finance_core.strategic_metrics
+  (determinista, sin cliente -> testeable por evals); el agente solo narra.
+- Integrado al CFO orquestador (1 Controller, 2 Treasury, 3 FP&A, 4 Strategic) +
+  nuevo cross-check (run-rate de Strategic ata al revenue del Controller).
+- Escalamientos propios sin pisar a nadie: burn multiple > 2 y "crecer no alcanza
+  el breakeven" (palanca = margen, no volumen). Corrida 2026-05: 6 escalamientos
+  consolidados distintos (burn multiple 11.6x, margen op -61%, etc.).
+- finance_core.pnl_usd ahora expone S&M/R&D/G&A por separado.
+- evals: 3 checks nuevos (run-rate, burn multiple, Rule of 40). Numbers 9/9 PASS.
+
+## Backlog del departamento (multi-agente, hacia el "full finance department")
+- **Administration Agent** (supervisor nuevo) con sub-agentes **Tax**, **AP** y
+  **AR** — o esos tres dentro de Accounting. Definir si Admin cuelga del CFO como
+  par de Controller/Treasury/FP&A/Strategic.
+- Faltantes mapeados (ver chat de gap analysis): Strategic Finance [HECHO],
+  Internal Controls (agente formal), Finance Compliance, Audit (agente),
+  profundizar Treasury (cash forecast 13s) y Accounting&Close (recons/JE/accruals),
+  AgentOps (monitoreo + CI), Finance Data (capa unificada).
+
 ## Siguiente
 
 ### Fase 6.2 — Deploy + demo

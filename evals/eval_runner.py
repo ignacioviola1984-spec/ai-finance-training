@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.join(ROOT, "document-intelligence"))
 import finance_core as fc
 from eval_set import (
     EXTRACTION_TRUTH, NUMERIC_TRUTH, NUMERIC_TOLERANCE, AR_OVERDUE_PCT_MIN,
-    VARIANCE_TRUTH, VARIANCE_MATERIAL_COUNT,
+    VARIANCE_TRUTH, VARIANCE_MATERIAL_COUNT, STRATEGIC_TRUTH,
     GROUNDING_CASES, REFUSAL_SIGNALS,
 )
 
@@ -76,6 +76,19 @@ def suite_numbers():
     total += 1
     passed += _check("lineas materiales vs presupuesto", ok,
                      f"esperado {VARIANCE_MATERIAL_COUNT}, obtenido {n_mat}")
+
+    # Regresion sobre las metricas estrategicas (deterministicas).
+    sm = fc.strategic_metrics()
+    strat_checks = [
+        ("run-rate (ARR proxy)", sm["run_rate"], STRATEGIC_TRUTH["run_rate_usd"]),
+        ("burn multiple", sm["burn_multiple"], STRATEGIC_TRUTH["burn_multiple"]),
+        ("Rule of 40", sm["rule_of_40"], STRATEGIC_TRUTH["rule_of_40"]),
+    ]
+    for label, got, expected in strat_checks:
+        tol = max(abs(expected) * NUMERIC_TOLERANCE, 0.05)
+        ok = abs(got - expected) <= tol
+        total += 1
+        passed += _check(label, ok, f"esperado ~{expected:,.2f}, obtenido {got:,.2f}")
     return passed, total
 
 

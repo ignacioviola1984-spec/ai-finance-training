@@ -7,12 +7,13 @@ deterministicos, consolida los escalamientos por severidad, y antes de fijar
 el board pack final pide UNA sola aprobacion humana (HITL). Persiste todo a
 cfo_state.json.
 
-  1) Controller -> revisa el cierre, margenes, cartera
-  2) Treasury   -> caja, burn, runway
-  3) FP&A       -> forecast, variance MoM, variance vs presupuesto, anomalias
-  4) cross-checks: los agentes deben concordar en los numeros compartidos
-  5) consolidar escalamientos + UN gate humano
-  6) board pack consolidado + acciones (Claude), fijados solo si el humano aprueba
+  1) Controller        -> revisa el cierre, margenes, cartera
+  2) Treasury          -> caja, burn, runway
+  3) FP&A              -> forecast, variance MoM, variance vs presupuesto, anomalias
+  4) Strategic Finance -> run-rate, Rule of 40, burn multiple, camino a breakeven
+  5) cross-checks: los agentes deben concordar en los numeros compartidos
+  6) consolidar escalamientos + UN gate humano
+  7) board pack consolidado + acciones (Claude), fijados solo si el humano aprueba
 
 Cada agente deja su analisis y sus flags en el estado compartido; el CFO los
 consume. Los numeros los calculan los agentes por codigo (finance_core); el
@@ -38,13 +39,14 @@ from shared_state import CFOContext
 import controller_agent
 import treasury_agent
 import fpa_agent
+import strategic_finance_agent
 
 load_dotenv(os.path.join(ROOT, ".env"))
 client = Anthropic()
 MODEL = "claude-sonnet-4-6"
 
 PERIOD = "2026-05"
-AGENTS = ["Controller", "Treasury", "FP&A"]
+AGENTS = ["Controller", "Treasury", "FP&A", "Strategic Finance"]
 
 
 def agent(system, prompt, max_tokens=700):
@@ -66,6 +68,7 @@ def cross_checks(ctx):
     """
     issues = []
     ctrl, trez, fpa = ctx.get("Controller"), ctx.get("Treasury"), ctx.get("FP&A")
+    strat = ctx.get("Strategic Finance")
 
     # 1) op income del Controller == actual de operating income en la varianza de FP&A
     try:
@@ -85,6 +88,15 @@ def cross_checks(ctx):
             issues.append(f"burn de Treasury {trez['burn']:,.0f} != -op income {expected_burn:,.0f}")
     except (KeyError, TypeError):
         issues.append("faltan datos para conciliar burn de Treasury")
+
+    # 3) el run-rate de Strategic (revenue mensual x 12) debe atarse al revenue del Controller
+    try:
+        rev_ctrl = ctrl["pnl"]["revenue"]
+        rev_strat = strat["metrics"]["run_rate"] / 12.0
+        if abs(rev_ctrl - rev_strat) > 1:
+            issues.append(f"revenue no concuerda: Controller {rev_ctrl:,.0f} vs Strategic {rev_strat:,.0f}")
+    except (KeyError, TypeError, ZeroDivisionError):
+        issues.append("faltan datos para conciliar revenue con Strategic Finance")
 
     return issues
 
@@ -118,10 +130,12 @@ def compose_board_pack(ctx):
     fpa_bits = "\n".join(filter(None, [
         fpa.get("variance_expl", ""), fpa.get("budget_expl", ""), fpa.get("anomaly_expl", ""),
     ]))
+    strat = ctx.get("Strategic Finance", "narrative", "")
     prompt = (
         f"--- Controller (cierre) ---\n{ctrl}\n\n"
         f"--- Treasury (liquidez) ---\n{trez}\n\n"
         f"--- FP&A (variance MoM, vs presupuesto, anomalias) ---\n{fpa_bits}\n\n"
+        f"--- Strategic Finance (crecimiento, eficiencia, camino a breakeven) ---\n{strat}\n\n"
         "Redacta el board pack consolidado del periodo."
     )
     return agent(
@@ -157,12 +171,14 @@ def run(period=PERIOD):
     ctx = CFOContext()
     ctx.audit("CFO", "inicio", f"corriendo el office para {period}")
 
-    print("\n[1/3] Controller...")
+    print("\n[1/4] Controller...")
     controller_agent.run(ctx)
-    print("\n[2/3] Treasury...")
+    print("\n[2/4] Treasury...")
     treasury_agent.run(ctx)
-    print("\n[3/3] FP&A...")
+    print("\n[3/4] FP&A...")
     fpa_agent.run(ctx)
+    print("\n[4/4] Strategic Finance...")
+    strategic_finance_agent.run(ctx)
 
     # Checks de coherencia entre agentes (antes de escalar o redactar).
     issues = cross_checks(ctx)
@@ -194,10 +210,9 @@ def run(period=PERIOD):
     ctx.put("CFO", {"board_pack": board, "actions": actions, "status": "approved"})
     ctx.audit("CFO", "ok", "board pack consolidado y acciones fijados")
 
+    path = ctx.save()   # persistir el estado ANTES de mostrarlo
     print("\n--- BOARD PACK (CFO) ---\n" + board)
     print("\n--- ACCIONES PROPUESTAS ---\n" + actions)
-
-    path = ctx.save()
     print(f"\nEstado compartido guardado en: {os.path.basename(path)} "
           f"({len(ctx.state['audit'])} eventos de audit)")
     return ctx
