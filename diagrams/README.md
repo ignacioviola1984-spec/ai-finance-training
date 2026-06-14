@@ -14,3 +14,5 @@ file to view).
    human-in-the-loop gate + audit trail. (Phase 3.3)
 5. **`05_rag_workflow.svg`** — The RAG workflow, the point where it failed
    (cross-lingual retrieval), and how it was diagnosed and resolved. (Phase 4)
+6. **`06_deploy_workflow.svg`** — Ship & deploy: packaging the projects into a
+   web app, deploying for a public URL, and recording demo videos. (Phase 6)

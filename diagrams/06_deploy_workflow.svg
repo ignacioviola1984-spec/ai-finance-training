@@ -1,0 +1,75 @@
+<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" role="img" font-family="ui-sans-serif, system-ui, sans-serif">
+  <title>Workflow de Ship and Deploy (Fase 6)</title>
+  <desc>De los proyectos del repo a un producto usable: se empaquetan en una web app Streamlit con secrets via .env, se deploya a un host con URL publica para usuarios no tecnicos, y se graban 3 videos demo para compartir.</desc>
+
+  <style>
+    .lbl{fill:var(--text-primary,#1a1a1a)} .sub{fill:var(--text-secondary,#6b6b6b);font-size:11px}
+    .ttl{font-size:12.5px;font-weight:700}
+    .code{fill:var(--bg-secondary,#eef1f0);stroke:var(--text-secondary,#6b6b6b);stroke-width:1.5}
+    .app{fill:var(--bg-secondary,#f0ece3);stroke:var(--accent,#cc785c);stroke-width:2.5}
+    .out{fill:var(--bg-secondary,#f0ece3);stroke:var(--accent,#cc785c);stroke-width:2}
+    .panel{fill:var(--bg-secondary,#f4f3ee);stroke:var(--border,#d8d5cc);stroke-width:1.4}
+    .flow{stroke:var(--text-secondary,#6b6b6b);stroke-width:1.8;fill:none}
+    .note{fill:var(--text-secondary,#8a8a8a);font-size:10.5px;font-style:italic}
+    .acc{fill:var(--accent,#cc785c);font-size:11px;font-weight:700}
+  </style>
+
+  <text x="30" y="28" class="lbl ttl" font-size="16">Ship &amp; Deploy — de codigo a producto usable (Fase 6)</text>
+  <text x="30" y="46" class="sub">Sacar la herramienta de la laptop y que la use alguien no tecnico.</text>
+
+  <text x="40" y="86" class="acc">EL MOTOR (los proyectos del repo)</text>
+  <rect x="40" y="96" width="220" height="186" rx="10" class="code"/>
+  <text x="150" y="120" text-anchor="middle" class="lbl ttl">Codigo ya construido</text>
+  <text x="56" y="146" class="sub">- FX Agent (tool use)</text>
+  <text x="56" y="168" class="sub">- Operating Model v2</text>
+  <text x="56" y="190" class="sub">- Document Intelligence</text>
+  <text x="56" y="212" class="sub">- Finance MCP connector</text>
+  <text x="56" y="234" class="sub">- Evals &amp; guardrails</text>
+  <text x="56" y="264" class="note">la logica, sin interfaz</text>
+
+  <rect x="330" y="120" width="230" height="140" rx="10" class="app"/>
+  <text x="445" y="148" text-anchor="middle" class="lbl ttl">Web App (Streamlit)</text>
+  <text x="445" y="170" text-anchor="middle" class="sub">3 pestanas, una por proyecto</text>
+  <text x="445" y="190" text-anchor="middle" class="sub">interfaz que cualquiera usa</text>
+  <text x="445" y="214" text-anchor="middle" class="acc">secrets via .env</text>
+  <text x="445" y="232" text-anchor="middle" class="sub">la API key nunca en el codigo</text>
+
+  <path class="flow" d="M260 189 L326 189" marker-end="url(#a)"/>
+  <text x="293" y="180" text-anchor="middle" class="note">empaqueta</text>
+
+  <rect x="630" y="86" width="240" height="80" rx="10" class="out"/>
+  <text x="750" y="112" text-anchor="middle" class="lbl ttl">Deploy a un host</text>
+  <text x="750" y="132" text-anchor="middle" class="sub">URL publica, secrets en prod</text>
+  <text x="750" y="152" text-anchor="middle" class="sub">usuario no tecnico: clic y usa</text>
+
+  <rect x="630" y="214" width="240" height="80" rx="10" class="out"/>
+  <text x="750" y="240" text-anchor="middle" class="lbl ttl">3 videos POV (demo)</text>
+  <text x="750" y="260" text-anchor="middle" class="sub">uno por proyecto, 60-90s</text>
+  <text x="750" y="280" text-anchor="middle" class="sub">comparte: LinkedIn / CV</text>
+
+  <path class="flow" d="M560 165 L628 126" marker-end="url(#a)"/>
+  <path class="flow" d="M560 215 L628 254" marker-end="url(#a)"/>
+
+  <rect x="40" y="320" width="830" height="74" rx="10" class="panel"/>
+  <text x="58" y="346" class="lbl ttl">La linea que cruza esta fase</text>
+  <text x="58" y="368" class="sub">De "anda en mi maquina" a "anda y otro lo usa". El valor no es solo construir; es que alguien que no</text>
+  <text x="58" y="384" class="sub">programa pueda usarlo, y que vos puedas mostrarlo en un clic o en un video de 90 segundos.</text>
+
+  <text x="40" y="430" class="acc">Por que importa</text>
+  <text x="40" y="450" class="sub">- Una URL que el reclutador abre y prueba pesa mas que un repo que tiene que leer.</text>
+  <text x="40" y="468" class="sub">- El deploy ensena lo real de produccion: secrets fuera del codigo, una interfaz, alguien del otro lado.</text>
+  <text x="40" y="486" class="sub">- El video convierte el portfolio en algo compartible y vendible.</text>
+
+  <rect x="40" y="520" width="14" height="14" rx="3" class="code"/>
+  <text x="60" y="531" class="sub">Codigo (motor)</text>
+  <rect x="220" y="520" width="14" height="14" rx="3" class="app"/>
+  <text x="240" y="531" class="sub">Interfaz usable</text>
+  <rect x="400" y="520" width="14" height="14" rx="3" class="out"/>
+  <text x="420" y="531" class="sub">Salida al mundo (deploy / demo)</text>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="var(--text-secondary,#6b6b6b)"/>
+    </marker>
+  </defs>
+</svg>
