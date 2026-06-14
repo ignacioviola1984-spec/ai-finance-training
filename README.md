@@ -1,8 +1,9 @@
 # AI Finance Portfolio
 
 Finance AI engineering projects: live API integration, a custom MCP
-connector for a multi-entity finance system, and a multi-agent month-end
-close model with reliability controls. Built by a finance operator with 17
+connector for a multi-entity finance system, a multi-agent month-end close
+model with reliability controls, and a multi-agent CFO office that runs the
+close over a shared, auditable state. Built by a finance operator with 17
 years of experience, now building the systems.
 
 ## Projects
@@ -27,6 +28,21 @@ before any figure reaches the board. Details:
 
 **Stack:** Python, Anthropic API, agent patterns (chaining, routing,
 sub-agents), audit trail, human-in-the-loop controls.
+
+### CFO Office — multi-agent team over shared state (`cfo-office/`)
+The operating model evolved into a CFO office: specialized agents
+(Controller, Treasury, FP&A) that communicate through a shared state book
+(`CFOContext`), coordinated by a CFO orchestrator. The CFO runs the agents
+over one shared state, reconciles their numbers with deterministic
+cross-checks, consolidates escalations by severity without double-counting,
+and asks for a single human sign-off before fixing the board pack. FP&A
+reports two variance lenses: month-over-month and budget-vs-actual (favorable
+/unfavorable by line type, with a materiality threshold). Details:
+[`cfo-office/README.md`](cfo-office/README.md).
+
+**Stack:** Python, Anthropic API, shared-state multi-agent coordination,
+budget-vs-actual variance, cross-agent reconciliation, audit trail,
+human-in-the-loop controls.
 
 ### Finance Document Intelligence / RAG (`document-intelligence/`)
 Semantic search, retrieval-augmented generation, and structured extraction
