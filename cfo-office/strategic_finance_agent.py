@@ -74,12 +74,12 @@ def strategic_escalations(m):
     out = []
     bm = m["burn_multiple"]
     if bm is not None and bm > BURN_MULTIPLE_MAX:
-        out.append(["ALTA", f"burn multiple {bm:.1f}x (> {BURN_MULTIPLE_MAX:.0f}): por cada USD "
-                            f"de revenue nuevo se queman {bm:.1f}; baja eficiencia de capital"])
+        out.append(["HIGH", f"burn multiple {bm:.1f}x (> {BURN_MULTIPLE_MAX:.0f}): {bm:.1f} burned "
+                            f"per USD of new revenue; low capital efficiency"])
     if m["op_margin"] < 0:
-        out.append(["ALTA", f"crecer no alcanza el breakeven: el margen operativo "
-                            f"({m['op_margin']*100:.0f}%) no mejora solo con volumen; se necesitan "
-                            f"~{m['breakeven_gap_pp']:.0f} pp de mejora de margen, no mas crecimiento"])
+        out.append(["HIGH", f"growth alone won't reach breakeven: operating margin "
+                            f"({m['op_margin']*100:.0f}%) doesn't improve on volume; "
+                            f"~{m['breakeven_gap_pp']:.0f} pp of margin improvement needed, not more growth"])
     return out
 
 
@@ -88,34 +88,34 @@ def strategic_escalations(m):
 def run(ctx=None):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Strategic Finance", "inicio", "run-rate, eficiencia de capital, camino a breakeven")
+    ctx.audit("Strategic Finance", "start", "run-rate, capital efficiency, path to breakeven")
 
     m = fc.strategic_metrics()
     esc = strategic_escalations(m)
 
-    bm_txt = f"{m['burn_multiple']:.1f}x" if m["burn_multiple"] is not None else "n/d"
-    mg_txt = f"{m['magic_number']:.2f}" if m["magic_number"] is not None else "n/d"
+    bm_txt = f"{m['burn_multiple']:.1f}x" if m["burn_multiple"] is not None else "n/a"
+    mg_txt = f"{m['magic_number']:.2f}" if m["magic_number"] is not None else "n/a"
     scen_txt = "\n".join(
-        f"  {s['name']}: crec MoM {s['mom_growth']*100:.1f}% -> run-rate 12m {_money(s['run_rate_12m'])}, "
+        f"  {s['name']}: MoM growth {s['mom_growth']*100:.1f}% -> 12m run-rate {_money(s['run_rate_12m'])}, "
         f"Rule of 40 {s['rule_of_40']:.0f}" for s in m["scenarios"])
     facts = (
-        f"Metricas estrategicas (cierre {fc.LATEST}, USD):\n"
+        f"Strategic metrics (close {fc.LATEST}, USD):\n"
         f"  Run-rate (ARR proxy): {_money(m['run_rate'])}\n"
-        f"  Crecimiento anualizado (proxy de MoM): {m['ann_growth']*100:.0f}%\n"
-        f"  Margen operativo: {m['op_margin']*100:.0f}%\n"
-        f"  Rule of 40: {m['rule_of_40']:.0f} (umbral 40)\n"
-        f"  Burn multiple: {bm_txt} (umbral <= {BURN_MULTIPLE_MAX:.0f})\n"
-        f"  Magic number: {mg_txt} (bueno > {MAGIC_MIN})\n"
-        f"  Mix de gasto (% revenue): COGS {m['mix']['cogs']*100:.0f}, S&M {m['mix']['sm']*100:.0f}, "
+        f"  Annualized growth (MoM proxy): {m['ann_growth']*100:.0f}%\n"
+        f"  Operating margin: {m['op_margin']*100:.0f}%\n"
+        f"  Rule of 40: {m['rule_of_40']:.0f} (threshold 40)\n"
+        f"  Burn multiple: {bm_txt} (threshold <= {BURN_MULTIPLE_MAX:.0f})\n"
+        f"  Magic number: {mg_txt} (good > {MAGIC_MIN})\n"
+        f"  Spend mix (% revenue): COGS {m['mix']['cogs']*100:.0f}, S&M {m['mix']['sm']*100:.0f}, "
         f"R&D {m['mix']['rd']*100:.0f}, G&A {m['mix']['ga']*100:.0f}\n"
-        f"  Gap de margen a breakeven: {m['breakeven_gap_pp']:.0f} pp\n"
-        f"Escenarios de crecimiento (margen constante):\n{scen_txt}"
+        f"  Margin gap to breakeven: {m['breakeven_gap_pp']:.0f} pp\n"
+        f"Growth scenarios (margin held constant):\n{scen_txt}"
     )
     narrative = agent(
-        "Sos el lead de Strategic Finance. Con las metricas que te dan, escribi 3-5 bullets, "
-        "tono CFO: calidad del crecimiento (Rule of 40, magic number), eficiencia de capital "
-        "(burn multiple) y el camino a la rentabilidad (gap de margen, escenarios). Cerra con "
-        "la palanca estrategica principal. Usa solo los numeros dados; no inventes cifras.",
+        "You are the Strategic Finance lead. With the metrics given, write 3-5 bullets, CFO "
+        "tone: growth quality (Rule of 40, magic number), capital efficiency (burn multiple), "
+        "and the path to profitability (margin gap, scenarios). Close with the main strategic "
+        "lever. Use only the numbers given; do not invent figures. Write in English.",
         facts,
     )
 
@@ -124,12 +124,12 @@ def run(ctx=None):
     })
     ctx.audit("Strategic Finance", "ok",
               f"run-rate {_money(m['run_rate'])}, Rule of 40 {m['rule_of_40']:.0f}, "
-              f"burn multiple {bm_txt}; {len(esc)} escalamiento(s)")
+              f"burn multiple {bm_txt}; {len(esc)} escalation(s)")
 
     if own:
         print("\n--- STRATEGIC FINANCE ---\n" + narrative)
         path = ctx.save()
-        print(f"\nEstado compartido guardado en: {os.path.basename(path)}")
+        print(f"\nShared state saved to: {os.path.basename(path)}")
     return ctx
 
 

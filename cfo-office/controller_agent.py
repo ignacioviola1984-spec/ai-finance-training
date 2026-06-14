@@ -51,11 +51,11 @@ def check_pnl(p):
     """Consistencia interna del P&L (mismos invariantes que el operating model)."""
     issues = []
     if p["revenue"] <= 0:
-        issues.append("revenue no positivo")
+        issues.append("revenue not positive")
     if p["gross"] > p["revenue"]:
-        issues.append("gross > revenue (imposible)")
+        issues.append("gross > revenue (impossible)")
     if p["opex"] < 0:
-        issues.append("opex negativo")
+        issues.append("opex negative")
     return issues
 
 
@@ -72,11 +72,11 @@ def close_escalations(close):
     """Flags del Controller, por severidad. Lista de [sev, mensaje]."""
     out = []
     if close["issues"]:
-        out.append(["CRITICA", "P&L inconsistente: " + "; ".join(close["issues"])])
+        out.append(["CRITICAL", "P&L inconsistent: " + "; ".join(close["issues"])])
     if close["pnl"]["operating_income"] < 0:
-        out.append(["ALTA", "perdida operativa: requiere revision de estructura de gasto"])
+        out.append(["HIGH", "operating loss: cost structure needs review"])
     if close["ar"]["overdue_pct"] > 50:
-        out.append(["ALTA", f"{close['ar']['overdue_pct']:.0f}% de la cartera por cobrar esta vencida"])
+        out.append(["HIGH", f"{close['ar']['overdue_pct']:.0f}% of receivables are overdue"])
     return out
 
 
@@ -85,23 +85,23 @@ def close_escalations(close):
 def run(ctx=None):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Controller", "inicio", f"revision de cierre {PERIOD}")
+    ctx.audit("Controller", "start", f"close review {PERIOD}")
 
     close = compute_close(PERIOD)
     esc = close_escalations(close)
     pnl = close["pnl"]
 
     facts = (
-        f"Cierre {PERIOD} (USD): revenue {_money(pnl['revenue'])}, "
+        f"Close {PERIOD} (USD): revenue {_money(pnl['revenue'])}, "
         f"gross {_money(pnl['gross'])} ({close['gross_margin_pct']:.1f}%), "
         f"opex {_money(pnl['opex'])}, operating income {_money(pnl['operating_income'])} "
         f"({close['op_margin_pct']:.1f}%).\n"
-        f"Cuentas por cobrar (USD): corriente {_money(close['ar']['current'])}, "
-        f"vencida {_money(close['ar']['overdue'])} ({close['ar']['overdue_pct']:.0f}% del total)."
+        f"Accounts receivable (USD): current {_money(close['ar']['current'])}, "
+        f"overdue {_money(close['ar']['overdue'])} ({close['ar']['overdue_pct']:.0f}% of total)."
     )
     narrative = agent(
-        "Sos el Controller. Resumis el cierre en 2 frases y listas como maximo 3 flags "
-        "de riesgo concretos. Usas solo los numeros dados; no inventes cifras.",
+        "You are the Controller. Summarize the close in 2 sentences and list at most 3 "
+        "concrete risk flags. Use only the numbers given; do not invent figures. Write in English.",
         facts,
     )
 
@@ -111,12 +111,12 @@ def run(ctx=None):
         "op_margin_pct": close["op_margin_pct"],
         "narrative": narrative, "escalations": esc,
     })
-    ctx.audit("Controller", "ok", f"cierre revisado; {len(esc)} escalamiento(s)")
+    ctx.audit("Controller", "ok", f"close reviewed; {len(esc)} escalation(s)")
 
     if own:
         print("\n--- CONTROLLER ---\n" + narrative)
         path = ctx.save()
-        print(f"\nEstado compartido guardado en: {os.path.basename(path)}")
+        print(f"\nShared state saved to: {os.path.basename(path)}")
     return ctx
 
 

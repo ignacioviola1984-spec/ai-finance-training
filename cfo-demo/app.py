@@ -49,7 +49,7 @@ def clean(text):
 
 
 def sev_badge(sev):
-    color = {"CRITICA": "#C0392B", "ALTA": "#D97706"}.get(sev, "#4A6FA5")
+    color = {"CRITICAL": "#C0392B", "HIGH": "#D97706"}.get(sev, "#4A6FA5")
     return (f"<span style='background:{color};color:#fff;padding:2px 8px;"
             f"border-radius:6px;font-size:0.72rem;font-weight:700'>{sev}</span>")
 

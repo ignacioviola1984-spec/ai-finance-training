@@ -218,7 +218,7 @@ def strategic_scenarios(rev_latest, base_growth, op_margin):
     crecer mueve el run-rate y el Rule of 40, pero no el margen, que es el
     verdadero cuello de botella estructural."""
     out = []
-    for name, g in [("Bajo", base_growth * 0.5), ("Base", base_growth), ("Alto", base_growth * 1.5)]:
+    for name, g in [("Low", base_growth * 0.5), ("Base", base_growth), ("High", base_growth * 1.5)]:
         ann = (1 + g) ** 12 - 1
         out.append({
             "name": name, "mom_growth": g,

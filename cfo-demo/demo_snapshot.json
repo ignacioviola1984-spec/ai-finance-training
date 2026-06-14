@@ -19,15 +19,15 @@
       },
       "gross_margin_pct": 77.43605052324182,
       "op_margin_pct": -61.132203222192096,
-      "narrative": "**Resumen del cierre mayo 2026**\nEl mes cerró con ingresos de USD 1,238,010 y un operating income negativo de USD -756,823 (-61.1%), evidenciando que el opex de USD 1,715,489 supera ampliamente al gross profit de USD 958,666. La operación no es autosustentable en su estructura de costos actual.\n\n---\n\n**Flags de riesgo**\n\n1. **Opex descontrolado:** USD 1,715,489 vs. gross profit de USD 958,666 — el opex representa el 138% del gross, generando una brecha operativa de USD 756,823.\n2. **Cartera vencida crítica:** USD 1,109,564 sobre un total de USD 1,146,695 en cuentas por cobrar equivalen al 97% vencido — riesgo severo de incobrabilidad y presión de caja inmediata.\n3. **Concentración de riesgo en cobranza:** la cartera corriente es apenas USD 37,131, lo que indica que prácticamente no hay flujo nuevo sano de cobro entrante para compensar la pérdida operativa.",
+      "narrative": "**Close Summary – May 2026**\nRevenue of USD 1,238,010 delivered a gross margin of 77.4% (USD 958,666), but operating expenditure of USD 1,715,489 drove an operating loss of USD 756,823 (-61.1% of revenue). The period reflects a structurally loss-making cost base that significantly exceeds gross profit.\n\n**Risk Flags**\n1. **Operating loss severity** – Opex exceeds gross profit by USD 756,823, indicating the current cost structure is unsustainable without immediate corrective action.\n2. **Accounts receivable concentration risk** – 97% of total receivables (USD 1,109,564) are overdue, creating acute liquidity and credit risk.\n3. **Cash conversion risk** – With only USD 37,131 in current receivables against a USD 756,823 operating loss, near-term cash coverage is critically thin.",
       "escalations": [
         [
-          "ALTA",
-          "perdida operativa: requiere revision de estructura de gasto"
+          "HIGH",
+          "operating loss: cost structure needs review"
         ],
         [
-          "ALTA",
-          "97% de la cartera por cobrar esta vencida"
+          "HIGH",
+          "97% of receivables are overdue"
         ]
       ]
     },
@@ -35,17 +35,17 @@
       "cash": 7092891.347246789,
       "burn": 756822.9986303409,
       "runway": 9.371928918760577,
-      "narrative": "**Situación:** Con USD 7,092,891 en caja y un burn operativo de USD 756,823 mensuales, el runway actual es de **9.4 meses** (aproximadamente hasta mediados de Q1 2026).\n\n**Implicancia:** La compañía tiene menos de un año de operación asegurada, lo que hace **urgente** iniciar en las próximas semanas gestiones de fundraising, líneas de crédito o medidas de reducción de burn para evitar una situación crítica de liquidez.",
+      "narrative": "The company currently holds USD 7,092,891 in consolidated cash, which, against a monthly operating burn of USD 756,823, yields a runway of 9.4 months. This means the organization must either achieve cash flow sustainability or secure additional funding within approximately 9.4 months to avoid a liquidity shortfall.",
       "escalations": [
         [
-          "ALTA",
-          "runway 9.4 meses (< 12): margen de maniobra ajustado"
+          "HIGH",
+          "runway 9.4 months (< 12): tight room to maneuver"
         ]
       ]
     },
     "FP&A": {
       "forecast": {
-        "method": "crecimiento mensual promedio por linea; gross y op income derivados",
+        "method": "average month-over-month growth per line; gross and op income derived",
         "growth_rev": 0.06102016325879733,
         "growth_cogs": 0.08337335359229842,
         "growth_opex": 0.061729722266446185,
@@ -88,7 +88,7 @@
         }
       },
       "anomalies": [
-        "resultado operativo negativo: -756,823 USD"
+        "negative operating income: -756,823 USD"
       ],
       "budget_variance": {
         "rows": [
@@ -188,13 +188,13 @@
       },
       "escalations": [
         [
-          "ALTA",
-          "sobregasto en G&A: +20,935 USD (+6.0%) vs plan"
+          "HIGH",
+          "overspend on G&A: +20,935 USD (+6.0%) vs plan"
         ]
       ],
-      "variance_expl": "## Análisis de Variación MoM | Abril → Mayo 2026\n\n---\n\n**Contexto general:** El negocio creció en ingresos (+5.6%), pero la rentabilidad operativa se deterioró, con una pérdida operativa que se amplió un 12.9%.\n\n---\n\n### Drivers principales\n\n- **📦 COGS creció 2.3x más rápido que el revenue (12.9% vs 5.6%)**, lo que comprimió el gross margin. Esto sugiere un mix de ventas menos favorable en mayo —mayor participación de productos/servicios de menor margen— o presiones en costos variables como logística, insumos o tarifas de proveedores que no fueron trasladadas al precio.\n\n- **💸 El OpEx fue el principal destructor de valor**, creciendo USD ~120K (+7.5%) por encima del crecimiento de ingresos. Puede reflejar incorporaciones de headcount, campañas de marketing estacionales, o gastos puntuales de infraestructura que se concentraron en mayo sin un correlato inmediato en revenue.\n\n- **📉 El gross profit creció solo USD ~33K (+3.6%)**, insuficiente para absorber el incremento de OpEx de USD ~120K. La brecha entre ambos explica mecánicamente el deterioro de USD ~87K adicionales en pérdida operativa.\n\n- **⚠️ La estructura de costos sigue siendo rígida respecto al revenue:** con un operating income de USD -756K sobre ingresos de USD 1.24M, el negocio requiere una expansión significativa de escala o una reducción de la base fija de OpEx para alcanzar breakeven operativo.\n\n---\n\n> **Acción sugerida:** Priorizar el análisis del mix de COGS y los ítems no recurrentes dentro de OpEx para distinguir tendencias estructurales de efectos puntuales de mayo.",
-      "budget_expl": "## Varianza vs. Presupuesto – Mayo 2026\n\n- **Revenue prácticamente en línea con el plan** (+USD 278, +0.0% F), sin impacto material en el resultado. El desvío negativo en Operating Income obedece enteramente a presiones de costo y gasto operativo.\n\n- **Cost of Revenue y G&A son los principales drivers desfavorables:** el costo de revenue superó el presupuesto en USD 7,043 (+2.6% U), comprimiendo el Gross Profit en USD 6,765 (-0.7% U); G&A fue el único ítem material por umbral, con un exceso de USD 20,935 (+6.0% U), señalando descontrol en gastos administrativos que merece revisión de causa raíz.\n\n- **R&D aportó el único alivio significativo** (-USD 13,829, -2.2% F), compensando parcialmente las presiones; sin embargo, este ahorro podría reflejar demoras en contratación o proyectos, por lo que conviene validar si es eficiencia real o gasto diferido.\n\n- **El Operating Income se deterioró USD 38,938 por debajo del plan (-5.4% U)**, resultado de un Opex total superior en USD 32,173 (+1.9% U) acumulando los excesos de S&M (+USD 25,068), G&A (+USD 20,935) y Cost of Revenue (+USD 7,043), apenas mitigados por R&D. La implicancia es una mayor quema de caja que el plan; de sostenerse esta tendencia en los próximos meses, se requeriría revisión de los límites de gasto en G&A y S&M.",
-      "anomaly_expl": "## Análisis de Anomalías FP&A — Riesgo Operativo\n\n---\n\n### 🔴 Resultado Operativo Negativo: **-756,823 USD**\n\nLos ingresos operativos no logran cubrir los costos y gastos de la operación core del negocio, generando una pérdida antes de intereses e impuestos. Esto implica que la actividad principal **no es autosustentable** en el período analizado, comprometiendo la viabilidad operativa si la tendencia persiste.\n\n---\n\n> ⚠️ **Implicancia inmediata:** Se requiere revisión urgente de la estructura de costos y/o política de precios antes del próximo ciclo de reporte."
+      "variance_expl": "## MoM Variance Commentary: April → May 2026\n\n- **Revenue growth was solid but masked by disproportionate cost increases.** The +5.6% revenue improvement (+USD 65,157) reflects genuine top-line momentum, however both COGS and OpEx expanded at roughly 2x and 1.3x the rate of revenue growth respectively, meaning the business did not scale efficiently into the higher volume.\n\n- **COGS inflation (+12.9%) compressed gross margin.** COGS grew more than twice as fast as revenue, suggesting either a less favorable product/channel mix in May, higher input or logistics costs, or one-time fulfillment expenses tied to the volume increase. As a result, gross profit only expanded by +3.6% despite the stronger top line, pointing to deteriorating unit economics.\n\n- **OpEx expansion (+7.5%, +USD 119,910) was the primary driver of the wider operating loss.** The absolute OpEx increase of ~USD 120K dwarfed the gross profit improvement of ~USD 33K, implying stepped-up investment in headcount, sales & marketing, or overhead that was not yet recoverable from current revenue levels.\n\n- **Operating loss deepened by -12.9% (-USD 86,655).** The combined effect of margin compression at the gross level and accelerated OpEx spending pushed operating income further negative, signaling that May represented a period of elevated investment or cost pressure where growth spending ran well ahead of contribution gains. Management should assess whether the OpEx increase is discretionary and tied to future revenue catalysts, or structural.",
+      "budget_expl": "## Budget Variance Analysis – May 2026\n\n- **Revenue was essentially on plan** (+$278, flat), providing no meaningful offset to cost pressures elsewhere; the business grew in line with expectations on the top line but failed to leverage it into profitability.\n\n- **Cost overruns across multiple expense lines drove a $38,938 (5.4%) miss on operating income**: Cost of revenue exceeded budget by $7,043 (+2.6%), Sales & Marketing by $25,068 (+3.5%), and G&A by $20,935 (+6.0%) — the latter crossing the materiality threshold and representing the most acute overspend on a percentage basis, signaling potential control issues in overhead costs.\n\n- **R&D provided a partial offset**, coming in $13,829 (2.2%) under budget — the only meaningful favorable variance in the P&L — which partially cushioned the overall opex overrun of $32,173; without this saving, the operating income miss would have been approximately $52,767.\n\n- **The net effect is an operating loss of $756,823 vs. a budgeted loss of $717,885**, widening the deficit by $38,938. With revenue on target, the entire variance is cost-driven, which warrants a prompt review of G&A commitments and S&M spending efficiency to prevent further deterioration in the coming months.",
+      "anomaly_expl": "## Anomaly Analysis\n\n---\n\n**Negative Operating Income: -756,823 USD**\nThe company's core business operations are generating a loss, meaning total operating expenses exceed gross profit by **$756,823**. This signals that the business is currently unable to sustain itself through its primary activities alone, raising concerns about operational efficiency and the urgent need for cost restructuring or revenue growth."
     },
     "Strategic Finance": {
       "metrics": {
@@ -216,7 +216,7 @@
         "breakeven_gap_pp": 61.132203222192096,
         "scenarios": [
           {
-            "name": "Bajo",
+            "name": "Low",
             "mom_growth": 0.030510081629398667,
             "run_rate_12m": 21307498.07127613,
             "rule_of_40": -17.70651621577956
@@ -228,151 +228,151 @@
             "rule_of_40": 42.42367388480367
           },
           {
-            "name": "Alto",
+            "name": "High",
             "mom_growth": 0.091530244888196,
             "run_rate_12m": 42494703.79381267,
             "rule_of_40": 124.90945522938426
           }
         ]
       },
-      "narrative": "## Strategic Finance — Executive Brief | Cierre Mayo 2026\n\n---\n\n**1. Calidad del crecimiento: señal positiva, pero frágil**\nEl negocio crece al 104% anualizado y registra un Rule of 40 de 42 —marginalmente por encima del umbral—, lo que valida la trayectoria de crecimiento en términos de métrica compuesta. Sin embargo, esa lectura descansa *enteramente* en la velocidad de expansión de ARR (USD 14.9M run-rate): el margen operativo de -61% no aporta nada al ratio. Cualquier desaceleración en la adquisición —como ilustra el escenario bajo con Rule of 40 de -18— destruye la tesis de calidad de golpe.\n\n**2. Eficiencia de capital: la señal más preocupante del dashboard**\nUn Burn Multiple de 11.6x contra un umbral aceptable de ≤2x indica que el negocio consume ~USD 11.6 de caja por cada USD 1 de ARR incremental generado. Esto no es un problema de timing; es una señal estructural de que el modelo de go-to-market no está produciendo retornos unitarios defendibles. El Magic Number de 0.09 —frente a un mínimo saludable de 0.75— confirma el diagnóstico: S&M representa el 60% del revenue y no está generando payback medible en el período analizado. Gastar más en el estado actual acelera la destrucción de valor, no la creación.\n\n**3. Estructura de costos: la pila de gasto supera el 160% del revenue**\nCOGS (23%) + S&M (60%) + R&D (49%) + G&A (30%) suman 162% del revenue, lo que implica que el negocio requiere cerrar 61 puntos porcentuales de gap de margen para alcanzar breakeven operativo. Con margen bruto implícito del 77%, el problema no está en el unit economics del producto sino en la carga de OpEx —particularmente S&M y R&D combinados representan 109% del revenue—, lo que hace inviable la rentabilidad sin compresión agresiva de al menos una de esas líneas.\n\n**4. Escenarios: el breakeven es sensible en extremo al ritmo de crecimiento**\nManteniendo el margen constante en",
+      "narrative": "## Strategic Finance Assessment — May 2026\n\n**Growth Quality: Passing the Rule of 40, but Barely and Narrowly**\nAt 104% annualized growth and a -61% operating margin, the business scores 42 on the Rule of 40 — clearing the 40-point threshold, but the composition is entirely growth-dependent. The margin contribution is deeply negative, meaning any deceleration in top-line momentum collapses the score immediately: the Low scenario (3.1% MoM) produces a Rule of 40 of -18, confirming there is zero margin buffer underwriting growth quality today.\n\n**Capital Efficiency: A Critical Red Flag**\nA burn multiple of 11.6x against a threshold of ≤2.0x is the single most urgent signal in this dataset. The business is consuming $11.60 of capital for every $1.00 of net new ARR generated — roughly 6x what disciplined SaaS benchmarks tolerate at this stage. This is not a growth-investment dynamic; it is a structural efficiency problem that compounds with every dollar deployed.\n\n**Sales Productivity: Not Yet Functioning as a Growth Engine**\nA magic number of 0.09 against a benchmark of >0.75 indicates that the go-to-market motion is not yet converting sales & marketing spend into durable ARR at any meaningful rate. With S&M already consuming 60% of revenue, incremental spend allocation into the current GTM model will not solve the efficiency problem — it will deepen it.\n\n**Path to Profitability: A 61 pp Margin Gap Requiring Structural Intervention**\nThe margin gap to breakeven is 61 percentage points, with the spend structure showing COGS at 23%, S&M at 60%, R&D at 49%, and G&A at 30% — a combined 162% of revenue. Under the Base scenario, $30.2M run-rate in 12 months holds the margin flat and sustains Rule of 40 at 42 but does not close the gap. The High scenario ($42.5M, Rule of 40 of 125) is the only growth path that creates meaningful headroom to invest into margin improvement while maintaining growth credibility with investors. The Low scenario is existential.\n\n**Primary Strategic Lever: Sales & Marketing Efficiency**\nWith S&M at 60% of revenue and a magic number of 0.09, restructuring go-to-market productivity is the highest-leverage action available. No burn multiple improvement, no credible path to profitability, and no durable Rule of 40 score is achievable until the business converts its largest cost line into proportionally greater",
       "escalations": [
         [
-          "ALTA",
-          "burn multiple 11.6x (> 2): por cada USD de revenue nuevo se queman 11.6; baja eficiencia de capital"
+          "HIGH",
+          "burn multiple 11.6x (> 2): 11.6 burned per USD of new revenue; low capital efficiency"
         ],
         [
-          "ALTA",
-          "crecer no alcanza el breakeven: el margen operativo (-61%) no mejora solo con volumen; se necesitan ~61 pp de mejora de margen, no mas crecimiento"
+          "HIGH",
+          "growth alone won't reach breakeven: operating margin (-61%) doesn't improve on volume; ~61 pp of margin improvement needed, not more growth"
         ]
       ]
     },
     "CFO": {
-      "board_pack": "# Board Pack Ejecutivo — Cierre Mayo 2026\n**CFO Report | Uso restringido del Board**\n\n---\n\nMayo cerró con ingresos de USD 1,238,010 y una pérdida operativa de USD -756,823 (-61.1%), resultado de un OpEx de USD 1,715,489 que representa el 138% del gross profit —la operación core no es autosustentable y el deterioro se amplió un 12.9% respecto a abril, superando el crecimiento de ingresos del período. La eficiencia de capital es la señal más crítica del mes: con un Burn Multiple de 11.6x y un Magic Number de 0.09, S&M consume el 60% del revenue sin generar payback medible, lo que significa que incrementar el gasto en el modelo actual acelera destrucción de valor. La posición de caja de USD 7,092,891 otorga un runway de 9.4 meses, pero ese margen se comprime si el burn supera el plan —en mayo ya excedió el Operating Income presupuestado en USD 38,938, con G&A y S&M como los principales desviadores desfavorables. La cartera vencida agrava la presión: USD 1,109,564 sobre un total de USD 1,146,695 representan el 97% vencido, con solo USD 37,131 en cartera corriente sana, lo que elimina el flujo de cobro como amortiguador de caja a corto plazo. El Rule of 40 de 42 es positivo, pero descansa íntegramente en la velocidad de crecimiento del ARR de USD 14.9M —cualquier desaceleración en adquisición derrumba la métrica y la tesis de calidad de crecimiento con ella. **Las tres acciones no negociables para las próximas cuatro semanas son: (1) iniciar proceso formal de fundraising o líneas de crédito antes de que el runway caiga por debajo de seis meses, (2) ejecutar una revisión de base cero de S&M y G&A para comprimir el burn estructural, y (3) activar una gestión de cobranza de emergencia sobre la cartera vencida antes de que derive en incobrabilidad irreversible.**",
-      "actions": "**1. [INMEDIATO]** Auditar y congelar G&A: identificar causa raíz del sobregasto de +20,935 USD (+6.0%) e implementar techo de aprobación para compromisos nuevos antes del próximo ciclo.\n\n**2. [ESTA SEMANA]** Activar cobro urgente sobre el 97% de cartera vencida para recuperar caja y extender el runway más allá de los 9.4 meses actuales sin necesidad de quemar capital adicional.\n\n**3. [PRÓXIMOS 30 DÍAS]** Rediseñar la estructura de costos operativos para cerrar los 61 pp de brecha de margen operativo, priorizando reducción de Cost of Revenue (+7,043 USD) y S&M (+25,068 USD) antes de aprobar cualquier inversión de crecimiento incremental dado el burn multiple de 11.6x.",
+      "board_pack": "# CFO Board Pack — May 2026\n\nMay closed with revenue of USD 1,238,010 and a gross margin of 77.4%, but an operating loss of USD 756,823 (-61.1% of revenue) confirms the cost structure remains structurally incompatible with the current revenue base; opex of USD 1,715,489 exceeded gross profit by USD 756,823, and the gap widened month-on-month by USD 86,655 as COGS and opex grew at approximately 2x and 1.3x the rate of revenue respectively. Revenue landed essentially on budget, meaning the USD 38,938 operating income miss is entirely cost-driven, with G&A (+6.0% vs. budget) and Sales & Marketing (+3.5% vs. budget) as the primary offenders; R&D was the sole favorable variance at USD 13,829 under plan and provided the only partial offset. The liquidity position of USD 7,092,891 provides 9.4 months of runway at the current monthly burn of USD 756,823, but 97% of total receivables — USD 1,109,564 — are overdue, creating an acute concentration and cash conversion risk that overstates the practical strength of that runway. Capital efficiency is the most urgent structural concern: a burn multiple of 11.6x against a disciplined benchmark of ≤2.0x, and a magic number of 0.09 against a benchmark of >0.75, confirm that the go-to-market motion is not converting Sales & Marketing spend — currently 60% of revenue — into ARR at any actionable rate, and incremental spend into the current model will deepen the problem rather than resolve it. The business clears the Rule of 40 at 42 solely on the strength of 104% annualized growth; the margin contribution is -61 percentage points, meaning any deceleration in top-line momentum collapses the score and, in the Low scenario, produces a Rule of 40 of -18 — an existential outcome given the 9.4-month runway. The board must resolve two decisions before the next period: first, approve an immediate review of G&A commitments and S&M allocation efficiency with a mandate for structural reduction; second, confirm the funding strategy required to extend runway beyond the 9.4-month horizon, as the Base scenario sustains the current burn profile without closing the 61 percentage-point gap to breakeven.",
+      "actions": "1. **[IMMEDIATE] Freeze and audit all G&A commitments to identify and cut the +$20,935 overspend, extending toward a broader S&M efficiency review to reduce the $38,938 operating income miss.**\n2. **[URGENT] Launch an aggressive receivables collection program targeting the 97% overdue balance to convert existing revenue into cash and relieve the 9.4-month runway constraint.**\n3. **[STRATEGIC] Initiate a structural cost restructuring targeting ~61 pp of margin improvement, as volume growth alone cannot close the -61% operating margin gap given the 11.6x burn multiple.**",
       "status": "approved"
     }
   },
   "audit": [
     {
-      "ts": "2026-06-14T15:25:17",
+      "ts": "2026-06-14T16:23:11",
       "agent": "CFO",
-      "status": "inicio",
-      "detail": "corriendo el office para 2026-05"
+      "status": "start",
+      "detail": "running the office for 2026-05"
     },
     {
-      "ts": "2026-06-14T15:25:17",
+      "ts": "2026-06-14T16:23:11",
       "agent": "Controller",
-      "status": "inicio",
-      "detail": "revision de cierre 2026-05"
+      "status": "start",
+      "detail": "close review 2026-05"
     },
     {
-      "ts": "2026-06-14T15:25:25",
+      "ts": "2026-06-14T16:23:17",
       "agent": "Controller",
       "status": "ok",
-      "detail": "cierre revisado; 2 escalamiento(s)"
+      "detail": "close reviewed; 2 escalation(s)"
     },
     {
-      "ts": "2026-06-14T15:25:25",
+      "ts": "2026-06-14T16:23:17",
       "agent": "Treasury",
-      "status": "inicio",
-      "detail": "liquidez y runway 2026-05"
+      "status": "start",
+      "detail": "liquidity and runway 2026-05"
     },
     {
-      "ts": "2026-06-14T15:25:29",
+      "ts": "2026-06-14T16:23:20",
       "agent": "Treasury",
       "status": "ok",
-      "detail": "runway 9.4 meses; 1 escalamiento(s)"
+      "detail": "runway 9.4 months; 1 escalation(s)"
     },
     {
-      "ts": "2026-06-14T15:25:29",
+      "ts": "2026-06-14T16:23:20",
       "agent": "FP&A",
-      "status": "inicio",
-      "detail": "forecast, variance MoM, variance vs presupuesto y anomalias"
+      "status": "start",
+      "detail": "forecast, MoM variance, budget variance and anomalies"
     },
     {
-      "ts": "2026-06-14T15:25:29",
+      "ts": "2026-06-14T16:23:20",
       "agent": "FP&A",
       "status": "ok",
       "detail": "forecast 2026-06: rev USD 1,313,554, op USD -810,466"
     },
     {
-      "ts": "2026-06-14T15:25:29",
+      "ts": "2026-06-14T16:23:20",
       "agent": "FP&A",
       "status": "ok",
-      "detail": "1 anomalia(s) MoM; 2 linea(s) material(es) vs presupuesto"
+      "detail": "1 MoM anomaly(ies); 2 material line(s) vs budget"
     },
     {
-      "ts": "2026-06-14T15:25:55",
+      "ts": "2026-06-14T16:23:41",
       "agent": "FP&A",
       "status": "ok",
-      "detail": "analisis entregado al CFO (board pack y gate los hace el orquestador)"
+      "detail": "analysis delivered to the CFO (board pack and gate handled by the orchestrator)"
     },
     {
-      "ts": "2026-06-14T15:25:55",
+      "ts": "2026-06-14T16:23:41",
       "agent": "Strategic Finance",
-      "status": "inicio",
-      "detail": "run-rate, eficiencia de capital, camino a breakeven"
+      "status": "start",
+      "detail": "run-rate, capital efficiency, path to breakeven"
     },
     {
-      "ts": "2026-06-14T15:26:09",
+      "ts": "2026-06-14T16:23:55",
       "agent": "Strategic Finance",
       "status": "ok",
-      "detail": "run-rate USD 14,856,124, Rule of 40 42, burn multiple 11.6x; 2 escalamiento(s)"
+      "detail": "run-rate USD 14,856,124, Rule of 40 42, burn multiple 11.6x; 2 escalation(s)"
     },
     {
-      "ts": "2026-06-14T15:26:09",
+      "ts": "2026-06-14T16:23:55",
       "agent": "cross_check",
       "status": "ok",
-      "detail": "agentes coherentes en los numeros compartidos"
+      "detail": "agents consistent on the shared numbers"
     },
     {
-      "ts": "2026-06-14T15:26:09",
-      "agent": "escalamiento",
-      "status": "ALTA",
-      "detail": "perdida operativa: requiere revision de estructura de gasto"
+      "ts": "2026-06-14T16:23:55",
+      "agent": "escalation",
+      "status": "HIGH",
+      "detail": "operating loss: cost structure needs review"
     },
     {
-      "ts": "2026-06-14T15:26:09",
-      "agent": "escalamiento",
-      "status": "ALTA",
-      "detail": "97% de la cartera por cobrar esta vencida"
+      "ts": "2026-06-14T16:23:55",
+      "agent": "escalation",
+      "status": "HIGH",
+      "detail": "97% of receivables are overdue"
     },
     {
-      "ts": "2026-06-14T15:26:09",
-      "agent": "escalamiento",
-      "status": "ALTA",
-      "detail": "runway 9.4 meses (< 12): margen de maniobra ajustado"
+      "ts": "2026-06-14T16:23:55",
+      "agent": "escalation",
+      "status": "HIGH",
+      "detail": "runway 9.4 months (< 12): tight room to maneuver"
     },
     {
-      "ts": "2026-06-14T15:26:09",
-      "agent": "escalamiento",
-      "status": "ALTA",
-      "detail": "sobregasto en G&A: +20,935 USD (+6.0%) vs plan"
+      "ts": "2026-06-14T16:23:55",
+      "agent": "escalation",
+      "status": "HIGH",
+      "detail": "overspend on G&A: +20,935 USD (+6.0%) vs plan"
     },
     {
-      "ts": "2026-06-14T15:26:09",
-      "agent": "escalamiento",
-      "status": "ALTA",
-      "detail": "burn multiple 11.6x (> 2): por cada USD de revenue nuevo se queman 11.6; baja eficiencia de capital"
+      "ts": "2026-06-14T16:23:55",
+      "agent": "escalation",
+      "status": "HIGH",
+      "detail": "burn multiple 11.6x (> 2): 11.6 burned per USD of new revenue; low capital efficiency"
     },
     {
-      "ts": "2026-06-14T15:26:09",
-      "agent": "escalamiento",
-      "status": "ALTA",
-      "detail": "crecer no alcanza el breakeven: el margen operativo (-61%) no mejora solo con volumen; se necesitan ~61 pp de mejora de margen, no mas crecimiento"
+      "ts": "2026-06-14T16:23:55",
+      "agent": "escalation",
+      "status": "HIGH",
+      "detail": "growth alone won't reach breakeven: operating margin (-61%) doesn't improve on volume; ~61 pp of margin improvement needed, not more growth"
     },
     {
-      "ts": "2026-06-14T15:26:09",
+      "ts": "2026-06-14T16:23:55",
       "agent": "CFO",
-      "status": "aprobado",
-      "detail": "el humano aprobo continuar"
+      "status": "approved",
+      "detail": "human approved to continue"
     },
     {
-      "ts": "2026-06-14T15:26:29",
+      "ts": "2026-06-14T16:24:11",
       "agent": "CFO",
       "status": "ok",
-      "detail": "board pack consolidado y acciones fijados"
+      "detail": "consolidated board pack and actions fixed"
     }
   ]
 }

@@ -76,27 +76,27 @@ def cross_checks(ctx):
         oi_fpa = next(v for v in fpa["budget_variance"]["rows"]
                       if v["label"] == "Operating income")["actual"]
         if abs(oi_ctrl - oi_fpa) > 1:
-            issues.append(f"op income no concuerda: Controller {oi_ctrl:,.0f} vs FP&A {oi_fpa:,.0f}")
+            issues.append(f"op income mismatch: Controller {oi_ctrl:,.0f} vs FP&A {oi_fpa:,.0f}")
     except (KeyError, TypeError, StopIteration):
-        issues.append("faltan datos para conciliar op income entre Controller y FP&A")
+        issues.append("missing data to reconcile op income between Controller and FP&A")
 
     # 2) burn de Treasury == -op income (cuando hay perdida operativa)
     try:
         oi_ctrl = ctrl["pnl"]["operating_income"]
         expected_burn = -oi_ctrl if oi_ctrl < 0 else 0.0
         if abs(trez["burn"] - expected_burn) > 1:
-            issues.append(f"burn de Treasury {trez['burn']:,.0f} != -op income {expected_burn:,.0f}")
+            issues.append(f"Treasury burn {trez['burn']:,.0f} != -op income {expected_burn:,.0f}")
     except (KeyError, TypeError):
-        issues.append("faltan datos para conciliar burn de Treasury")
+        issues.append("missing data to reconcile Treasury burn")
 
     # 3) el run-rate de Strategic (revenue mensual x 12) debe atarse al revenue del Controller
     try:
         rev_ctrl = ctrl["pnl"]["revenue"]
         rev_strat = strat["metrics"]["run_rate"] / 12.0
         if abs(rev_ctrl - rev_strat) > 1:
-            issues.append(f"revenue no concuerda: Controller {rev_ctrl:,.0f} vs Strategic {rev_strat:,.0f}")
+            issues.append(f"revenue mismatch: Controller {rev_ctrl:,.0f} vs Strategic {rev_strat:,.0f}")
     except (KeyError, TypeError, ZeroDivisionError):
-        issues.append("faltan datos para conciliar revenue con Strategic Finance")
+        issues.append("missing data to reconcile revenue with Strategic Finance")
 
     return issues
 
@@ -106,19 +106,19 @@ def gather_escalations(ctx):
     esc = []
     for a in AGENTS:
         esc.extend(tuple(e) for e in ctx.get(a, "escalations", []))
-    order = {"CRITICA": 0, "ALTA": 1}
+    order = {"CRITICAL": 0, "HIGH": 1}
     return sorted(esc, key=lambda e: order.get(e[0], 9))
 
 
 def hitl_gate(esc):
-    serios = [e for e in esc if e[0] in ("ALTA", "CRITICA")]
-    if not serios:
+    serious = [e for e in esc if e[0] in ("HIGH", "CRITICAL")]
+    if not serious:
         return True
-    print("\n  [human-in-the-loop] Escalamientos que requieren tu visto bueno:")
-    for sev, msg in serios:
+    print("\n  [human-in-the-loop] Escalations that need your sign-off:")
+    for sev, msg in serious:
         print(f"     - [{sev}] {msg}")
     try:
-        return input("  Aprobas y fijas el board pack del CFO? [s/N]: ").strip().lower() == "s"
+        return input("  Approve and fix the CFO board pack? [y/N]: ").strip().lower() == "y"
     except EOFError:
         return False
 
@@ -132,15 +132,16 @@ def compose_board_pack(ctx):
     ]))
     strat = ctx.get("Strategic Finance", "narrative", "")
     prompt = (
-        f"--- Controller (cierre) ---\n{ctrl}\n\n"
-        f"--- Treasury (liquidez) ---\n{trez}\n\n"
-        f"--- FP&A (variance MoM, vs presupuesto, anomalias) ---\n{fpa_bits}\n\n"
-        f"--- Strategic Finance (crecimiento, eficiencia, camino a breakeven) ---\n{strat}\n\n"
-        "Redacta el board pack consolidado del periodo."
+        f"--- Controller (close) ---\n{ctrl}\n\n"
+        f"--- Treasury (liquidity) ---\n{trez}\n\n"
+        f"--- FP&A (MoM variance, budget variance, anomalies) ---\n{fpa_bits}\n\n"
+        f"--- Strategic Finance (growth, efficiency, path to breakeven) ---\n{strat}\n\n"
+        "Write the consolidated board pack for the period."
     )
     return agent(
-        "Sos el CFO. Con los insumos de Controller, Tesoreria y FP&A, escribi un board "
-        "pack ejecutivo de 5-7 frases, tono CFO, directo, sin relleno. No agregues numeros nuevos.",
+        "You are the CFO. With the inputs from Controller, Treasury, FP&A and Strategic Finance, "
+        "write an executive board pack of 5-7 sentences, CFO tone, direct, no filler. Do not add "
+        "new numbers. Write in English.",
         prompt,
     )
 
@@ -148,16 +149,16 @@ def compose_board_pack(ctx):
 def compose_actions(ctx):
     fpa = ctx.get("FP&A")
     esc = gather_escalations(ctx)
-    esc_txt = "\n".join(f"  - [{s}] {m}" for s, m in esc) or "  (sin escalamientos)"
+    esc_txt = "\n".join(f"  - [{s}] {m}" for s, m in esc) or "  (no escalations)"
     prompt = (
-        f"Escalamientos del periodo:\n{esc_txt}\n\n"
-        f"Hallazgos de FP&A:\n{fpa.get('budget_expl', '')}\n{fpa.get('anomaly_expl', '')}\n\n"
-        "Propone 3 acciones priorizadas, una linea cada una."
+        f"Escalations for the period:\n{esc_txt}\n\n"
+        f"FP&A findings:\n{fpa.get('budget_expl', '')}\n{fpa.get('anomaly_expl', '')}\n\n"
+        "Propose 3 prioritized actions, one line each."
     )
     return agent(
-        "Sos el CFO. Propones 3 acciones concretas, accionables y priorizadas a partir de "
-        "los escalamientos y hallazgos. Una linea cada una. No agregues numeros nuevos; usa "
-        "solo las cifras de los escalamientos y hallazgos dados.",
+        "You are the CFO. Propose 3 concrete, actionable, prioritized actions from the "
+        "escalations and findings. One line each. Do not add new numbers; use only the figures "
+        "in the escalations and findings given. Write in English.",
         prompt,
     )
 
@@ -166,10 +167,10 @@ def compose_actions(ctx):
 
 def run(period=PERIOD):
     print("=" * 60)
-    print(f"CFO OFFICE | cierre {period}")
+    print(f"CFO OFFICE | close {period}")
     print("=" * 60)
     ctx = CFOContext()
-    ctx.audit("CFO", "inicio", f"corriendo el office para {period}")
+    ctx.audit("CFO", "start", f"running the office for {period}")
 
     print("\n[1/4] Controller...")
     controller_agent.run(ctx)
@@ -180,41 +181,41 @@ def run(period=PERIOD):
     print("\n[4/4] Strategic Finance...")
     strategic_finance_agent.run(ctx)
 
-    # Checks de coherencia entre agentes (antes de escalar o redactar).
+    # Cross-checks between agents (before escalating or writing).
     issues = cross_checks(ctx)
     if issues:
         for i in issues:
-            ctx.audit("cross_check", "FALLA", i)
-        print("\n  Pipeline detenido: los agentes no concuerdan en los numeros.")
+            ctx.audit("cross_check", "FAIL", i)
+        print("\n  Pipeline stopped: the agents don't agree on the numbers.")
         ctx.put("CFO", {"status": "halted_inconsistent"})
         ctx.save()
         return ctx
-    ctx.audit("cross_check", "ok", "agentes coherentes en los numeros compartidos")
+    ctx.audit("cross_check", "ok", "agents consistent on the shared numbers")
 
-    # Consolidar escalamientos de todos los agentes.
+    # Consolidate escalations from all agents.
     esc = gather_escalations(ctx)
     for sev, msg in esc:
-        ctx.audit("escalamiento", sev, msg)
+        ctx.audit("escalation", sev, msg)
 
-    # Un solo gate humano antes de fijar el board pack del CFO.
+    # A single human gate before fixing the CFO board pack.
     if not hitl_gate(esc):
         ctx.put("CFO", {"status": "rejected"})
-        ctx.audit("CFO", "RECHAZADO", "el humano no aprobo; board pack no fijado")
+        ctx.audit("CFO", "REJECTED", "human did not approve; board pack not fixed")
         ctx.save()
-        print("\n  Detenido por decision humana.")
+        print("\n  Stopped by human decision.")
         return ctx
-    ctx.audit("CFO", "aprobado", "el humano aprobo continuar")
+    ctx.audit("CFO", "approved", "human approved to continue")
 
     board = compose_board_pack(ctx)
     actions = compose_actions(ctx)
     ctx.put("CFO", {"board_pack": board, "actions": actions, "status": "approved"})
-    ctx.audit("CFO", "ok", "board pack consolidado y acciones fijados")
+    ctx.audit("CFO", "ok", "consolidated board pack and actions fixed")
 
-    path = ctx.save()   # persistir el estado ANTES de mostrarlo
+    path = ctx.save()   # persist state BEFORE displaying it
     print("\n--- BOARD PACK (CFO) ---\n" + board)
-    print("\n--- ACCIONES PROPUESTAS ---\n" + actions)
-    print(f"\nEstado compartido guardado en: {os.path.basename(path)} "
-          f"({len(ctx.state['audit'])} eventos de audit)")
+    print("\n--- PROPOSED ACTIONS ---\n" + actions)
+    print(f"\nShared state saved to: {os.path.basename(path)} "
+          f"({len(ctx.state['audit'])} audit events)")
     return ctx
 
 

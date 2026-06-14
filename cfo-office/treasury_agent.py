@@ -64,9 +64,9 @@ def treasury_escalations(t):
     if r is None:
         return out
     if r < RUNWAY_CRITICA:
-        out.append(["CRITICA", f"runway {r:.1f} meses (< {RUNWAY_CRITICA}): riesgo de liquidez"])
+        out.append(["CRITICAL", f"runway {r:.1f} months (< {RUNWAY_CRITICA}): liquidity risk"])
     elif r < RUNWAY_ALTA:
-        out.append(["ALTA", f"runway {r:.1f} meses (< {RUNWAY_ALTA}): margen de maniobra ajustado"])
+        out.append(["HIGH", f"runway {r:.1f} months (< {RUNWAY_ALTA}): tight room to maneuver"])
     return out
 
 
@@ -75,19 +75,19 @@ def treasury_escalations(t):
 def run(ctx=None):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Treasury", "inicio", f"liquidez y runway {PERIOD}")
+    ctx.audit("Treasury", "start", f"liquidity and runway {PERIOD}")
 
     t = compute_treasury(PERIOD)
     esc = treasury_escalations(t)
-    runway_txt = f"{t['runway']:.1f} meses" if t["runway"] is not None else "sin burn (operativo positivo)"
+    runway_txt = f"{t['runway']:.1f} months" if t["runway"] is not None else "no burn (operating positive)"
 
     facts = (
-        f"Caja consolidada: {_money(t['cash'])}. Burn operativo mensual: {_money(t['burn'])}. "
-        f"Runway calculado: {runway_txt}."
+        f"Consolidated cash: {_money(t['cash'])}. Monthly operating burn: {_money(t['burn'])}. "
+        f"Computed runway: {runway_txt}."
     )
     narrative = agent(
-        "Sos Tesoreria. Explicas en 2 frases la situacion de runway y su implicancia. "
-        "Usas exactamente el runway que te dan; no lo recalcules.",
+        "You are Treasury. Explain the runway situation and its implication in 2 sentences. "
+        "Use exactly the runway figure given; do not recompute it. Write in English.",
         facts,
     )
 
@@ -95,12 +95,12 @@ def run(ctx=None):
         "cash": t["cash"], "burn": t["burn"], "runway": t["runway"],
         "narrative": narrative, "escalations": esc,
     })
-    ctx.audit("Treasury", "ok", f"runway {runway_txt}; {len(esc)} escalamiento(s)")
+    ctx.audit("Treasury", "ok", f"runway {runway_txt}; {len(esc)} escalation(s)")
 
     if own:
         print("\n--- TREASURY ---\n" + narrative)
         path = ctx.save()
-        print(f"\nEstado compartido guardado en: {os.path.basename(path)}")
+        print(f"\nShared state saved to: {os.path.basename(path)}")
     return ctx
 
 

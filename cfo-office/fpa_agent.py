@@ -77,7 +77,7 @@ def build_forecast(series):
     f_gross = f_rev - f_cogs
     f_op = f_gross - f_opex
     return {
-        "method": "crecimiento mensual promedio por linea; gross y op income derivados",
+        "method": "average month-over-month growth per line; gross and op income derived",
         "growth_rev": g_rev, "growth_cogs": g_cogs, "growth_opex": g_opex,
         "revenue": f_rev, "cogs": f_cogs, "gross": f_gross,
         "opex": f_opex, "operating_income": f_op,
@@ -99,13 +99,13 @@ def detect_anomalies(series, variance):
     anomalies = []
     for k in LINES:
         if abs(variance[k]["pct"]) > 15:
-            anomalies.append(f"{k}: movimiento MoM de {variance[k]['pct']:+.1f}%")
+            anomalies.append(f"{k}: MoM move of {variance[k]['pct']:+.1f}%")
     gm_last = last["gross"] / last["revenue"] * 100 if last["revenue"] else 0
     gm_prev = prev["gross"] / prev["revenue"] * 100 if prev["revenue"] else 0
     if abs(gm_last - gm_prev) > 2:
-        anomalies.append(f"margen bruto cambio {gm_last - gm_prev:+.1f} pp ({gm_prev:.1f}% -> {gm_last:.1f}%)")
+        anomalies.append(f"gross margin moved {gm_last - gm_prev:+.1f} pp ({gm_prev:.1f}% -> {gm_last:.1f}%)")
     if last["operating_income"] < 0:
-        anomalies.append(f"resultado operativo negativo: {last['operating_income']:,.0f} USD")
+        anomalies.append(f"negative operating income: {last['operating_income']:,.0f} USD")
     return anomalies
 
 
@@ -135,9 +135,9 @@ def fpa_escalations(material):
         if v["flag"] != "U" or v["label"] in _VAR_SUBTOTALS:
             continue
         if v["label"] == "Revenue":
-            out.append(["ALTA", f"revenue {v['var']:+,.0f} USD ({v['var_pct']:+.1f}%) por debajo del plan"])
+            out.append(["HIGH", f"revenue {v['var']:+,.0f} USD ({v['var_pct']:+.1f}%) below plan"])
         elif v["kind"] == "cost":
-            out.append(["ALTA", f"sobregasto en {v['label']}: {v['var']:+,.0f} USD ({v['var_pct']:+.1f}%) vs plan"])
+            out.append(["HIGH", f"overspend on {v['label']}: {v['var']:+,.0f} USD ({v['var_pct']:+.1f}%) vs plan"])
     return out
 
 
@@ -156,7 +156,7 @@ def _budget_table(rows):
 def hitl_gate(prompt_txt):
     print("\n  [human-in-the-loop] " + prompt_txt)
     try:
-        return input("  Aprobas el board pack y las acciones? [s/N]: ").strip().lower() == "s"
+        return input("  Approve the board pack and actions? [y/N]: ").strip().lower() == "y"
     except EOFError:
         return False
 
@@ -164,7 +164,7 @@ def hitl_gate(prompt_txt):
 def run(ctx=None):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("FP&A", "inicio", "forecast, variance MoM, variance vs presupuesto y anomalias")
+    ctx.audit("FP&A", "start", "forecast, MoM variance, budget variance and anomalies")
 
     series = pnl_series()
     forecast = build_forecast(series)
@@ -178,37 +178,37 @@ def run(ctx=None):
         "budget_variance": budget, "escalations": escalations,
     })
     ctx.audit("FP&A", "ok", f"forecast {FORECAST_PERIOD}: rev {_money(forecast['revenue'])}, op {_money(forecast['operating_income'])}")
-    ctx.audit("FP&A", "ok", f"{len(anomalies)} anomalia(s) MoM; {len(budget['material'])} linea(s) material(es) vs presupuesto")
+    ctx.audit("FP&A", "ok", f"{len(anomalies)} MoM anomaly(ies); {len(budget['material'])} material line(s) vs budget")
 
-    # Numeros como texto para que el modelo explique sin inventar.
+    # Numbers as text so the model can explain without inventing.
     var_txt = "\n".join(
         f"  {k}: {_money(variance[k]['prev'])} -> {_money(variance[k]['last'])} "
         f"({variance[k]['pct']:+.1f}%)" for k in LINES)
     fc_txt = (f"Forecast {FORECAST_PERIOD}: revenue {_money(forecast['revenue'])}, "
               f"gross {_money(forecast['gross'])}, opex {_money(forecast['opex'])}, "
               f"operating income {_money(forecast['operating_income'])}. "
-              f"Metodo: {forecast['method']}.")
-    anom_txt = "\n".join(f"  - {a}" for a in anomalies) or "  (sin anomalias)"
-    bud_txt = (f"Varianza vs presupuesto {PERIODS[-1]} (USD; 'F' favorable, 'U' desfavorable):\n"
+              f"Method: {forecast['method']}.")
+    anom_txt = "\n".join(f"  - {a}" for a in anomalies) or "  (no anomalies)"
+    bud_txt = (f"Budget variance {PERIODS[-1]} (USD; 'F' favorable, 'U' unfavorable):\n"
                + _budget_table(budget["rows"]))
-    bud_txt += ("\n\nLineas materiales (>=5% y >=USD 20k):\n" + _budget_table(budget["material"])
-                if budget["material"] else "\n\nNinguna linea supera el umbral de materialidad.")
+    bud_txt += ("\n\nMaterial lines (>=5% and >=USD 20k):\n" + _budget_table(budget["material"])
+                if budget["material"] else "\n\nNo line exceeds the materiality threshold.")
 
     variance_expl = agent(
-        "Sos analista de FP&A. Explicas variaciones con causas plausibles de negocio, "
-        "en 3-4 bullets. Usas solo los numeros que te dan; no inventas cifras.",
-        f"Variacion MoM ({PERIODS[-2]} -> {PERIODS[-1]}):\n{var_txt}\n\nExplica los drivers principales.")
+        "You are an FP&A analyst. Explain the variances with plausible business causes, in "
+        "3-4 bullets. Use only the numbers given; do not invent figures. Write in English.",
+        f"MoM variance ({PERIODS[-2]} -> {PERIODS[-1]}):\n{var_txt}\n\nExplain the main drivers.")
 
     budget_expl = agent(
-        "Sos analista de FP&A. Explicas la varianza vs presupuesto en 3-4 bullets: los "
-        "drivers favorables y desfavorables principales y su implicancia. Usas solo los "
-        "numeros dados; no inventas cifras. 'F' es favorable, 'U' desfavorable.",
-        f"{bud_txt}\n\nExplica la varianza vs el plan.")
+        "You are an FP&A analyst. Explain the budget variance in 3-4 bullets: the main "
+        "favorable and unfavorable drivers and their implication. Use only the numbers given; "
+        "do not invent figures. 'F' is favorable, 'U' unfavorable. Write in English.",
+        f"{bud_txt}\n\nExplain the variance vs the plan.")
 
     anomaly_expl = agent(
-        "Sos analista de FP&A enfocado en riesgo. Explicas cada anomalia y su implicancia "
-        "en 1-2 frases por item. Solo los numeros dados.",
-        f"Anomalias detectadas:\n{anom_txt}\n\nExplica cada una y su implicancia.")
+        "You are a risk-focused FP&A analyst. Explain each anomaly and its implication in 1-2 "
+        "sentences per item. Only the numbers given. Write in English.",
+        f"Detected anomalies:\n{anom_txt}\n\nExplain each one and its implication.")
 
     ctx.put("FP&A", {"variance_expl": variance_expl, "budget_expl": budget_expl,
                      "anomaly_expl": anomaly_expl})
@@ -218,31 +218,31 @@ def run(ctx=None):
     # unico gate humano (no se duplican los gates).
     if own:
         board_pack = agent(
-            "Sos quien redacta el board pack. Resumen ejecutivo de 5-7 frases, tono CFO, "
-            "directo, sin relleno. No agregues numeros nuevos.",
-            f"{fc_txt}\n\nVariacion MoM:\n{variance_expl}\n\nVarianza vs presupuesto:\n{budget_expl}\n\n"
-            f"Anomalias:\n{anomaly_expl}\n\nRedacta el board pack del periodo.")
+            "You write the board pack. Executive summary of 5-7 sentences, CFO tone, direct, "
+            "no filler. Do not add new numbers. Write in English.",
+            f"{fc_txt}\n\nMoM variance:\n{variance_expl}\n\nBudget variance:\n{budget_expl}\n\n"
+            f"Anomalies:\n{anomaly_expl}\n\nWrite the board pack for the period.")
         actions = agent(
-            "Sos el FP&A lead. Propones 3 acciones concretas y accionables a partir de los "
-            "hallazgos, priorizadas. Una linea cada una. No agregues numeros nuevos; usa "
-            "solo las cifras dadas.",
-            f"Forecast y hallazgos:\n{fc_txt}\n\n{budget_expl}\n\n{anomaly_expl}\n\n"
-            "Propone 3 acciones priorizadas.")
+            "You are the FP&A lead. Propose 3 concrete, actionable, prioritized actions from the "
+            "findings. One line each. Do not add new numbers; use only the figures given. "
+            "Write in English.",
+            f"Forecast and findings:\n{fc_txt}\n\n{budget_expl}\n\n{anomaly_expl}\n\n"
+            "Propose 3 prioritized actions.")
 
-        print("\n--- BOARD PACK (borrador) ---\n" + board_pack)
-        print("\n--- ACCIONES PROPUESTAS (borrador) ---\n" + actions)
+        print("\n--- BOARD PACK (draft) ---\n" + board_pack)
+        print("\n--- PROPOSED ACTIONS (draft) ---\n" + actions)
 
-        if hitl_gate("Revisa el board pack y las acciones antes de fijarlas."):
+        if hitl_gate("Review the board pack and actions before fixing them."):
             ctx.put("FP&A", {"board_pack": board_pack, "actions": actions, "status": "approved"})
-            ctx.audit("FP&A", "aprobado", "board pack y acciones fijadas por el humano")
+            ctx.audit("FP&A", "approved", "board pack and actions fixed by the human")
         else:
             ctx.put("FP&A", {"status": "rejected"})
-            ctx.audit("FP&A", "RECHAZADO", "el humano no aprobo; board pack no fijado")
+            ctx.audit("FP&A", "REJECTED", "human did not approve; board pack not fixed")
 
         path = ctx.save()
-        print(f"\nEstado compartido guardado en: {os.path.basename(path)}")
+        print(f"\nShared state saved to: {os.path.basename(path)}")
     else:
-        ctx.audit("FP&A", "ok", "analisis entregado al CFO (board pack y gate los hace el orquestador)")
+        ctx.audit("FP&A", "ok", "analysis delivered to the CFO (board pack and gate handled by the orchestrator)")
     return ctx
 
 
