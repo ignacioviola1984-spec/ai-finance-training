@@ -1,0 +1,9 @@
+streamlit
+anthropic
+python-dotenv
+requests
+numpy
+pandas
+sentence-transformers
+# Fallback de embeddings sin PyTorch:
+model2vec

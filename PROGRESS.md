@@ -83,10 +83,16 @@ Bitacora de avance, fase por fase.
 - Writeup "how I make a finance agent reliable" en evals/README.md.
 - Suite numbers verificada (op income -756.823, cash 7.092.891).
 
+### Fase 6.1 — Web app (Streamlit)  [OK]
+- webapp/app.py: 3 pestanas (FX Agent, Operating Model con gate humano como
+  boton, Document Intelligence con RAG + extraccion). Reusa el codigo del repo.
+- Corre con: python -m streamlit run app.py
+
 ## Siguiente
 
-### Fase 6 — Shippear y deployar
-- Hostear un proyecto, scheduler, demo de 3 min.
+### Fase 6.2 — Deploy + demo
+- Subir online (host gratis) para URL publica.
+- Grabar 3 videos POV (guiones listos), uno por proyecto.
 
 ## Notas
 - Background: 17 anios en finanzas senior. Plan Max 5x.

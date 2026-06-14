@@ -1,19 +1,23 @@
 """
-agent_fx.py - Primer agente con tool use.
+agent_fx.py - Agente con tool use sobre tipos de cambio.
 
-Claude recibe una pregunta en lenguaje natural sobre tipos de cambio.
-Decide cuando usar la herramienta get_rate, nosotros la ejecutamos
-contra la API real, y Claude arma la respuesta final.
+Claude recibe una pregunta en lenguaje natural, decide cuando usar la
+herramienta get_rate, nosotros la ejecutamos contra la API real, y Claude
+arma la respuesta final.
+
+Expone run(pregunta) para poder usarlo desde otros programas (ej: la web app)
+sin ejecutar nada al importar.
 """
 
 import os
+
 import requests
 from dotenv import load_dotenv
 from anthropic import Anthropic
 
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env"))
 client = Anthropic()                # toma la key de ANTHROPIC_API_KEY (del .env de la raiz)
-
+MODEL = "claude-sonnet-4-6"
 API = "https://api.frankfurter.dev/v1"
 
 
@@ -24,8 +28,7 @@ def get_rate(desde, hacia):
     return r.json()["rates"][hacia]
 
 
-# 1. Le describimos la herramienta a Claude: que hace y que necesita.
-tools = [
+TOOLS = [
     {
         "name": "get_rate",
         "description": "Devuelve el tipo de cambio actual entre dos monedas (codigos ISO como USD, EUR, BRL).",
@@ -40,44 +43,41 @@ tools = [
     }
 ]
 
-pregunta = "Cuanto son 1500 dolares en euros?"
 
-# 2. Primer llamado: le mandamos la pregunta y le ofrecemos la herramienta.
-mensajes = [{"role": "user", "content": pregunta}]
-respuesta = client.messages.create(
-    model="claude-sonnet-4-6",
-    max_tokens=1024,
-    tools=tools,
-    messages=mensajes,
-)
+def run(pregunta):
+    """Corre el agente sobre una pregunta. Devuelve un dict con el detalle:
+    que herramienta pidio, con que argumentos, el dato real, y la respuesta."""
+    mensajes = [{"role": "user", "content": pregunta}]
+    respuesta = client.messages.create(
+        model=MODEL, max_tokens=1024, tools=TOOLS, messages=mensajes,
+    )
+    if respuesta.stop_reason != "tool_use":
+        return {"tool": None, "args": None, "rate": None,
+                "answer": respuesta.content[0].text}
 
-# 3. Si Claude pidio usar la herramienta, la ejecutamos nosotros.
-if respuesta.stop_reason == "tool_use":
-    bloque_tool = next(b for b in respuesta.content if b.type == "tool_use")
-    args = bloque_tool.input
-    print("Claude pidio la herramienta:", bloque_tool.name, args)
+    bloque = next(b for b in respuesta.content if b.type == "tool_use")
+    args = bloque.input
+    rate = get_rate(args["desde"], args["hacia"])
 
-    resultado = get_rate(args["desde"], args["hacia"])
-    print("Resultado real de la API:", resultado)
-
-    # 4. Le devolvemos el resultado y dejamos que arme la respuesta final.
     mensajes.append({"role": "assistant", "content": respuesta.content})
     mensajes.append({
         "role": "user",
         "content": [{
             "type": "tool_result",
-            "tool_use_id": bloque_tool.id,
-            "content": str(resultado),
+            "tool_use_id": bloque.id,
+            "content": str(rate),
         }],
     })
-
     final = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=1024,
-        tools=tools,
-        messages=mensajes,
+        model=MODEL, max_tokens=1024, tools=TOOLS, messages=mensajes,
     )
+    return {"tool": bloque.name, "args": args, "rate": rate,
+            "answer": final.content[0].text}
+
+
+if __name__ == "__main__":
+    out = run("Cuanto son 1500 dolares en euros?")
+    print("Claude pidio la herramienta:", out["tool"], out["args"])
+    print("Resultado real de la API:", out["rate"])
     print("\nRespuesta de Claude:")
-    print(final.content[0].text)
-else:
-    print(respuesta.content[0].text)
+    print(out["answer"])

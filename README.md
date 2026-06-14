@@ -49,6 +49,15 @@ works as a regression test. Details: [`evals/README.md`](evals/README.md).
 **Stack:** Python, evaluation harness, regression testing, grounding
 guardrails. This is the reliability layer over the other projects.
 
+### Web App / Live Demo (`webapp/`)
+A Streamlit app that puts a usable interface over three of the projects so a
+non-technical person can operate them: the FX agent, the operating model
+(with the human-in-the-loop approval as a button), and document intelligence
+(RAG + extraction). Run with `streamlit run app.py`. Details:
+[`webapp/README.md`](webapp/README.md).
+
+**Stack:** Python, Streamlit, reuses the project code via imports.
+
 ### API Integration (`api-integration/`)
 Connecting finance workflows to live external data: a direct FX API client,
 a multi-currency rates and conversion tool against official ECB data, and a
