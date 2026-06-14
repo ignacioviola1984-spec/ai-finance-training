@@ -178,6 +178,18 @@ Bitacora de avance, fase por fase.
   pata de assurance y las acciones la enforcean (P3). 9 escalamientos distintos.
 - evals: 4 checks nuevos (libros cuadran, 0 fallas de integridad, conteo y total
   de excepciones de autorizacion). Suite numbers 17/17 PASS.
+- Review adversarial (workflow multiagente, 3 lentes: correctness / ownership /
+  defensibility): 8 hallazgos, 6 confirmados. Fixes aplicados sin mover numeros:
+  (1) C4 clave por float redondeado (no string) -> no se escapa un duplicado por
+  formato; (2) _trial_balance_imbalance filtra por periodo ademas de entidad;
+  (3) C5 reframe honesto -> el AP no tiene campo de aprobador, asi que es un
+  screen POR MONTO ("Large disbursements pending authorization review", no
+  afirma que falte la firma), umbral fundado contra la politica de gasto.
+  Diferido (requiere decision de datos/baseline): control de conciliacion
+  subledger-vs-GL (hoy el AR del balance USD 2,23M no ata al subledger USD 1,15M)
+  y C4 fuzzy de casi-duplicados. Leccion: C1/C4 pasan por construccion en datos
+  limpios -> valen como invariantes (probados failables por tamper test), pero un
+  tie-out de fuentes independientes es el control con mas valor de aseguramiento.
 
 ## Backlog del departamento (multi-agente, hacia el "full finance department")
 - Faltantes mapeados (ver chat de gap analysis): Strategic Finance [HECHO],
