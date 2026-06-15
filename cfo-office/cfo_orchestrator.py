@@ -109,7 +109,12 @@ def cross_checks(ctx):
     except (KeyError, TypeError):
         issues.append("missing data to reconcile AR with Administration")
 
-    # 5) el resultado neto de Reporting debe atarse al op income del Controller
+    # 5) el resultado neto de Reporting debe atarse al op income del Controller.
+    # Asuncion: en este dataset no hay lineas debajo de la operativa (sin
+    # intereses ni impuestos en el P&L), asi que net income == operating income.
+    # Si se agregan esas lineas, recalcular el neto esperado con los mismos
+    # drivers en vez de exigir igualdad cruda (si no, este check frenaria el
+    # cierre como "inconsistente" estando los libros bien).
     try:
         ni_rep = ctx.get("Financial Reporting")["income_statement"]["net_income"]
         oi_ctrl = ctrl["pnl"]["operating_income"]

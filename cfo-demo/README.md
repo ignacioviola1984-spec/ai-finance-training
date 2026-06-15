@@ -13,7 +13,8 @@ explicit **staged operating model** with **two-tier human-in-the-loop control
 (maker-checker)**: every function is signed off by its own domain expert (the
 first line), and the CFO agent gives a single **final consolidated sign-off** on
 top. The public replay auto-approves the sign-offs (no reviewer at the console);
-the maker-checker workflow, audit trail and block-on-reject are real.
+the maker-checker workflow, audit trail and block-on-reject are real. Data is
+**synthetic** (a fictional SaaS company, Lumen Inc.) — no live company data.
 
 For the technical audience, the full source (the agents, the deterministic
 engine, the eval harness) is in the repo root. This folder is just the

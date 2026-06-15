@@ -39,12 +39,20 @@ adverse). The model cannot pass a stage just because someone clicked "approve".
 | **Maker** | The agent(s) that do the work | the function's `*_agent.py` |
 | **Deterministic control** | A code-level gate that must hold (not the model) | `_ctrl_*` in `stages.py` |
 | **Checker (HITL)** | Sign-off by the domain expert for that function | `review.review()` |
-| **On reject** | **Rework** (re-run + re-review, capped) → then **block** | `run_stage()` |
+| **On reject** | Control fail → **block now**; sign-off reject → **rework** (capped) → **block** | `run_stage()` |
 
-`MAX_ATTEMPTS = 2`: a stage gets one run plus one rework cycle. If it still can't
-pass its control *and* get signed off, the stage is **BLOCKED** — and a blocked
-stage halts the **whole close**. You do not build a board pack on top of an
-un-controlled, un-reviewed stage. The CFO's final gate is contingent on every
+The two failure modes are treated differently, on purpose:
+
+- A **deterministic control failure** blocks **immediately**. The controls read
+  static, code-computed inputs, so re-running the same stage is guaranteed to fail
+  the same way — a rework cycle there would only burn an LLM call and (interactively)
+  re-prompt the expert before blocking anyway.
+- A **sign-off rejection** is the only failure a re-run can plausibly resolve (the
+  expert asked for a correction), so it gets a rework cycle. `MAX_ATTEMPTS = 2`: one
+  run plus one rework; if it still isn't signed off, the stage is **BLOCKED**.
+
+A blocked stage halts the **whole close**. You do not build a board pack on top of
+an un-controlled, un-reviewed stage. The CFO's final gate is contingent on every
 stage having passed.
 
 ## The stages, end to end

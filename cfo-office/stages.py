@@ -7,7 +7,9 @@ of the month-end close is a first-class object with:
   - the agent(s) that do the work          (the MAKER),
   - a deterministic CONTROL that must pass  (code, not the model — a hard gate),
   - a HITL control: sign-off by the domain expert for that stage (the CHECKER),
-  - an on-reject path: REWORK (re-run + re-review, capped) and then BLOCK.
+  - an on-reject path: a deterministic CONTROL failure blocks immediately (a code
+    gate over static inputs can't be cleared by re-running); a sign-off REJECTION
+    gets a rework cycle (re-run + re-review, capped) and then blocks.
 
 The close runs end to end through these stages. A stage only passes when its
 deterministic control holds AND its function(s) are signed off by their domain
@@ -38,8 +40,11 @@ def _ctrl_close(ctx):
     cr = ctx.get("Accounting & Close", "reconciliations", {})
     rep = ctx.get("Financial Reporting") or {}
     bs, cf = rep.get("balance_sheet", {}), rep.get("cash_flow", {})
+    # Default the balance check to a value that FAILS the gate when absent, so a
+    # missing balance_check fails closed (consistent with the sibling controls
+    # below). float("inf") is only used in this comparison, never serialized.
     ok = (bool(cr.get("all_reconciled"))
-          and abs(bs.get("balance_check", 1.0)) <= 1.0
+          and abs(bs.get("balance_check", float("inf"))) <= 1.0
           and bool(cf.get("foots")))
     return ok, ("subledgers tie, statements articulate and foot" if ok
                 else "close/statements do not tie")
@@ -49,7 +54,7 @@ def _ctrl_internal_controls(ctx):
     s = ctx.get("Internal Controls", "summary", {})
     ok = s.get("n_fail", 1) == 0
     return ok, (f"{s.get('n_pass', 0)} controls pass, 0 integrity failures" if ok
-                else f"{s.get('n_fail')} integrity control failure(s)")
+                else f"{s.get('n_fail', 1)} integrity control failure(s)")
 
 
 def _ctrl_audit(ctx):
@@ -129,9 +134,24 @@ STAGES = [
 
 
 def run_stage(ctx, stage):
-    """Run one stage end to end: maker -> deterministic control -> HITL sign-off,
-    with REWORK on failure and BLOCK if it cannot pass. Returns a status dict."""
+    """Run one stage end to end: maker -> deterministic control -> HITL sign-off.
+
+    A deterministic CONTROL failure blocks immediately: the controls read static,
+    code-computed inputs, so re-running the same stage is guaranteed to produce the
+    same failure — a rework cycle there would only waste an LLM call and (in
+    interactive mode) pointlessly re-prompt the domain expert before blocking
+    anyway. A sign-off REJECTION is the only failure a re-run can plausibly resolve
+    (the expert asked for a correction), so it gets a rework cycle, capped, and
+    then blocks. Returns a status dict.
+    """
     reviewers = [review.REVIEWERS.get(f, "Domain reviewer") for f in stage["functions"]]
+
+    def _blocked(attempt, detail, reason):
+        ctx.audit("Operating Model", "stage BLOCKED", f"{stage['name']}: {reason}")
+        return {"id": stage["id"], "name": stage["name"], "status": "blocked",
+                "attempts": attempt, "control": detail, "reason": reason,
+                "functions": stage["functions"], "reviewers": reviewers}
+
     for attempt in range(1, MAX_ATTEMPTS + 1):
         tag = f"stage {stage['id']}" + (f" (rework {attempt - 1})" if attempt > 1 else "")
         ctx.audit("Operating Model", tag, f"{stage['name']}: running")
@@ -147,14 +167,18 @@ def run_stage(ctx, stage):
                     "attempts": attempt, "control": detail,
                     "functions": stage["functions"], "reviewers": reviewers}
 
-        reason = ("control failed: " + detail) if not ok else ("not signed off: " + ", ".join(fl["rejected"]))
+        # Deterministic control failed -> block now; a re-run can't change a code
+        # gate over static inputs.
+        if not ok:
+            return _blocked(attempt, detail, "control failed: " + detail)
+
+        # Control held but a domain expert rejected -> rework (the only failure a
+        # correction could resolve), then block if it still isn't signed off.
+        reason = "not signed off: " + ", ".join(fl["rejected"])
         if attempt < MAX_ATTEMPTS:
             ctx.audit("Operating Model", "stage REWORK", f"{stage['name']}: {reason} -> rework")
             continue
-        ctx.audit("Operating Model", "stage BLOCKED", f"{stage['name']}: {reason}")
-        return {"id": stage["id"], "name": stage["name"], "status": "blocked",
-                "attempts": attempt, "control": detail, "reason": reason,
-                "functions": stage["functions"], "reviewers": reviewers}
+        return _blocked(attempt, detail, reason)
 
 
 def run_all(ctx):
