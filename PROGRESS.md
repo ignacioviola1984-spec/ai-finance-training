@@ -293,6 +293,28 @@ Bitacora de avance, fase por fase.
 - Verificado: corrida staged auto = 8/8 PASS + CFO 11/11, 68 eventos de audit;
   test de control-fail -> etapa "blocked" (rework y luego block). Evals 22/22.
 
+### Fase 9 — Credit track (LendingClub, data real)  [EN CURSO]
+- Objetivo (Nacho): probar el operating model con data real de una fintech de
+  credito (LendingClub). Nacho sube el CSV; se construyen los agentes primero.
+- Fundacion de datos: lendingclub-data/ (sample con el SCHEMA REAL de LC +
+  generador seeded + public_filings.csv placeholders + README para soltar el CSV
+  real). orchestration/credit_core.py: motor deterministico (ingestion, data
+  quality/schema, provenance, portfolio, credit risk/losses con PD por grade +
+  LGD + expected loss, revenue/unit economics, benchmark vs filings, model-risk).
+- 10 agentes (capa previa + analytics + benchmark + narrativa): 9 makers
+  generados por workflow (cfo-office/credit/: ingestion, data quality,
+  traceability, loan portfolio, credit risk, revenue, public benchmark, variance,
+  model risk) + CFO Narrative en el orquestador. Cada uno narra sobre credit_core,
+  nunca inventa una cifra; firma su experto de dominio (CREDIT_REVIEWERS).
+- credit_stages.py (9 etapas con control determinístico + HITL, control-fail
+  bloquea ya) + credit_orchestrator.py (cross-checks analytics-vs-benchmark, gate
+  final del CFO, narrativa consolidada).
+- Verificado keyless (narracion stubbeada): 9/9 etapas PASS + 9/9 firmas + 4
+  escalamientos + cross-checks atan + 53 eventos de audit; block-path: una falla
+  de data-quality bloquea en la etapa 2 ("bad data does not proceed"). SaaS intacto
+  (review.py desacoplado: FUNCTIONS=11, evals 33/33). Pendiente: data real de
+  Nacho, corrida con LLM, diagrama del track y review adversarial.
+
 ## Siguiente
 
 ### Fase 6.2 — Deploy + demo
