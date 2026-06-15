@@ -2,9 +2,9 @@
 public_benchmark_agent.py - Public Financial Benchmark Agent (credit / LendingClub track).
 
 Reads cc.benchmark_vs_filings() for the per-metric comparison of computed KPIs against
-the public-filing values (filed vs computed vs var_pct). It only narrates how each KPI
-lines up with the filing and flags that the filing values are PLACEHOLDERS until the
-real 10-K/10-Q figures are loaded; it never invents or recomputes a figure.
+LendingClub's reported public-filing values (filed vs computed vs var_pct). It only
+narrates how each KPI lines up with the filing (citing the source); it never invents or
+recomputes a figure.
 """
 import os
 import sys
@@ -58,17 +58,18 @@ def run(ctx=None):
         "Public financial benchmark: computed KPIs vs public-filing values "
         "(n=" + str(n) + ", max abs var_pct=" + str(max_abs_var_pct) + "%):\n"
         + "\n".join(lines)
-        + "\n\nNOTE: the filed values are PLACEHOLDERS until the real 10-K/10-Q "
-        "figures are loaded."
+        + "\n\nNOTE: the filed values are LendingClub's REAL reported 10-K/8-K figures "
+        "(see the source per row); only loan originations is benchmarked (the metric "
+        "comparable to the filings)."
     )
 
     narrative = agent(
         "You are a Public Financial Benchmark analyst for a LendingClub credit book. "
         "In 2-4 sentences of English, narrate how each computed KPI compares to its "
-        "public-filing value (filed vs computed vs var_pct). Make clear that the filing "
-        "values are PLACEHOLDERS until the real 10-K/10-Q figures are loaded, so the "
-        "variances are not yet a true reconciliation. Use ONLY the numbers given; never "
-        "invent or recompute any figure.",
+        "public-filing value (filed vs computed vs var_pct). The filed values are "
+        "LendingClub's real reported 10-K/8-K figures (cite the source); treat the "
+        "variance as a real reconciliation gap to be explained, not a placeholder "
+        "artifact. Use ONLY the numbers given; never invent or recompute any figure.",
         facts,
     )
 

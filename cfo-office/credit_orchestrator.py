@@ -115,17 +115,20 @@ def compose_cfo_narrative(ctx):
         f"Benchmark: {ctx.get('Public Benchmark', 'narrative', '')}\n"
         f"Model risk: {ctx.get('Model Risk', 'narrative', '')}\n"
         f"DISCLOSURE: {caveat}Expected loss/provisions, take rate and yield are documented modeled "
-        f"PROXIES (PD x LGD and a grade-based fee proxy), not booked GAAP figures; the benchmark is "
-        f"vs placeholder filing values until the real 10-K/10-Q numbers are loaded."
+        f"PROXIES (PD x LGD and a grade-based fee proxy), not booked GAAP figures. The benchmark "
+        f"compares computed originations to LendingClub's REAL reported 10-K/8-K figures (2016-2018); "
+        f"only originations is benchmarked (the metric comparable to the filings)."
     )
     return agent(
         "You are the CFO of a consumer-lending fintech. Write a board narrative of 6-8 sentences "
         "covering growth (originations), credit quality (charge-off, expected loss/provisions), unit "
         "economics (yield, take rate) and the outlook. CFO tone, direct, no filler. Use ONLY the "
-        "numbers given; do not invent figures. You MUST explicitly state that the expected-loss/"
-        "provision and unit-economics figures are documented modeled proxies (and sample-derived if "
-        "the disclosure says so), not booked or audited results. Write in English.",
-        facts,
+        "numbers given; do not invent figures. The benchmark figures are LendingClub's real reported "
+        "10-K/8-K originations — treat the gap as a real reconciliation item, not a placeholder. You "
+        "MUST state that the expected-loss/provision and unit-economics figures are documented modeled "
+        "proxies (and sample-derived if the disclosure says so), not booked or audited results. "
+        "Write in English.",
+        facts, max_tokens=1000,
     )
 
 
