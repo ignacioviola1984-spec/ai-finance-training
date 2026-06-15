@@ -19,7 +19,7 @@
       },
       "gross_margin_pct": 77.43605052324182,
       "op_margin_pct": -61.132203222192096,
-      "narrative": "**Close Summary – May 2026 (USD)**\nRevenue of USD 1,238,010 was generated at a healthy gross margin of 77.4% (USD 958,666); however, opex of USD 1,715,489 resulted in an operating loss of USD 756,823 (-61.1% of revenue). Collections remain severely stressed, with 97% of accounts receivable (USD 1,109,564) overdue against only USD 37,131 current.\n\n**Risk Flags**\n1. **Operating loss burn rate** – The USD 756,823 monthly operating loss signals that current revenue is insufficient to cover opex by a wide margin, threatening cash sustainability.\n2. **Critical AR overdue concentration** – USD 1,109,564 (97% of total receivables) is overdue, creating acute liquidity risk and potential bad-debt exposure.\n3. **Opex-to-revenue ratio** – Opex of USD 1,715,489 exceeds revenue by USD 477,479 (139% of revenue), indicating the cost structure is fundamentally misaligned with current top-line performance.",
+      "narrative": "**Close Summary – May 2026**\nRevenue of USD 1,238,010 yielded a gross profit of USD 958,666 (77.4%); however, operating expenses of USD 1,715,489 drove an operating loss of USD 756,823 (-61.1% of revenue). The business is consuming cash significantly faster than it is generating it from operations.\n\n**Risk Flags**\n1. **Severe operating loss:** Opex exceeds gross profit by USD 756,823, indicating the cost structure is materially unsustainable at the current revenue level.\n2. **Critical AR overdue concentration:** USD 1,109,564 (97%) of total accounts receivable is overdue, posing an acute liquidity and potential bad-debt risk.\n3. **Opex-to-revenue ratio:** At 138.6% of revenue, operating expenses leave no path to breakeven without either a sharp revenue increase or significant cost reduction.",
       "escalations": [
         [
           "HIGH",
@@ -31,7 +31,7 @@
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:42:33"
+        "ts": "2026-06-15T00:01:26"
       }
     },
     "Treasury": {
@@ -140,7 +140,7 @@
         "min_week": 13,
         "week_cash_negative": null
       },
-      "narrative": "As of the current period, the Company holds consolidated cash of USD 7,504,278, supporting a runway of approximately 9.9 months based on a monthly operating burn of USD 756,823. The 13-week cash forecast projects an ending cash balance of USD 5,551,607, with the trough of USD 5,551,607 occurring in week 13, and cash remains positive throughout the entire forecast horizon.",
+      "narrative": "Based on current consolidated cash of USD 7,504,278 and a monthly operating burn of USD 756,823, the company has a computed runway of 9.9 months. The 13-week cash forecast projects ending cash of USD 5,551,607, with the trough of USD 5,551,607 occurring in week 13, the final week of the horizon. Cash remains positive throughout the entire 13-week period, indicating no near-term liquidity concern.",
       "escalations": [
         [
           "HIGH",
@@ -152,7 +152,7 @@
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:42:35"
+        "ts": "2026-06-15T00:01:29"
       }
     },
     "Accounts Receivable": {
@@ -164,7 +164,7 @@
         "dso": 27.787203319943124,
         "n_overdue": 54
       },
-      "narrative": "Of the total open receivables of USD 1,146,695, USD 1,109,564 (97%) is overdue across 54 invoices, signaling a severe collections backlog despite a reported DSO of 28 days. This concentration of overdue balances poses a significant near-term cash risk, as the majority of outstanding receivables are not being collected on time and may delay expected cash inflows.",
+      "narrative": "As of May 2026, **97% of total open receivables (USD 1,109,564 out of USD 1,146,695) are overdue across 54 invoices**, signaling a severe collections backlog despite a relatively low DSO of 28 days. This concentration of overdue balances poses a significant near-term cash flow risk, as the vast majority of expected cash inflows remain uncollected.",
       "escalations": [
         [
           "HIGH",
@@ -176,7 +176,7 @@
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:42:38"
+        "ts": "2026-06-15T00:01:33"
       }
     },
     "Accounts Payable": {
@@ -187,7 +187,7 @@
         "n_overdue": 33,
         "dpo": 49.54185314752937
       },
-      "narrative": "We currently have USD 416,764 overdue across 33 bills, with an additional USD 44,544 due within the next 30 days, bringing total open payables to USD 461,307 against a DPO of 50 days. The high overdue balance poses an immediate cash outflow pressure and risks straining supplier relationships if not prioritized for urgent payment.",
+      "narrative": "We currently have **USD 416,764 overdue across 33 bills**, representing the vast majority of our total open payables of USD 461,307, with only USD 44,544 remaining due within the next 30 days. This high overdue balance poses an immediate cash outflow pressure and risks damaging supplier relationships and payment terms if not addressed urgently.",
       "escalations": [
         [
           "HIGH",
@@ -199,7 +199,7 @@
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:42:41"
+        "ts": "2026-06-15T00:01:35"
       }
     },
     "Tax": {
@@ -216,7 +216,7 @@
           "India": 40778.00578338591
         }
       },
-      "narrative": "The company faces a total tax exposure of **USD 252,920** across 6 jurisdictions, with **USD 118,496** already overdue—triggering immediate penalty and interest risk—and a further **USD 89,328** due within the next 30 days. Failure to address these obligations promptly could escalate compliance breaches, invite regulatory scrutiny, and strain near-term liquidity as **USD 207,824** of the total pending balance requires resolution within the immediate horizon.",
+      "narrative": "The company faces a total tax exposure of **USD 252,920** across 6 jurisdictions, with **USD 118,496** already overdue—triggering immediate penalty and interest risk—and a further **USD 89,328** due within the next 30 days. Failure to address these obligations promptly could escalate enforcement actions, damage regulatory standing across multiple jurisdictions, and strain near-term cash flow.",
       "escalations": [
         [
           "HIGH",
@@ -228,11 +228,11 @@
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:42:45"
+        "ts": "2026-06-15T00:01:43"
       }
     },
     "Administration": {
-      "narrative": "**Working Capital & Tax/Compliance Summary**\n\nWorking capital is under acute stress: 97% of total receivables (USD 1,109,564 across 54 invoices) are overdue, creating a severe collections backlog that directly contradicts the reported 28-day DSO and threatens near-term cash inflows. On the payables side, USD 416,764 is already overdue against 33 bills, with a further USD 44,544 maturing within 30 days, placing immediate pressure on cash outflows and supplier relationships. Compounding this, the company carries USD 252,920 in tax obligations across 6 jurisdictions, of which USD 118,496 is already overdue and attracting penalties, with USD 207,824 of the total balance requiring resolution within the immediate horizon. **The single most critical action is to execute an urgent collections sweep on the 54 overdue receivables to accelerate cash conversion, which will provide the liquidity foundation necessary to concurrently address the overdue tax obligations and prevent further regulatory and financial penalty escalation.**",
+      "narrative": "**Working Capital & Compliance Summary — May 2026**\n\nOur working capital position is under acute stress: 97% of open receivables (USD 1,109,564 across 54 invoices) are overdue, creating a severe collections backlog that directly undermines cash inflow visibility, while USD 416,764 of our USD 461,307 in payables are similarly past due, placing immediate strain on supplier relationships and our creditor standing. Compounding this, we carry USD 252,920 in total tax exposure across six jurisdictions, of which USD 118,496 is already overdue and attracting penalties and interest, with a further USD 89,328 falling due within 30 days. The convergence of these three pressures—uncollected receivables, overdue payables, and escalating tax liabilities—creates a compounding liquidity and compliance risk that demands immediate executive attention. **The single most critical action is to prioritize an accelerated collections drive on the USD 1,109,564 overdue receivables**, as converting even a portion of these inflows will provide the liquidity necessary to address the overdue payables and discharge the USD 118,496 in immediately overdue tax obligations before enforcement actions materialize.",
       "escalations": [
         [
           "HIGH",
@@ -258,21 +258,21 @@
           "decision": "approved",
           "note": "",
           "mode": "auto",
-          "ts": "2026-06-14T23:42:38"
+          "ts": "2026-06-15T00:01:33"
         },
         "Accounts Payable": {
           "reviewer": "AP Manager",
           "decision": "approved",
           "note": "",
           "mode": "auto",
-          "ts": "2026-06-14T23:42:41"
+          "ts": "2026-06-15T00:01:35"
         },
         "Tax": {
           "reviewer": "Tax Manager",
           "decision": "approved",
           "note": "",
           "mode": "auto",
-          "ts": "2026-06-14T23:42:45"
+          "ts": "2026-06-15T00:01:43"
         }
       }
     },
@@ -304,14 +304,14 @@
         "n_open_items": 0,
         "all_reconciled": true
       },
-      "narrative": "The May 2026 close is clean. The AR subledger of USD 1,146,695 and the AP subledger of USD 461,307 both tie exactly to their respective GL control accounts, and retained earnings roll forward correctly by net income of USD -756,823 with no variance. There are zero open items outstanding.",
+      "narrative": "The May 2026 close is clean. The AR subledger of USD 1,146,695 ties to the GL control account, the AP subledger of USD 461,307 ties to its GL control account, and retained earnings roll forward correctly by net income of USD -756,823. There are zero open items outstanding.",
       "escalations": [],
       "review": {
         "reviewer": "Accounting Manager",
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:42:54"
+        "ts": "2026-06-15T00:01:52"
       }
     },
     "Financial Reporting": {
@@ -362,18 +362,18 @@
         "foots": true,
         "has_comparative": true
       },
-      "narrative": "## Financial Reporting – Period Ended May 2026\n\nFor the period ended May 2026, the Company generated revenue of USD 1,238,010, delivering a gross profit of USD 958,666 (77.4% gross margin), while recording an operating and net loss of USD 756,823 (–61.1% of revenue). The balance sheet is in balance, with total assets of USD 9,553,973 equaling the sum of total liabilities of USD 3,184,930 and total equity of USD 6,369,043, yielding a zero variance. The statement of cash flows reflects net cash used in operating activities of USD 649,371, with no investing or financing activity, producing a net decrease in cash of USD 649,371 that ties precisely to the movement in the cash balance from USD 8,153,649 to USD 7,504,278. All three financial statements articulate as expected, and no reconciling differences were identified.",
+      "narrative": "## Financial Reporting – Period Ending May 2026\n\nFor the period ending May 2026, the Company generated revenue of USD 1,238,010, achieving a gross profit of USD 958,666 (77.4% gross margin), while reporting an operating and net loss of USD 756,823 (–61.1% of revenue). The balance sheet is in balance, with total assets of USD 9,553,973 equaling the sum of liabilities of USD 3,184,930 and equity of USD 6,369,043, yielding a zero variance. The statement of cash flows reflects net operating cash outflows of USD 649,371, with no investing or financing activity, resulting in a net decrease in cash of USD 649,371; this ties precisely to the movement in the cash balance from USD 8,153,649 to USD 7,504,278, confirming that all three financial statements articulate correctly.",
       "escalations": [],
       "review": {
         "reviewer": "Technical Accounting / Reporting Manager",
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:42:59"
+        "ts": "2026-06-15T00:01:57"
       }
     },
     "Accounting & Reporting": {
-      "narrative": "The May 2026 close is confirmed clean: the AR subledger of USD 1,146,695 and AP subledger of USD 461,307 tie exactly to their respective GL control accounts, and retained earnings articulate correctly through the net loss of USD 756,823 with zero variance and no open items outstanding. All three financial statements have been produced and foot — the income statement reflects revenue of USD 1,238,010 and a net loss of USD 756,823, the balance sheet is in balance with total assets of USD 9,553,973 equaling total liabilities of USD 3,184,930 plus total equity of USD 6,369,043, and the statement of cash flows reconciles the net decrease in cash of USD 649,371 from USD 8,153,649 to USD 7,504,278. No reconciling differences were identified, and the period is closed.",
+      "narrative": "The May 2026 accounting close is clean: the AR subledger of USD 1,146,695 and AP subledger of USD 461,307 each tie to their respective GL control accounts, retained earnings roll forward correctly by the net loss of USD 756,823, and there are zero open items outstanding. All three financial statements have been produced and foot — the income statement reflects a net loss of USD 756,823, the balance sheet is in balance with total assets of USD 9,553,973 equaling liabilities of USD 3,184,930 plus equity of USD 6,369,043, and the statement of cash flows confirms a net decrease in cash of USD 649,371 tying precisely to the movement from USD 8,153,649 to USD 7,504,278. Equity articulates correctly, and all three statements are confirmed to articulate to one another with no exceptions noted.",
       "escalations": [],
       "covers": [
         "Accounting & Close",
@@ -385,14 +385,14 @@
           "decision": "approved",
           "note": "",
           "mode": "auto",
-          "ts": "2026-06-14T23:42:54"
+          "ts": "2026-06-15T00:01:52"
         },
         "Financial Reporting": {
           "reviewer": "Technical Accounting / Reporting Manager",
           "decision": "approved",
           "note": "",
           "mode": "auto",
-          "ts": "2026-06-14T23:42:59"
+          "ts": "2026-06-15T00:01:57"
         }
       }
     },
@@ -545,15 +545,15 @@
           "overspend on G&A: +20,935 USD (+6.0%) vs plan"
         ]
       ],
-      "variance_expl": "## MoM Variance Commentary: April → May 2026\n\n* **Revenue growth was solid but insufficient to offset cost expansion.** The +5.6% revenue increase (+$65,157) reflects genuine top-line momentum — likely driven by higher volumes, a seasonal demand uptick, or new customer activity — but the gain was outpaced by cost growth across both COGS and OpEx, causing the operating loss to widen.\n\n* **COGS grew at more than twice the rate of revenue (+12.9% vs. +5.6%), compressing gross margin.** This disproportionate increase suggests either a less favorable product/service mix in May, input cost inflation (materials, freight, third-party services), or volume-related inefficiencies such as overtime or supplier surcharges. Gross margin declined from approximately 78.9% in April to 77.4% in May.\n\n* **OpEx expansion (+$119,910, +7.5%) was the primary driver of the deeper operating loss.** The increase likely reflects higher headcount costs, increased sales & marketing spend in support of revenue growth initiatives, or accruals for variable compensation tied to activity levels. This structural OpEx base continues to run well above gross profit, keeping the business in an operating loss position.\n\n* **The operating loss deteriorated by $86,655 (-12.9%), signaling that the business remains in an investment or scaling phase.** Until revenue growth rates sustainably exceed the combined rate of COGS and OpEx expansion, the path to operating breakeven will require either accelerated top-line scaling or disciplined cost containment on the OpEx line.",
-      "budget_expl": "## Budget Variance Analysis – May 2026\n\n- **Revenue was essentially on plan** (actual $1,238,010 vs. budget $1,237,732; +$278, flat), providing no meaningful offset to cost pressures elsewhere. The top line cannot be cited as a driver of the overall shortfall.\n\n- **G&A overrun was the most significant controllable miss**, coming in $20,935 (+6.0%) above budget at $367,500 — the only line meeting the materiality threshold on a percentage-and-absolute basis. This overspend alone accounts for more than half of the total opex variance and signals a need for scrutiny of administrative cost discipline.\n\n- **Sales & marketing also exceeded budget by $25,068 (+3.5%)**, and while just below the 5% materiality threshold on a percentage basis, it was the single largest absolute dollar driver of the opex overrun. Combined with the G&A overage, these two lines drove the bulk of the $32,173 total opex variance unfavorable.\n\n- **R&D provided a partial offset**, coming in $13,829 (-2.2%) under budget at $605,037, which helped cushion — but could not fully absorb — the cost pressures above. The net effect of all variances is a **$38,938 deterioration in operating income** (-5.4% vs. plan), widening the operating loss to $756,823, and highlighting that cost management across S&M and G&A is the primary lever to address going into subsequent months.",
-      "anomaly_expl": "## Anomaly Analysis\n\n---\n\n**Negative Operating Income: -756,823 USD**\nThe company's core business operations are generating a loss of $756,823, meaning total operating expenses exceed revenues before accounting for interest and taxes. This implies the business is currently unable to cover its operational costs from revenue alone, signaling a potential cash burn risk and raising concerns about operational sustainability if the trend continues uncorrected.",
+      "variance_expl": "## MoM Variance Commentary: April → May 2026\n\n- **Revenue growth was solid but partially offset by disproportionate COGS expansion.** Revenue grew +5.6% MoM to USD 1,238,010, yet COGS rose at more than twice that rate (+12.9% to USD 279,344), compressing gross margin from ~78.9% to ~77.4%. This suggests a shift in sales mix toward lower-margin products or services, higher input/delivery costs, or volume-related cost step-ups that did not scale efficiently with revenue.\n\n- **Gross profit growth (+3.6%) lagged revenue growth (+5.6%), signaling margin dilution at the top of the P&L.** The USD 33,255 gross profit improvement was partially eroded by the USD 31,901 increase in COGS, leaving limited incremental contribution to cover operating expenses — a dynamic worth monitoring if the mix shift or cost pressure persists.\n\n- **OpEx acceleration (+7.5% to USD 1,715,489) was the primary driver of the widening operating loss.** The USD 119,910 increase in OpEx outpaced the USD 65,157 revenue gain in absolute terms, suggesting either planned investment spend (e.g., headcount, marketing campaigns, or infrastructure) or one-time charges landing in May that were not present in April.\n\n- **Operating loss deepened by USD 86,655 (-12.9%) to USD -756,823**, reflecting the compounding effect of both margin compression and elevated OpEx. With revenue still well below the OpEx base, the business remains in an investment/pre-profitability phase, and the May dynamic suggests the path to breakeven is under pressure unless revenue growth accelerates or cost growth moderates.",
+      "budget_expl": "## Budget Variance Analysis – May 2026\n\n- **Revenue came in essentially on plan** (+$278, flat), providing no offset to cost pressures elsewhere; the business grew as expected on the top line but failed to generate any upside to cushion operating cost overruns.\n\n- **Cost of revenue and gross profit were modestly unfavorable** — cost of revenue ran $7,043 (+2.6%) over budget, compressing gross profit by $6,765 (-0.7%), suggesting either higher delivery/production costs or an unfavorable mix shift relative to plan.\n\n- **Operating expenses exceeded budget by $32,173 (+1.9%)**, driven by two key unfavorable lines: G&A overspent by $20,935 (+6.0%, a material variance) and Sales & Marketing by $25,068 (+3.5%); these overruns were only partially offset by R&D coming in $13,829 (-2.2%) *favorable*, likely reflecting timing of hiring or project spend.\n\n- **The net result is an operating loss of -$756,823, widening by $38,938 (-5.4%) versus plan** — a meaningful deterioration driven almost entirely by controllable opex, particularly G&A (the only line breaching the ≥5%/≥$20k materiality threshold); with revenue on target, management attention should focus on rationalizing G&A and S&M spending to bring the operating loss back toward budget.",
+      "anomaly_expl": "## Anomaly Analysis\n\n---\n\n**Negative Operating Income: -756,823 USD**\nThe company's core business operations are generating a loss, meaning operating expenses exceed gross profit by $756,823. This signals that the business cannot cover its day-to-day operational costs from its revenue alone, raising immediate concerns about operational sustainability and the urgent need for cost restructuring or revenue growth.",
       "review": {
         "reviewer": "FP&A Director",
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:43:25"
+        "ts": "2026-06-15T00:02:23"
       }
     },
     "Strategic Finance": {
@@ -595,7 +595,7 @@
           }
         ]
       },
-      "narrative": "## Strategic Finance Review — May 2026 Close\n\n**Growth Quality (Rule of 40 & Magic Number)**\nThe business posts a Rule of 40 score of **42**, narrowly clearing the 40-point threshold on the strength of **104% annualized growth** — growth is doing virtually all of the work while profitability contributes nothing (-61% operating margin). The signal is fragile: under the Low scenario (3.1% MoM), the Rule of 40 collapses to **-18**, confirming there is no margin buffer to absorb a growth deceleration. The Magic Number of **0.09** — against a benchmark above 0.75 — is the most concerning data point in the deck; for every dollar of new ARR generated, the business is spending at a rate that implies deeply inefficient go-to-market execution at current scale.\n\n**Capital Efficiency (Burn Multiple)**\nA Burn Multiple of **11.6x** against a ≤2x benchmark means the company is consuming **$11.60 in net cash for every $1.00 of net new ARR added**. At $14.9M ARR with S&M running at 60% of revenue and G&A at 30%, the cost structure is pre-scale and top-heavy. Until the Magic Number approaches 0.75, incremental S&M spend is not translating into proportional ARR acceleration — the growth engine is expensive and largely ineffective in its current configuration.\n\n**Path to Profitability (Margin Gap & Scenarios)**\nThe margin gap to breakeven is **61 percentage points**, with COGS + S&M + R&D + G&A totaling 162% of revenue. Even in the Base scenario — sustaining 6.1% MoM growth to reach **$30.2M ARR in 12 months** — the Rule of 40 holds at 42 only because growth offsets an unchanged -61% margin; the business is not compounding toward profitability, it is running in place. The High scenario (**$42.5M ARR, Rule of 40 of 125**) creates the first meaningful headroom to invest in structural cost improvement, but requires nearly doubling the current monthly growth rate. The Low scenario is effectively a restructuring event.\n\n**Primary Strategic Lever**\nThe single highest-priority action is **radical go-to-market productivity improvement** — the Magic Number of 0.09 and S&M spend at 60% of revenue indicate that the revenue growth engine is the largest destroyer of capital efficiency in the model. Redeploying or rightsizing S&M spend toward channels and motions that demonst",
+      "narrative": "## Strategic Finance Snapshot — May 2026\n\n---\n\n- **Growth quality is a tale of two metrics.** The Rule of 40 score of 42 clears the 40-point threshold, driven entirely by 104% annualized top-line growth masking a -61% operating margin. At ~$14.9M ARR, the business is growing at a venture-scale pace, but growth alone is not compounding into quality earnings — the score is passing grade, not a strong one, and it deteriorates to -18 under the low-growth scenario (3.1% MoM), confirming the score is highly growth-dependent with no margin buffer.\n\n- **Capital efficiency is critically distressed.** A burn multiple of 11.6x — against a ≤2.0x benchmark — means the company is spending $11.60 to generate every $1.00 of net new ARR. A magic number of 0.09, well below the 0.75 threshold for healthy go-to-market efficiency, signals that S&M spend at 60% of revenue is generating negligible payback on sales investment. Together, these are the most urgent red flags in the portfolio: growth is being purchased at an economically unsustainable price.\n\n- **The path to breakeven requires closing a 61 percentage-point margin gap with no short-term structural relief visible.** The spend stack — COGS 23%, S&M 60%, R&D 49%, G&A 30% — totals 162% of revenue, implying that even modest operating leverage requires simultaneous improvement across all four lines. At current spend ratios held constant, only the high-growth scenario (9.2% MoM, $42.5M ARR) sustains a Rule of 40 of 125 and begins to create the revenue density needed to absorb fixed costs; the base scenario ($30.2M ARR) merely holds the score flat at 42 with no margin improvement.\n\n- **S&M productivity is the single most consequential constraint.** At 60% of revenue and a magic number of 0.09, the go-to-market motion is consuming the largest share of capital while delivering the weakest measurable return. Redeploying even a portion of that spend toward retention, expansion, or channel leverage — without sacrificing the 6.1%+ MoM growth rate required to hold the Rule of 40 — is the critical variable the base and high scenarios depend on but do not yet reflect.\n\n---\n\n**The primary strategic lever is S&M efficiency, not growth rate.** Accelerating ARR toward $30–42M while the magic number remains at 0.09",
       "escalations": [
         [
           "HIGH",
@@ -611,7 +611,7 @@
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:43:39"
+        "ts": "2026-06-15T00:02:38"
       }
     },
     "Internal Controls": {
@@ -670,7 +670,7 @@
         "approval_exceptions": 6,
         "approval_exceptions_total": 217269.08
       },
-      "narrative": "All four integrity controls passed for 2026-05: the trial balance is in balance within tolerance, all 30 period/currency FX pairs are populated, no future-dated AR/AP documents were posted, and no duplicate open payables were detected. One exception requires action: six open payments totalling USD 217,269 meet or exceed the USD 25,000 authorization-review threshold (C5) and must have documented authorization confirmed before disbursement proceeds.",
+      "narrative": "All four automated integrity controls passed for 2026-05: the trial balance is in balance (max imbalance USD 0.01), all 30 period/currency FX pairs are populated, no future-dated AR/AP documents were posted after period close, and no duplicate open payables were detected. One exception requires action: C5 flags 6 open payments totalling USD 217,269 at or above the USD 25,000 threshold, each of which must have documented authorization review completed before disbursement is released.",
       "escalations": [
         [
           "HIGH",
@@ -682,7 +682,7 @@
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:43:42"
+        "ts": "2026-06-15T00:02:42"
       }
     },
     "Audit": {
@@ -721,15 +721,130 @@
       ],
       "n_procedures": 6,
       "n_exceptions": 0,
-      "narrative": "**Independent Auditor's Report — Period 2026-05**\n\nBased on the six procedures independently re-performed — subledger-to-GL reconciliation for accounts receivable and accounts payable (zero difference in each), retained earnings articulation check (RE movement agrees to net income within USD 0.01, within rounding tolerance), balance sheet foot verification (assets equal liabilities plus equity within USD 0.01, within rounding tolerance), cash flow reconstruction (reconstructed change in cash of USD -649,371 agrees exactly to the actual figure), and vouching of six high-value disbursements (≥ USD 25,000) for proper authorization — no exceptions were identified across any procedure. Accordingly, we issue an **unqualified opinion** on the financial register for the period ending 2026-05, concluding that the figures as presented are free from material misstatement based on the procedures performed.",
+      "narrative": "**Independent Auditor's Report – Period 2026-05**\n\nBased on six independently re-performed procedures covering subledger-to-GL reconciliation for accounts receivable and accounts payable (zero difference on both), balance sheet footings (assets equal liabilities plus equity, residual rounding of USD 0.01), retained earnings articulation (RE movement agrees to net income within USD 0.01 rounding), cash flow reconstruction (reconstructed change in cash of USD -649,371 agrees exactly to the recorded change), and vouching of six high-value disbursements of USD 25,000 or greater for authorization, no exceptions were identified. Accordingly, we issue an **unqualified opinion** on the period 2026-05 financial records as presented in the register. All procedures were limited to the data contained within the register provided, and no findings beyond the noted immaterial rounding differences were noted.",
       "escalations": [],
       "review": {
         "reviewer": "Internal Audit Lead",
         "decision": "approved",
         "note": "",
         "mode": "auto",
-        "ts": "2026-06-14T23:43:48"
+        "ts": "2026-06-15T00:02:48"
       }
+    },
+    "Operating Model": {
+      "stages": [
+        {
+          "id": 1,
+          "name": "Controllership review",
+          "status": "passed",
+          "attempts": 1,
+          "control": "no code-level control",
+          "functions": [
+            "Controller"
+          ],
+          "reviewers": [
+            "Accounting Manager"
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Treasury & liquidity",
+          "status": "passed",
+          "attempts": 1,
+          "control": "no code-level control",
+          "functions": [
+            "Treasury"
+          ],
+          "reviewers": [
+            "Treasurer"
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Working capital & tax",
+          "status": "passed",
+          "attempts": 1,
+          "control": "no code-level control",
+          "functions": [
+            "Accounts Receivable",
+            "Accounts Payable",
+            "Tax"
+          ],
+          "reviewers": [
+            "Collections / AR Manager",
+            "AP Manager",
+            "Tax Manager"
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Close & financial statements",
+          "status": "passed",
+          "attempts": 1,
+          "control": "subledgers tie, statements articulate and foot",
+          "functions": [
+            "Accounting & Close",
+            "Financial Reporting"
+          ],
+          "reviewers": [
+            "Accounting Manager",
+            "Technical Accounting / Reporting Manager"
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Planning & analysis (FP&A)",
+          "status": "passed",
+          "attempts": 1,
+          "control": "no code-level control",
+          "functions": [
+            "FP&A"
+          ],
+          "reviewers": [
+            "FP&A Director"
+          ]
+        },
+        {
+          "id": 6,
+          "name": "Strategic finance",
+          "status": "passed",
+          "attempts": 1,
+          "control": "no code-level control",
+          "functions": [
+            "Strategic Finance"
+          ],
+          "reviewers": [
+            "VP Finance / Head of Strategic Finance"
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Internal controls",
+          "status": "passed",
+          "attempts": 1,
+          "control": "4 controls pass, 0 integrity failures",
+          "functions": [
+            "Internal Controls"
+          ],
+          "reviewers": [
+            "Internal Controls Manager"
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Independent audit",
+          "status": "passed",
+          "attempts": 1,
+          "control": "audit opinion: unqualified",
+          "functions": [
+            "Audit"
+          ],
+          "reviewers": [
+            "Internal Audit Lead"
+          ]
+        }
+      ],
+      "all_passed": true
     },
     "CFO": {
       "first_line": {
@@ -750,320 +865,416 @@
         "total": 11,
         "all_approved": true
       },
-      "board_pack": "# CFO Board Pack — Period Ending May 2026\n\n---\n\nThe May 2026 close is confirmed clean with an unqualified audit opinion: revenue of USD 1,238,010, gross margin of 77.4% (USD 958,666), and a net operating loss of USD 756,823 (-61.1% of revenue), with total assets of USD 9,553,973, total equity of USD 6,369,043, and a closing cash balance of USD 7,504,278 after a USD 649,371 net cash decrease in the period. The financial statements foot without exception, all subledger-to-GL reconciliations are clean at zero variance, and the period is formally closed.\n\nThe operating loss is the defining issue: opex of USD 1,715,489 exceeds revenue by USD 477,479, representing 139% of top-line, and deteriorated a further USD 86,655 month-on-month as COGS grew at 12.9% against revenue growth of only 5.6%, while S&M and G&A together drove a USD 45,003 combined budget overrun that accounts for the entirety of the USD 38,938 unfavorable variance to plan. At the current burn rate, the 13-week cash forecast projects an ending balance of USD 5,551,607 with no negative-cash week, and consolidated runway stands at approximately 9.9 months — adequate in the near term but not a basis for complacency given the structural cost misalignment.\n\nThe capital efficiency profile is deeply concerning: a Burn Multiple of 11.6x against a ≤2x benchmark and a Magic Number of 0.09 against a >0.75 benchmark confirm that the go-to-market engine is the single largest destroyer of capital efficiency in the model, with S&M running at 60% of revenue and G&A at 30% on an ARR base of USD 14.9M. The Rule of 40 score of 42 is entirely dependent on 104% annualized growth carrying a -61% operating margin; the Low scenario collapses the Rule of 40 to -18, making any growth deceleration a restructuring event rather than a planning variance. The margin gap to breakeven is 61 percentage points, and the Base scenario sustaining current growth rates does not compound toward profitability — it holds position.\n\nLiquidity risk is acute on the working capital line independent of cash balance: USD 1,109,564, or 97% of total receivables across 54 invoices, is overdue, directly contradicting the reported 28-day DSO and representing the most immediate cash conversion risk on the balance sheet; concurrently, USD 416,764 in payables is already overdue across 33 bills, and USD 118,496 of a USD 252,920 multi-jurisdictional tax obligation is overdue and accruing penalties across 6 jurisdictions. An urgent, structured collections sweep on the 54 overdue invoices is the single most time-critical operational action, as recovery of even a material",
-      "actions": "1. **[IMMEDIATE – Cash & Compliance]** Initiate emergency collections on the USD 1,109,564 in overdue receivables (54 invoices) to extend the 9.9-month runway, and simultaneously resolve the USD 118,496 in overdue tax obligations across 6 jurisdictions before penalties compound.\n2. **[URGENT – Cost Structure]** Conduct a line-by-line review of G&A ($20,935 / +6.0% over budget) and S&M ($25,068 over budget) to implement immediate spending controls, targeting structural reduction of the -61pp operating margin gap — volume growth alone will not close it.\n3. **[HIGH – Governance & Payables]** Complete documented authorization review for the 6 pending payments totaling USD 217,269 against the USD 25,000 threshold, and negotiate structured payment terms on USD 416,764 in overdue payables (33 bills) to protect supplier relationships while preserving cash given the 9.9-month runway.",
+      "board_pack": "# CFO Board Pack — May 2026\n*Prepared for the Board of Directors | Period ending 31 May 2026*\n\n---\n\nThe May 2026 close is technically clean: financials articulate fully across all three statements, subledgers tie to GL with zero exceptions, and an unqualified audit opinion has been issued — the numbers are reliable and the analysis below stands on firm ground.\n\nRevenue of USD 1,238,010 came in on plan, but that is where the positive news ends: COGS grew at more than twice the revenue rate, compressing gross margin to 77.4%, and operating expenses of USD 1,715,489 — running at 138.6% of revenue — drove an operating loss of USD 756,823, widening USD 86,655 month-on-month and USD 38,938 worse than budget, with G&A the sole line breaching materiality thresholds and the primary controllable driver of the overrun.\n\nCapital efficiency is critically distressed: a burn multiple of 11.6x against a ≤2.0x benchmark and a magic number of 0.09 against a 0.75 threshold confirm the business is spending USD 11.60 for every USD 1.00 of net new ARR generated, with S&M at 60% of revenue delivering negligible measurable return — this is the most urgent strategic problem on the agenda.\n\nThe Rule of 40 score of 42 clears the threshold only because annualized ARR growth of 104% is carrying a -61% operating margin; under a low-growth scenario that score collapses to -18, confirming the business has no margin buffer and that the passing grade is entirely growth-dependent.\n\nLiquidity is stable in the near term — USD 7,504,278 in cash provides a computed runway of 9.9 months — but the working capital position is acutely stressed: 97% of open receivables (USD 1,109,564 across 54 invoices) are overdue, USD 416,764 of payables are past due, and USD 118,496 in tax obligations across six jurisdictions are already overdue and attracting penalties, with a further USD 89,328 due within 30 days.\n\nThe single most critical near-term action is an accelerated collections drive on the USD 1,109,564 overdue receivables; converting even a portion of those inflows is the primary mechanism to discharge the overdue tax liabilities before enforcement actions materialize and to restore supplier creditor standing before relationships are damaged.\n\nOne internal controls matter requires Board acknowledgment: six open disbursements totalling USD 217,269 are flagged at or above the USD 25,000 authorization threshold and must have documented authorization review completed before release — no disbursement in this cohort is to proceed without that sign-off.\n\nThe medium-term path to breakeven requires closing a 61 percentage-point margin gap across a spend stack totalling 162% of revenue; the Board should expect a management proposal at the next session addressing S&M productivity reallocation, G&A rationalization",
+      "actions": "1. **[IMMEDIATE – Cash & Compliance]** Mobilize a dedicated collections sprint to recover the USD 1,109,564 in overdue receivables (97% of total, 54 invoices) and simultaneously schedule payment plans for the USD 118,496 in overdue tax obligations across 6 jurisdictions to eliminate penalty risk and extend the 9.9-month runway.\n2. **[URGENT – Cost Structure]** Conduct a line-by-line review and freeze on G&A and S&M spending — which together overran plan by USD 55,003 — with targeted cuts required to narrow the -61 pp operating margin gap, as revenue (flat at +USD 278 vs. plan) and volume growth alone cannot close it.\n3. **[URGENT – Controls & Payables]** Enforce documented authorization review on the 6 payments totalling USD 217,269 flagged at or above the USD 25,000 threshold, and negotiate structured payment terms on the USD 416,764 in overdue payables (33 bills, DPO 50d) to protect supplier relationships without accelerating cash burn against the 9.9-month runway.",
       "status": "approved"
     }
   },
   "audit": [
     {
-      "ts": "2026-06-14T23:42:26",
+      "ts": "2026-06-15T00:01:19",
       "agent": "CFO",
       "status": "start",
-      "detail": "running the office for 2026-05"
+      "detail": "running the operating model for 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:26",
+      "ts": "2026-06-15T00:01:19",
+      "agent": "Operating Model",
+      "status": "stage 1",
+      "detail": "Controllership review: running"
+    },
+    {
+      "ts": "2026-06-15T00:01:19",
       "agent": "Controller",
       "status": "start",
       "detail": "close review 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:33",
+      "ts": "2026-06-15T00:01:26",
       "agent": "Controller",
       "status": "ok",
       "detail": "close reviewed; 1 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:33",
+      "ts": "2026-06-15T00:01:26",
       "agent": "Accounting Manager",
       "status": "APPROVED",
       "detail": "Controller approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:42:33",
+      "ts": "2026-06-15T00:01:26",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Controllership review: control [no code-level control]; signed off by Accounting Manager"
+    },
+    {
+      "ts": "2026-06-15T00:01:26",
+      "agent": "Operating Model",
+      "status": "stage 2",
+      "detail": "Treasury & liquidity: running"
+    },
+    {
+      "ts": "2026-06-15T00:01:26",
       "agent": "Treasury",
       "status": "start",
       "detail": "liquidity and runway 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:35",
+      "ts": "2026-06-15T00:01:29",
       "agent": "Treasury",
       "status": "ok",
       "detail": "runway 9.9 months; 13w ending USD 5,551,607; 1 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:35",
+      "ts": "2026-06-15T00:01:29",
       "agent": "Treasurer",
       "status": "APPROVED",
       "detail": "Treasury approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:42:35",
+      "ts": "2026-06-15T00:01:29",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Treasury & liquidity: control [no code-level control]; signed off by Treasurer"
+    },
+    {
+      "ts": "2026-06-15T00:01:29",
+      "agent": "Operating Model",
+      "status": "stage 3",
+      "detail": "Working capital & tax: running"
+    },
+    {
+      "ts": "2026-06-15T00:01:29",
       "agent": "Administration",
       "status": "start",
       "detail": "coordinating AR, AP and Tax"
     },
     {
-      "ts": "2026-06-14T23:42:35",
+      "ts": "2026-06-15T00:01:29",
       "agent": "Accounts Receivable",
       "status": "start",
       "detail": "receivables and DSO 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:38",
+      "ts": "2026-06-15T00:01:33",
       "agent": "Accounts Receivable",
       "status": "ok",
       "detail": "overdue 97%, DSO 28d; 1 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:38",
+      "ts": "2026-06-15T00:01:33",
       "agent": "Collections / AR Manager",
       "status": "APPROVED",
       "detail": "Accounts Receivable approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:42:38",
+      "ts": "2026-06-15T00:01:33",
       "agent": "Accounts Payable",
       "status": "start",
       "detail": "payables and DPO 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:41",
+      "ts": "2026-06-15T00:01:35",
       "agent": "Accounts Payable",
       "status": "ok",
       "detail": "overdue USD 416,764, DPO 50d; 1 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:41",
+      "ts": "2026-06-15T00:01:35",
       "agent": "AP Manager",
       "status": "APPROVED",
       "detail": "Accounts Payable approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:42:41",
+      "ts": "2026-06-15T00:01:35",
       "agent": "Tax",
       "status": "start",
       "detail": "tax obligations and compliance 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:45",
+      "ts": "2026-06-15T00:01:43",
       "agent": "Tax",
       "status": "ok",
       "detail": "overdue USD 118,496, pending USD 252,920; 1 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:45",
+      "ts": "2026-06-15T00:01:43",
       "agent": "Tax Manager",
       "status": "APPROVED",
       "detail": "Tax approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:42:51",
+      "ts": "2026-06-15T00:01:49",
       "agent": "Administration",
       "status": "ok",
       "detail": "AR/AP/Tax consolidated; 3 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:51",
+      "ts": "2026-06-15T00:01:49",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Working capital & tax: control [no code-level control]; signed off by Collections / AR Manager, AP Manager, Tax Manager"
+    },
+    {
+      "ts": "2026-06-15T00:01:49",
+      "agent": "Operating Model",
+      "status": "stage 4",
+      "detail": "Close & financial statements: running"
+    },
+    {
+      "ts": "2026-06-15T00:01:49",
       "agent": "Accounting & Reporting",
       "status": "start",
       "detail": "coordinating close and reporting"
     },
     {
-      "ts": "2026-06-14T23:42:51",
+      "ts": "2026-06-15T00:01:49",
       "agent": "Accounting & Close",
       "status": "start",
       "detail": "reconciliations and roll-forward 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:54",
+      "ts": "2026-06-15T00:01:52",
       "agent": "Accounting & Close",
       "status": "ok",
       "detail": "all reconciled; 0 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:54",
+      "ts": "2026-06-15T00:01:52",
       "agent": "Accounting Manager",
       "status": "APPROVED",
       "detail": "Accounting & Close approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:42:54",
+      "ts": "2026-06-15T00:01:52",
       "agent": "Financial Reporting",
       "status": "start",
       "detail": "three statements 2026-05"
     },
     {
-      "ts": "2026-06-14T23:42:59",
+      "ts": "2026-06-15T00:01:57",
       "agent": "Financial Reporting",
       "status": "ok",
       "detail": "statements produced; balance foots=True, cash flow ties=True; 0 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:42:59",
+      "ts": "2026-06-15T00:01:57",
       "agent": "Technical Accounting / Reporting Manager",
       "status": "APPROVED",
       "detail": "Financial Reporting approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:43:03",
+      "ts": "2026-06-15T00:02:01",
       "agent": "Accounting & Reporting",
       "status": "ok",
       "detail": "close + reporting consolidated; 0 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:43:03",
+      "ts": "2026-06-15T00:02:01",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Close & financial statements: control [subledgers tie, statements articulate and foot]; signed off by Accounting Manager, Technical Accounting / Reporting Manager"
+    },
+    {
+      "ts": "2026-06-15T00:02:01",
+      "agent": "Operating Model",
+      "status": "stage 5",
+      "detail": "Planning & analysis (FP&A): running"
+    },
+    {
+      "ts": "2026-06-15T00:02:01",
       "agent": "FP&A",
       "status": "start",
       "detail": "forecast, MoM variance, budget variance and anomalies"
     },
     {
-      "ts": "2026-06-14T23:43:03",
+      "ts": "2026-06-15T00:02:01",
       "agent": "FP&A",
       "status": "ok",
       "detail": "forecast 2026-06: rev USD 1,313,554, op USD -810,466"
     },
     {
-      "ts": "2026-06-14T23:43:03",
+      "ts": "2026-06-15T00:02:01",
       "agent": "FP&A",
       "status": "ok",
       "detail": "1 MoM anomaly(ies); 2 material line(s) vs budget"
     },
     {
-      "ts": "2026-06-14T23:43:25",
+      "ts": "2026-06-15T00:02:23",
       "agent": "FP&A",
       "status": "ok",
       "detail": "analysis delivered to the CFO (board pack and gate handled by the orchestrator)"
     },
     {
-      "ts": "2026-06-14T23:43:25",
+      "ts": "2026-06-15T00:02:23",
       "agent": "FP&A Director",
       "status": "APPROVED",
       "detail": "FP&A approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:43:25",
+      "ts": "2026-06-15T00:02:23",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Planning & analysis (FP&A): control [no code-level control]; signed off by FP&A Director"
+    },
+    {
+      "ts": "2026-06-15T00:02:23",
+      "agent": "Operating Model",
+      "status": "stage 6",
+      "detail": "Strategic finance: running"
+    },
+    {
+      "ts": "2026-06-15T00:02:23",
       "agent": "Strategic Finance",
       "status": "start",
       "detail": "run-rate, capital efficiency, path to breakeven"
     },
     {
-      "ts": "2026-06-14T23:43:39",
+      "ts": "2026-06-15T00:02:38",
       "agent": "Strategic Finance",
       "status": "ok",
       "detail": "run-rate USD 14,856,124, Rule of 40 42, burn multiple 11.6x; 2 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:43:39",
+      "ts": "2026-06-15T00:02:38",
       "agent": "VP Finance / Head of Strategic Finance",
       "status": "APPROVED",
       "detail": "Strategic Finance approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:43:39",
+      "ts": "2026-06-15T00:02:38",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Strategic finance: control [no code-level control]; signed off by VP Finance / Head of Strategic Finance"
+    },
+    {
+      "ts": "2026-06-15T00:02:38",
+      "agent": "Operating Model",
+      "status": "stage 7",
+      "detail": "Internal controls: running"
+    },
+    {
+      "ts": "2026-06-15T00:02:38",
       "agent": "Internal Controls",
       "status": "start",
       "detail": "control testing 2026-05"
     },
     {
-      "ts": "2026-06-14T23:43:42",
+      "ts": "2026-06-15T00:02:42",
       "agent": "Internal Controls",
       "status": "ok",
       "detail": "4 pass / 0 fail / 1 exc; 1 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:43:42",
+      "ts": "2026-06-15T00:02:42",
       "agent": "Internal Controls Manager",
       "status": "APPROVED",
       "detail": "Internal Controls approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:43:42",
+      "ts": "2026-06-15T00:02:42",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Internal controls: control [4 controls pass, 0 integrity failures]; signed off by Internal Controls Manager"
+    },
+    {
+      "ts": "2026-06-15T00:02:42",
+      "agent": "Operating Model",
+      "status": "stage 8",
+      "detail": "Independent audit: running"
+    },
+    {
+      "ts": "2026-06-15T00:02:42",
       "agent": "Audit",
       "status": "start",
       "detail": "independent re-performance 2026-05"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "Audit",
       "status": "ok",
       "detail": "opinion unqualified; 6 procedures, 0 exception(s); 0 escalation(s)"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "Internal Audit Lead",
       "status": "APPROVED",
       "detail": "Audit approved (auto)"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
+      "agent": "Operating Model",
+      "status": "stage PASS",
+      "detail": "Independent audit: control [audit opinion: unqualified]; signed off by Internal Audit Lead"
+    },
+    {
+      "ts": "2026-06-15T00:02:48",
       "agent": "cross_check",
       "status": "ok",
       "detail": "agents consistent on the shared numbers"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "operating loss: cost structure needs review"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "runway 9.9 months (< 12): tight room to maneuver"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "97% of receivables overdue (USD 1,109,564, 54 invoices): collections risk"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "USD 416,764 in overdue payables (33 bills, DPO 50d): supplier/operational risk"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "USD 118,496 in overdue tax obligations across 6 jurisdictions: compliance/penalty risk"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "overspend on G&A: +20,935 USD (+6.0%) vs plan"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "burn multiple 11.6x (> 2): 11.6 burned per USD of new revenue; low capital efficiency"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "growth alone won't reach breakeven: a 61 pp margin gap (operating margin -61%) won't close on volume; needs structural margin improvement, not more growth"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "escalation",
       "status": "HIGH",
       "detail": "Large disbursements pending authorization review: 6 open payment(s) at or above the USD 25,000 authorization-review threshold (total USD 217,269): flagged for documented authorization review (amount-based screen)"
     },
     {
-      "ts": "2026-06-14T23:43:48",
+      "ts": "2026-06-15T00:02:48",
       "agent": "CFO",
       "status": "approved",
       "detail": "CFO signed off the consolidated board pack"
     },
     {
-      "ts": "2026-06-14T23:44:10",
+      "ts": "2026-06-15T00:03:11",
       "agent": "CFO",
       "status": "ok",
       "detail": "consolidated board pack and actions fixed"

@@ -67,12 +67,16 @@ def stmt_table(rows):
 
 
 def signoff(name):
-    """Green maker-checker stamp: which domain expert signed off this function."""
+    """Green maker-checker stamp: which domain expert signed off this function.
+    If the recorded decision was auto-approved (snapshot/CI, no reviewer at the
+    console), say so plainly — it is never passed off as a real human sign-off."""
     r = A.get(name, {}).get("review")
     if not r:
         return
+    auto = " <span style='color:#92400E;font-weight:600'>(auto-approved in this replay)</span>" \
+        if r.get("mode") == "auto" else ""
     st.markdown(f"<span style='color:#0F6E56;font-size:0.82rem;font-weight:600'>"
-                f"&#10003; First-line sign-off · {r['reviewer']}</span>", unsafe_allow_html=True)
+                f"&#10003; First-line sign-off · {r['reviewer']}</span>{auto}", unsafe_allow_html=True)
 
 
 # --------------------------------------------------------------------------
@@ -144,8 +148,9 @@ for row in team_rows:
         c.markdown(f"<div class='card'><div class='role'>{role}</div>"
                    f"<div class='small'>{desc}</div></div>", unsafe_allow_html=True)
 st.markdown("<div class='card' style='text-align:center'><span class='role'>👔 CFO</span> "
-            "<span class='small'>— reconciles all eight, consolidates risks, one human gate, "
-            "writes the board report.</span></div>", unsafe_allow_html=True)
+            "<span class='small'>— reconciles all eight, consolidates risks, gives the <b>final</b> "
+            "consolidated sign-off (after each function's domain-expert sign-off), writes the board "
+            "report.</span></div>", unsafe_allow_html=True)
 
 st.divider()
 
@@ -336,9 +341,44 @@ if st.session_state.ran:
     st.divider()
 
     # --------------------------------------------------------------------
+    # The operating model: the close as explicit stages, each with a
+    # deterministic control + the domain expert's sign-off (rework -> block).
+    # --------------------------------------------------------------------
+    om = A.get("Operating Model", {})
+    if om.get("stages"):
+        st.markdown("### 2 · The operating model — stages, controls & sign-offs")
+        st.markdown("<span class='small'>The close isn't one big prompt — it runs as explicit "
+                    "<b>stages</b>. Each stage = the agent does the work (maker), a <b>deterministic "
+                    "control in code</b> must hold (a hard gate, not the model's opinion), and the "
+                    "<b>domain expert signs off</b> (checker). If a stage can't pass it goes to "
+                    "<b>rework</b>, and if it still can't, it <b>blocks the whole close</b> — you don't "
+                    "build a board pack on an un-controlled stage.</span>", unsafe_allow_html=True)
+        stage_rows = []
+        for s in om["stages"]:
+            reviewers = ", ".join(
+                A.get(fn, {}).get("review", {}).get("reviewer", "—") for fn in s["functions"])
+            ctrl = s["control"]
+            stage_rows.append({
+                "Stage": f"{s['id']} · {s['name']}",
+                "Deterministic control": "— (no code gate)" if ctrl == "no code-level control" else ctrl,
+                "Signed off by (domain expert)": reviewers,
+                "Status": ("✓ Passed" if s["status"] == "passed"
+                           else f"✗ Blocked ({s.get('reason','')})"),
+            })
+        st.table(stage_rows)
+        if om.get("all_passed"):
+            st.success(f"✅ All {len(om['stages'])} stages passed their deterministic control and "
+                       "domain-expert sign-off. No stage blocked, so the close can proceed to the CFO.")
+        else:
+            blocked = next((s for s in om["stages"] if s["status"] == "blocked"), None)
+            st.error(f"⛔ Close blocked at stage {blocked['id']} ({blocked['name']}). "
+                     "A failed control or missing sign-off stops the whole close — by design.")
+        st.divider()
+
+    # --------------------------------------------------------------------
     # CFO consolidation + human gate.
     # --------------------------------------------------------------------
-    st.markdown("### 2 · First line — each function signed off by its domain expert")
+    st.markdown("### 3 · First line — each function signed off by its domain expert")
     st.markdown("<span class='small'>Maker-checker, the way finance actually works: the agent does "
                 "the work, and the person with real depth in that area validates and signs. A "
                 "generalist CFO can't competently approve every operational detail — so each "
@@ -348,16 +388,25 @@ if st.session_state.ran:
                   "Accounts Receivable", "Accounts Payable", "Tax", "FP&A", "Strategic Finance",
                   "Internal Controls", "Audit"]
     fl_rows = []
+    n_auto = 0
     for fn in FIRST_LINE:
         r = A.get(fn, {}).get("review")
         if r:
+            is_auto = r.get("mode") == "auto"
+            n_auto += is_auto
             fl_rows.append({"Function": fn, "Signed off by (domain expert)": r["reviewer"],
+                            "Mode": "Auto (replay)" if is_auto else "Human",
                             "Status": "✓ Approved" if r["decision"] == "approved" else "✗ Rejected"})
     st.table(fl_rows)
     n_ok = sum(1 for r in fl_rows if r["Status"].startswith("✓"))
-    st.success(f"✅ First line complete — {n_ok}/{len(fl_rows)} functions signed off by their domain "
-               "experts. Cross-checks also passed: the agents agree on the shared numbers "
-               "(operating income, burn, revenue/run-rate, AR, and Reporting's net income & cash).")
+    st.info(f"First line: {n_ok}/{len(fl_rows)} functions cleared their domain-expert checker, and the "
+            "cross-checks passed — the agents agree on the shared numbers (operating income, burn, "
+            "revenue/run-rate, AR, and Reporting's net income & cash).")
+    if n_auto:
+        st.caption(f"⚠️ Honest disclosure: {n_auto}/{len(fl_rows)} sign-offs in this public replay were "
+                   "**auto-approved** (no reviewer is at the console when the snapshot is generated). The "
+                   "maker-checker workflow, audit trail and block-on-reject are real and run interactively; "
+                   "what's simulated here is the human keystroke, not the control.")
 
     escalations = []
     for name in TOP_LEVEL:
@@ -369,7 +418,7 @@ if st.session_state.ran:
         st.markdown(f"{sev_badge(sev)}&nbsp; {msg}", unsafe_allow_html=True)
 
     st.divider()
-    st.markdown("### 3 · 🧑‍⚖️ CFO final sign-off — your call")
+    st.markdown("### 4 · 🧑‍⚖️ CFO final sign-off — your call")
     if not st.session_state.approved:
         st.warning("First line is complete — all functions are signed off by their domain experts. "
                    "The CFO now gives the **final consolidated sign-off** on the board pack and the "
@@ -379,7 +428,7 @@ if st.session_state.ran:
             st.session_state.approved = True
             st.rerun()
     else:
-        st.markdown("### 4 · 📋 Board pack")
+        st.markdown("### 5 · 📋 Board pack")
         st.markdown(f"<div class='boardpack'>{clean(cfo['board_pack'])}</div>", unsafe_allow_html=True)
         st.markdown("#### Recommended actions")
         st.markdown(clean(cfo["actions"]))

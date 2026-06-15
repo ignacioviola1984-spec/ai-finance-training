@@ -1,31 +1,23 @@
 """
 cfo_orchestrator.py - El CFO del office.
 
-Instancia un unico estado compartido (CFOContext), corre a los agentes
-especializados sobre ese estado, valida la coherencia entre ellos con checks
-deterministicos, consolida los escalamientos por severidad, y antes de fijar
-el board pack final pide UNA sola aprobacion humana (HITL). Persiste todo a
-cfo_state.json.
+Corre el cierre como un MODELO OPERATIVO por ETAPAS (ver stages.py) con control
+de dos niveles en cada etapa:
+  - cada etapa pasa un CONTROL deterministico (codigo) Y la firma del experto de
+    dominio de esa funcion (maker-checker / primera linea); si no pasa, entra en
+    REWORK y, si no se resuelve, BLOQUEA todo el cierre;
+  - recien con TODAS las etapas pasadas, el CFO da la firma FINAL sobre lo
+    consolidado + lo material (no re-revisa el detalle que no domina).
 
-  1) Controller            -> revisa el cierre y margenes
-  2) Treasury              -> caja, burn, runway, forecast 13 semanas
-  3) Administration        -> sub-orquesta AR, AP y Tax (capital de trabajo + compliance)
-  4) Accounting & Reporting-> sub-orquesta el cierre (recon) y los 3 estados financieros
-  5) FP&A                  -> forecast, variance MoM, variance vs presupuesto, anomalias
-  6) Strategic Finance     -> run-rate, Rule of 40, burn multiple, camino a breakeven
-  7) Internal Controls     -> aseguramiento: integridad de libros, FX, corte, autorizaciones
-  8) Audit                 -> re-ejecuta el cierre/estados de forma independiente y opina
-  -- Primera linea (maker-checker): cada funcion la firma SU experto de dominio
-     (Accounting firma el cierre, Tax firma tax, Treasury firma treasury, etc.).
-  9) cross-checks: los agentes deben concordar en los numeros compartidos
- 10) consolidar escalamientos
- 11) gate FINAL del CFO: firma lo consolidado + lo material (no re-revisa el
-     detalle); requiere que la primera linea ya este firmada por sus expertos
- 12) board pack consolidado + acciones (Claude), fijados solo si el CFO aprueba
+Etapas (de punta a punta): Controllership -> Treasury -> Working capital & tax
+(AR/AP/Tax) -> Close & financial statements -> FP&A -> Strategic Finance ->
+Internal Controls -> Audit -> [cross-checks globales] -> gate FINAL del CFO ->
+board pack + acciones.
 
 Cada agente deja su analisis y sus flags en el estado compartido; el CFO los
 consume. Los numeros los calculan los agentes por codigo (finance_core); el
-modelo solo redacta. Una sola fuente de verdad, todo auditable.
+modelo solo redacta. Una sola fuente de verdad, todo auditable. Persiste a
+cfo_state.json.
 
 Requisitos: ANTHROPIC_API_KEY en el .env de la raiz.
 Correr:  python cfo_orchestrator.py
@@ -45,14 +37,7 @@ sys.path.insert(0, HERE)                                  # shared_state + agent
 import finance_core as fc
 from shared_state import CFOContext
 import review
-import controller_agent
-import treasury_agent
-import administration_agent
-import accounting_reporting_agent
-import fpa_agent
-import strategic_finance_agent
-import internal_controls_agent
-import audit_agent
+import stages
 
 load_dotenv(os.path.join(ROOT, ".env"))
 client = Anthropic()
@@ -236,42 +221,23 @@ def run(period=PERIOD):
     print(f"CFO OFFICE | close {period}")
     print("=" * 60)
     ctx = CFOContext()
-    ctx.audit("CFO", "start", f"running the office for {period}")
+    ctx.audit("CFO", "start", f"running the operating model for {period}")
 
-    # Each function runs (the maker) and is signed off by its domain expert (the
-    # checker) — first-line maker-checker. Administration and Accounting &
-    # Reporting review their own sub-functions inside (AR/AP/Tax, Close/Reporting).
-    print("\n[1/8] Controller...")
-    controller_agent.run(ctx)
-    p = ctx.get("Controller", "pnl", {})
-    review.review(ctx, "Controller", f"operating income USD {p.get('operating_income',0):,.0f}")
-    print("\n[2/8] Treasury...")
-    treasury_agent.run(ctx)
-    review.review(ctx, "Treasury",
-                  f"cash USD {ctx.get('Treasury','cash',0):,.0f}, runway "
-                  + (f"{ctx.get('Treasury','runway') or 0:.1f} months" if ctx.get('Treasury','runway') else "n/a"))
-    print("\n[3/8] Administration (AR / AP / Tax)...")
-    administration_agent.run(ctx)
-    print("\n[4/8] Accounting & Reporting (close + statements)...")
-    accounting_reporting_agent.run(ctx)
-    print("\n[5/8] FP&A...")
-    fpa_agent.run(ctx)
-    review.review(ctx, "FP&A", "forecast, MoM and budget variance, anomalies")
-    print("\n[6/8] Strategic Finance...")
-    strategic_finance_agent.run(ctx)
-    sm = ctx.get("Strategic Finance", "metrics", {})
-    review.review(ctx, "Strategic Finance",
-                  f"Rule of 40 {sm.get('rule_of_40',0):.0f}, burn multiple {sm.get('burn_multiple') or 0:.1f}x")
-    print("\n[7/8] Internal Controls...")
-    internal_controls_agent.run(ctx)
-    cs = ctx.get("Internal Controls", "summary", {})
-    review.review(ctx, "Internal Controls",
-                  f"{cs.get('n_pass',0)} pass / {cs.get('n_fail',0)} fail / {cs.get('n_exception',0)} exception(s)")
-    print("\n[8/8] Audit (independent assurance)...")
-    audit_agent.run(ctx)
-    review.review(ctx, "Audit", f"opinion {ctx.get('Audit','opinion','?')}")
+    # Run the operating model stage by stage. Each stage = agent(s) + a
+    # deterministic control + the domain expert's sign-off, with rework and a
+    # hard block if it cannot pass (stages.run_all).
+    stage_results, all_passed = stages.run_all(ctx)
+    if not all_passed:
+        blocked = next((s for s in stage_results if s["status"] == "blocked"), None)
+        ctx.put("CFO", {"status": "blocked_stage",
+                        "blocked_stage": blocked["name"] if blocked else None})
+        ctx.save()
+        print(f"\n  Operating model halted at stage "
+              f"{blocked['id']} ({blocked['name']}): {blocked['reason']}" if blocked
+              else "\n  Operating model halted.")
+        return ctx
 
-    # Cross-checks between agents (before escalating or writing).
+    # Cross-checks between agents (global integrity, before escalating or writing).
     issues = cross_checks(ctx)
     if issues:
         for i in issues:
@@ -282,17 +248,8 @@ def run(period=PERIOD):
         return ctx
     ctx.audit("cross_check", "ok", "agents consistent on the shared numbers")
 
-    # Record the first-line review status (maker-checker per function).
-    fl = review.first_line_status(ctx)
-    ctx.put("CFO", {"first_line": fl})
-    if not fl["all_approved"]:
-        # A function was not signed off by its domain expert -> the close is not
-        # ready for the CFO. Do not fabricate a board pack over un-reviewed work.
-        ctx.audit("CFO", "blocked", "first-line review incomplete: " + ", ".join(fl["rejected"]))
-        ctx.put("CFO", {"status": "blocked_first_line"})
-        ctx.save()
-        print("\n  Pipeline stopped: a function was not signed off by its domain expert.")
-        return ctx
+    # Every stage passed its control + first-line sign-off (recorded by stages).
+    ctx.put("CFO", {"first_line": review.first_line_status(ctx)})
 
     # Consolidate escalations from all agents.
     esc = gather_escalations(ctx)

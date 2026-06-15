@@ -273,6 +273,26 @@ Bitacora de avance, fase por fase.
   no venden "un solo gate"; describen el modelo de dos niveles. El demo (cfo-demo)
   muestra las 11 firmas por experto + el gate final del CFO. Evals 22/22.
 
+### Fase 8.1 — Operating model por ETAPAS (motor explicito)  [OK]
+- Decision (Nacho, opcion A): convertir "pipeline con reviews" en un MODELO
+  OPERATIVO por etapas, de punta a punta, con HITL gates por etapa. Fuera de
+  alcance por pedido: Compliance, Payroll, AgentOps/CI, materiality routing.
+- cfo-office\stages.py: el cierre como 8 ETAPAS. Cada etapa = maker (agente) +
+  CONTROL deterministico en codigo (no el modelo) + firma del experto de dominio
+  (checker) + on-reject: REWORK (cap MAX_ATTEMPTS=2) -> BLOCK. Una etapa bloqueada
+  frena TODO el cierre; el gate final del CFO es contingente a que todas pasen.
+  Controles duros: etapa 4 (subledgers atan, BS cuadra, cash flow foots), etapa 7
+  (0 fallas de integridad), etapa 8 (opinion != adverse).
+- cfo_orchestrator.py refactorizado: run() llama stages.run_all(); si una etapa
+  bloquea, status "blocked_stage" y corta. Luego cross-checks (6) + escalamientos
+  + gate FINAL del CFO. fpa_agent / docstrings: limpieza de wording "un solo gate".
+- OPERATING-MODEL.md (nuevo): doc canonico etapas x controles x firmantes x
+  rework/block x gate CFO. cfo-demo: tabla de etapas + columna "mode" + badge
+  "auto-approved in this replay" + disclosure honesto (las firmas del replay son
+  auto). cfo-demo/README actualizado a dos niveles.
+- Verificado: corrida staged auto = 8/8 PASS + CFO 11/11, 68 eventos de audit;
+  test de control-fail -> etapa "blocked" (rework y luego block). Evals 22/22.
+
 ## Siguiente
 
 ### Fase 6.2 — Deploy + demo

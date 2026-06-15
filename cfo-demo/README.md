@@ -8,8 +8,12 @@ same numbers — no AI calls, so it can never run up an API bill.
 Shows the full month-end loop — **record → close → report → analyze → control →
 audit** — across eight specialist agents (Controller, Treasury, Administration
 [AR/AP/Tax], Accounting & Reporting [close + the three financial statements],
-FP&A, Strategic Finance, Internal Controls, and an independent Audit), all
-reporting to a CFO agent with one human-in-the-loop gate.
+FP&A, Strategic Finance, Internal Controls, and an independent Audit), run as an
+explicit **staged operating model** with **two-tier human-in-the-loop control
+(maker-checker)**: every function is signed off by its own domain expert (the
+first line), and the CFO agent gives a single **final consolidated sign-off** on
+top. The public replay auto-approves the sign-offs (no reviewer at the console);
+the maker-checker workflow, audit trail and block-on-reject are real.
 
 For the technical audience, the full source (the agents, the deterministic
 engine, the eval harness) is in the repo root. This folder is just the

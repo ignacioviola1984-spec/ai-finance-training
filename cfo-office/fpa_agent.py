@@ -13,8 +13,9 @@ Numeros por codigo (deterministicos, reusa finance_core). El modelo razona
 y redacta; nunca inventa una cifra. Deja todo en el estado compartido.
 
 Bajo el CFO orquestador (run con un ctx dado), FP&A entrega su analisis y sus
-flags al estado compartido; el board pack y el unico gate humano los hace el
-CFO, para no duplicar gates.
+flags; en el modelo por etapas lo firma el FP&A Director (primera linea), y el
+board pack + la firma FINAL del CFO los maneja el orquestador. Por eso FP&A NO
+corre su propio gate ahi (solo lo hace en modo standalone, para prueba aislada).
 
 Requisitos: ANTHROPIC_API_KEY en el .env de la raiz.
 Correr:  python fpa_agent.py
@@ -214,8 +215,8 @@ def run(ctx=None):
                      "anomaly_expl": anomaly_expl})
 
     # Board pack + acciones + HITL: solo en modo standalone. Bajo el CFO
-    # orquestador, FP&A entrega su analisis y el CFO hace el board pack y el
-    # unico gate humano (no se duplican los gates).
+    # orquestador, FP&A entrega su analisis (lo firma el FP&A Director en la
+    # primera linea) y el CFO hace el board pack y la firma FINAL.
     if own:
         board_pack = agent(
             "You write the board pack. Executive summary of 5-7 sentences, CFO tone, direct, "
