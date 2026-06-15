@@ -564,12 +564,18 @@ def control_checks(period=LATEST, as_of="2026-05-31",
 # aca se calcula y se decide -> testeable por evals.
 # --------------------------------------------------------------------------
 
-def _prev_period(period):
-    """Periodo inmediatamente anterior dentro de la serie (o None si es el primero)."""
-    if period in PERIODS:
-        i = PERIODS.index(period)
-        return PERIODS[i - 1] if i > 0 else None
-    return None
+_BS_PERIODS = sorted({r["period"] for r in _BS})
+
+
+def _prev_bs_period(period):
+    """Periodo de balance inmediatamente anterior que EXISTE en el balance (o None).
+
+    Se basa en los periodos presentes en el balance, no en los del P&L: el P&L
+    tiene 5 periodos pero el balance solo 2. Asi un comparativo ausente se trata
+    como 'sin periodo previo' (N/A), en vez de compararse contra ceros implicitos
+    (lo que daria un BREAK/no-cuadre espurio)."""
+    earlier = [p for p in _BS_PERIODS if p < period]
+    return earlier[-1] if earlier else None
 
 
 def _bs_usd(period=LATEST):
@@ -601,17 +607,26 @@ def close_reconciliations(period=LATEST, tolerance=1.0):
     Devuelve cada conciliacion con su diferencia y estado, y si el cierre quedo
     todo conciliado (sin partidas abiertas)."""
     bs = _bs_usd(period)
-    sub = subledger_totals_usd(period)
     recs = []
-    for label, sub_v, gl_v in [
-        ("Accounts receivable", sub["ar"], bs.get("1100", 0.0)),
-        ("Accounts payable", sub["ap"], bs.get("2000", 0.0)),
-    ]:
-        diff = sub_v - gl_v
-        recs.append({"item": label, "subledger": sub_v, "gl": gl_v, "diff": diff,
-                     "status": "RECONCILED" if abs(diff) <= tolerance else "OPEN ITEM"})
+    # El subledger de facturas es una foto AL CIERRE MAS RECIENTE (no hay snapshot
+    # por periodo), asi que el tie-out subledger -> GL solo aplica al periodo LATEST;
+    # para periodos previos se marca N/A en vez de comparar contra el subledger actual.
+    if period == LATEST:
+        sub = subledger_totals_usd(period)
+        for label, sub_v, gl_v in [
+            ("Accounts receivable", sub["ar"], bs.get("1100", 0.0)),
+            ("Accounts payable", sub["ap"], bs.get("2000", 0.0)),
+        ]:
+            diff = sub_v - gl_v
+            recs.append({"item": label, "subledger": sub_v, "gl": gl_v, "diff": diff,
+                         "status": "RECONCILED" if abs(diff) <= tolerance else "OPEN ITEM"})
+    else:
+        for label, gl_v in [("Accounts receivable", bs.get("1100", 0.0)),
+                            ("Accounts payable", bs.get("2000", 0.0))]:
+            recs.append({"item": label, "subledger": None, "gl": gl_v, "diff": None,
+                         "status": "N/A (no subledger snapshot for prior period)"})
 
-    prev = _prev_period(period)
+    prev = _prev_bs_period(period)
     re_move = (bs.get("3900", 0.0) - _bs_usd(prev).get("3900", 0.0)) if prev else None
     ni = pnl_usd(period)["operating_income"]
     if re_move is None:
@@ -657,11 +672,18 @@ def balance_sheet_statement(period=LATEST):
             "balance_check": ta - (tl + te)}
 
 
-def cash_flow_statement(period=LATEST):
+def cash_flow_statement(period=LATEST, tolerance=1.0):
     """Estado de flujo de efectivo (metodo indirecto), consolidado en USD.
     Articula: resultado +/- variacion de capital de trabajo (operativo) +/-
-    inversion +/- financiacion = variacion real de caja entre cierres."""
-    prev = _prev_period(period)
+    inversion +/- financiacion = variacion real de caja entre cierres.
+
+    Nota de honestidad: en libros INTERNAMENTE CONSISTENTES (el balance esta
+    articulado: caja = activo de cuadre, RE rota por el resultado) el total del
+    estado iguala a la variacion de caja por construccion -> 'foots' no puede
+    fallar sobre datos consistentes. Por eso el chequeo vale como guarda de
+    CONSISTENCIA/regresion (atrapa un balance manipulado o un cableado roto: lo
+    probamos con tamper tests), no como aseguramiento independiente."""
+    prev = _prev_bs_period(period)
     b = _bs_usd(period)
     bp = _bs_usd(prev) if prev else {}
     ni = pnl_usd(period)["operating_income"]
@@ -678,40 +700,91 @@ def cash_flow_statement(period=LATEST):
     return {"net_income": ni, "d_ar": d_ar, "d_ap": d_ap, "d_deferred": d_def,
             "cfo": cfo, "cfi": cfi, "cff": cff, "net_change": net,
             "cash_begin": bp.get("1000", 0.0), "cash_end": b.get("1000", 0.0),
-            "actual_change": d_cash, "foots": abs(net - d_cash) <= 1.0}
+            "actual_change": d_cash, "foots": abs(net - d_cash) <= tolerance,
+            "has_comparative": prev is not None}
 
 
 # --- Audit (aseguramiento independiente) -------------------------------
 
 def audit_procedures(period=LATEST, tolerance=1.0, sample_threshold=25000.0):
-    """Procedimientos de auditoria INDEPENDIENTES (tercera linea): re-ejecuta las
-    conciliaciones del cierre, re-piesa el balance, verifica la articulacion del
-    patrimonio y que el flujo de efectivo cuadre, y muestrea (vouching) los
-    desembolsos de alto valor. Emite una opinion segun cuantos procedimientos
-    fallan la re-ejecucion. No re-escala las partidas (eso es del cierre): su
-    salida propia es la OPINION."""
+    """Procedimientos de auditoria INDEPENDIENTES (tercera linea).
+
+    Independencia real: re-deriva cada cifra DESDE las fuentes (el subledger de
+    facturas y el mayor / balance crudo), NO llamando a las funciones del cierre
+    ni del reporting (close_reconciliations, balance_sheet_statement,
+    cash_flow_statement). Asi, si hubiera un bug en esas funciones, la auditoria
+    NO lo replicaria: lo detectaria como excepcion. Re-ejecuta:
+      - los tie-outs subledger AR/AP vs la cuenta de control del GL,
+      - la articulacion del patrimonio (movimiento de RE vs resultado),
+      - el cuadre del balance (A = P + PN),
+      - el cuadre del flujo de efectivo (re-arma el indirecto desde el balance),
+      - y muestrea (vouching) los desembolsos de alto valor.
+    Emite una OPINION (unqualified / qualified / adverse) segun cuantos
+    procedimientos fallan. No re-escala las partidas (eso tiene dueno en el
+    cierre): su salida propia es la opinion."""
     findings = []
-    cr = close_reconciliations(period, tolerance)
-    for r in cr["recs"]:
-        findings.append({"proc": f"{r['item']}: subledger ties to GL",
-                         "ok": r["status"] == "RECONCILED",
-                         "detail": f"difference USD {r['diff']:,.2f}"})
-    art = cr["articulation"]
-    findings.append({"proc": "Retained earnings articulation",
-                     "ok": art["status"] in ("TIED", "N/A"),
-                     "detail": (f"RE movement vs net income differ by USD {art['diff']:,.2f}"
-                                if art["diff"] is not None else "no prior period to test")})
-    bss = balance_sheet_statement(period)
+
+    # Fuentes crudas (independientes de las funciones del cierre/reporting):
+    b = _bs_usd(period)                              # mayor: balance por cuenta, USD
+    prev = _prev_bs_period(period)
+    bp = _bs_usd(prev) if prev else {}
+    ni = pnl_usd(period)["operating_income"]         # P&L (fuente, no un estado derivado)
+
+    # P1/P2 - tie-out subledger AR/AP vs cuenta de control del GL (re-derivado).
+    # El subledger es una foto al cierre mas reciente -> el tie-out solo aplica a LATEST.
+    if period == LATEST:
+        ar_sub = sum(_usd(float(r["amount_local"]), r["currency"], period)
+                     for r in _INV if r["status"] == "open")
+        ap_sub = sum(_usd(float(r["amount_local"]), r["currency"], period)
+                     for r in _AP if r["status"] == "open")
+        for label, sub_v, gl_v in [("Accounts receivable", ar_sub, b.get("1100", 0.0)),
+                                   ("Accounts payable", ap_sub, b.get("2000", 0.0))]:
+            diff = sub_v - gl_v
+            findings.append({"proc": f"{label}: subledger ties to GL",
+                             "ok": abs(diff) <= tolerance, "detail": f"difference USD {diff:,.2f}"})
+    else:
+        for label in ("Accounts receivable", "Accounts payable"):
+            findings.append({"proc": f"{label}: subledger ties to GL", "ok": True,
+                             "detail": "no subledger snapshot for prior period"})
+
+    # P3 - articulacion del patrimonio: movimiento de RE vs resultado (re-derivado).
+    if prev:
+        re_move = b.get("3900", 0.0) - bp.get("3900", 0.0)
+        findings.append({"proc": "Retained earnings articulation",
+                         "ok": abs(re_move - ni) <= tolerance,
+                         "detail": f"RE movement vs net income differ by USD {re_move - ni:,.2f}"})
+    else:
+        findings.append({"proc": "Retained earnings articulation", "ok": True,
+                         "detail": "no prior period to test"})
+
+    # P4 - cuadre del balance A = P + PN (re-sumado desde el mayor).
+    assets = b.get("1000", 0.0) + b.get("1100", 0.0) + b.get("1500", 0.0)
+    liab_eq = b.get("2000", 0.0) + b.get("2500", 0.0) + b.get("3000", 0.0) + b.get("3900", 0.0)
     findings.append({"proc": "Balance sheet foots (A = L + E)",
-                     "ok": abs(bss["balance_check"]) <= tolerance,
-                     "detail": f"imbalance USD {bss['balance_check']:,.2f}"})
-    cf = cash_flow_statement(period)
-    findings.append({"proc": "Cash flow ties to change in cash",
-                     "ok": cf["foots"],
-                     "detail": f"statement USD {cf['net_change']:,.0f} vs actual USD {cf['actual_change']:,.0f}"})
+                     "ok": abs(assets - liab_eq) <= tolerance,
+                     "detail": f"imbalance USD {assets - liab_eq:,.2f}"})
+
+    # P5 - cuadre del flujo de efectivo: re-arma el indirecto desde el balance
+    #      (independiente de cash_flow_statement) y lo compara con la var. de caja.
+    if prev:
+        net = (ni
+               - (b.get("1100", 0.0) - bp.get("1100", 0.0))      # dAR
+               + (b.get("2000", 0.0) - bp.get("2000", 0.0))      # dAP
+               + (b.get("2500", 0.0) - bp.get("2500", 0.0))      # dDeferred
+               - (b.get("1500", 0.0) - bp.get("1500", 0.0))      # dFixed (capex)
+               + (b.get("3000", 0.0) - bp.get("3000", 0.0)))     # dPaid-in
+        d_cash = b.get("1000", 0.0) - bp.get("1000", 0.0)
+        findings.append({"proc": "Cash flow ties to change in cash",
+                         "ok": abs(net - d_cash) <= tolerance,
+                         "detail": f"reconstructed USD {net:,.0f} vs actual USD {d_cash:,.0f}"})
+    else:
+        findings.append({"proc": "Cash flow ties to change in cash", "ok": True,
+                         "detail": "no prior period to test"})
+
+    # P6 - vouching de desembolsos de alto valor (muestra para revision).
     sample = [r["bill_id"] for r in _AP if r["status"] == "open"
-              and (LATEST, r["currency"]) in _FX
-              and _usd(float(r["amount_local"]), r["currency"], LATEST) >= sample_threshold]
+              and (period, r["currency"]) in _FX
+              and _usd(float(r["amount_local"]), r["currency"], period) >= sample_threshold]
     findings.append({"proc": f"High-value disbursements vouched (>= USD {sample_threshold:,.0f})",
                      "ok": True, "detail": f"{len(sample)} item(s) sampled for authorization"})
 

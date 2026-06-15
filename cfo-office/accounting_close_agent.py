@@ -49,7 +49,7 @@ def close_escalations(cr):
     cerrados no hay ninguna (el valor es PROBAR que ata, no generar ruido)."""
     out = []
     for r in cr["recs"]:
-        if r["status"] != "RECONCILED":
+        if r["status"] == "OPEN ITEM":
             out.append(["HIGH", f"{r['item']} subledger does not tie to GL: "
                                 f"difference {_money(r['diff'])} (open close item)"])
     if cr["articulation"]["status"] == "BREAK":

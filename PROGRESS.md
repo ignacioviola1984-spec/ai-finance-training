@@ -81,7 +81,8 @@ Bitacora de avance, fase por fase.
   extraction, grounding) con scorecard y exit code (regresion).
 - Guardrail de grounding: el RAG debe negarse ante preguntas sin respuesta.
 - Writeup "how I make a finance agent reliable" en evals/README.md.
-- Suite numbers verificada (op income -756.823, cash 7.092.891).
+- Suite numbers verificada (op income -756.823, cash 7.092.891; la caja se
+  rebaselineo a 7.504.278 en Fase 7.5 al articular el balance, ver mas abajo).
 
 ### Fase 6.1 — Web app (Streamlit)  [OK]
 - webapp/app.py: 3 pestanas (FX Agent, Operating Model con gate humano como
@@ -222,6 +223,21 @@ Bitacora de avance, fase por fase.
 - evals: 5 checks nuevos (cierre concilia, net income, balance cuadra, flujo ata,
   opinion sin salvedades). Suite numbers 22/22. Tamper test: romper la cuenta de
   control AR dispara open item en el cierre y opinion ADVERSE en auditoria.
+- Review adversarial (workflow, 4 lentes incl. regresion): 16 hallazgos, 13
+  confirmados, 3 descartados (uno cuyo "fix" habria roto la articulacion). Fixes:
+  (1) REGRESION que YO introduje: el MCP server (server.py get_balance_sheet /
+  get_cash_position) sumaba los 2 periodos del balance -> caja USD 15,6M en vez de
+  7,5M, en silencio (el check A=P+PN seguia en ~0). Fix: filtro por periodo.
+  patterns.py lo heredaba (se arregla solo). (2) Audit ahora es INDEPENDIENTE de
+  verdad: re-deriva los tie-outs/cuadres desde el mayor y el subledger crudos, no
+  llamando a las funciones de cierre/reporting (un bug en ellas ya no se replica).
+  (3) cash_flow_statement toma tolerance (la auditoria la propaga). (4) prev period
+  basado en los periodos del BALANCE (no del P&L) -> sin BREAK espurio en periodos
+  sin comparativo. (5) Framing honesto: el cuadre del flujo es por construccion en
+  libros consistentes -> vale como guarda de consistencia/regresion (failable por
+  tamper), no aseguramiento independiente. Docs: README MCP (2 periodos), PROGRESS.
+  Pendiente FLAGGEADO: el snapshot del demo publico quedo desactualizado (muestra
+  la caja vieja 7,09M) -> requiere refresh del demo (fase aparte).
 
 ## Backlog del departamento (multi-agente, hacia el "full finance department")
 - Faltantes mapeados (ver chat de gap analysis): Strategic Finance [HECHO],

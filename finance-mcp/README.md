@@ -43,7 +43,9 @@ so the same tool serves both consolidated and single-entity views.
 - `chart_of_accounts.csv` — account codes, names, types
 - `fx_rates.csv` — period-close rates (local units per 1 USD)
 - `pnl_activity.csv` — monthly P&L activity per entity (local currency)
-- `balance_sheet.csv` — latest-close balances per entity (local currency)
+- `balance_sheet.csv` — balances per entity (local currency) for **two periods**
+  (prior + latest close), so the financial statements articulate and the indirect
+  cash flow foots. Consumers must filter by period (default = latest close)
 - `ar_invoices.csv` — open/paid invoices for aging
 - `ap_invoices.csv` — vendor bills (payables): open/paid, due dates, currency
 - `tax_obligations.csv` — tax obligations per entity/jurisdiction (VAT, income, withholding), with due dates and status

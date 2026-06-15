@@ -178,6 +178,8 @@ def get_balance_sheet(report_currency: str = "USD", entity_id: str = "") -> str:
     _validate_entity(entity_id)
     agg = defaultdict(float)
     for r in BS:
+        if r["period"] != LATEST_PERIOD:      # el balance tiene 2 periodos: tomar solo el cierre
+            continue
         if entity_id and r["entity_id"] != entity_id:
             continue
         ccy = ENTITY_CCY[r["entity_id"]]
@@ -264,7 +266,7 @@ def get_cash_position(report_currency: str = "USD") -> str:
     ]
     total = 0.0
     for r in BS:
-        if r["account_code"] != "1000":
+        if r["account_code"] != "1000" or r["period"] != LATEST_PERIOD:
             continue
         ccy = ENTITY_CCY[r["entity_id"]]
         local = float(r["amount_local"])
