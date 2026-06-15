@@ -53,7 +53,7 @@ def run(ctx=None):
 
     # 3) build a facts string from data, then narrate
     cohort_lines = []
-    for year in sorted(cohorts):
+    for year in sorted(k for k in cohorts if k is not None):
         c = cohorts[year]
         cohort_lines.append(
             f"  {year}: funded ${c['funded_usd']:,.0f}, received ${c['received_usd']:,.0f}, "

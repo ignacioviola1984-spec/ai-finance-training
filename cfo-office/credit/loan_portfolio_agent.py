@@ -66,7 +66,7 @@ def run(ctx=None):
 
     vintage_lines = [
         f"  {year}: ${by_vintage_usd[year]:,.0f}"
-        for year in sorted(by_vintage_usd)
+        for year in sorted(k for k in by_vintage_usd if k is not None)
     ]
     vintage_block = "\n".join(vintage_lines) if vintage_lines else "  (no vintage data)"
 

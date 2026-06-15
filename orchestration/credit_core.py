@@ -188,20 +188,26 @@ def _scan():
                 a["g_funded"][g] = a["g_funded"].get(g, 0.0) + funded
                 a["t_funded"][term] = a["t_funded"].get(term, 0.0) + funded
                 a["by_status"][st] = a["by_status"].get(st, 0) + 1
-                a["y_funded"][y] = a["y_funded"].get(y, 0.0) + funded
-                a["y_received"][y] = a["y_received"].get(y, 0.0) + tot_pymnt
-                a["y_int_income"][y] = a["y_int_income"].get(y, 0.0) + rec_int
-                a["y_count"][y] = a["y_count"].get(y, 0) + 1
-                a["y_funded_rate"][y] = a["y_funded_rate"].get(y, 0.0) + funded * rate
+                # By-year buckets only for rows with a parseable vintage; bad-date
+                # rows (e.g. LendingClub's trailing junk rows) are flagged by DQ and
+                # kept out of the vintage analytics (no None key downstream).
+                if y is not None:
+                    a["y_funded"][y] = a["y_funded"].get(y, 0.0) + funded
+                    a["y_received"][y] = a["y_received"].get(y, 0.0) + tot_pymnt
+                    a["y_int_income"][y] = a["y_int_income"].get(y, 0.0) + rec_int
+                    a["y_count"][y] = a["y_count"].get(y, 0) + 1
+                    a["y_funded_rate"][y] = a["y_funded_rate"].get(y, 0.0) + funded * rate
 
                 if st in _RESOLVED:
                     a["matured"] += 1
                     a["g_matured"][g] = a["g_matured"].get(g, 0) + 1
-                    a["y_matured"][y] = a["y_matured"].get(y, 0) + 1
+                    if y is not None:
+                        a["y_matured"][y] = a["y_matured"].get(y, 0) + 1
                     if st == "Charged Off":
                         a["charged"] += 1
                         a["g_charged"][g] = a["g_charged"].get(g, 0) + 1
-                        a["y_charged"][y] = a["y_charged"].get(y, 0) + 1
+                        if y is not None:
+                            a["y_charged"][y] = a["y_charged"].get(y, 0) + 1
                         a["g_co_prncp"][g] = a["g_co_prncp"].get(g, 0.0) + (funded - rec_prncp)
                         a["g_recov"][g] = a["g_recov"].get(g, 0.0) + recov
                         a["charged_off_usd"] += (funded - rec_prncp)
@@ -416,6 +422,15 @@ def _computed_for(metric, period):
 
 
 def benchmark_vs_filings():
+    # The public-filing values are REAL LendingClub 10-K/8-K figures, so the
+    # benchmark is only meaningful against the REAL loan book. On the seeded sample
+    # there is nothing real to reconcile — skip it rather than report nonsense drift.
+    if not _FIL:
+        return {"rows": [], "n": 0, "max_abs_var_pct": 0.0,
+                "skipped": "no public_filings.csv loaded"}
+    if ACCEPTED_FILE.endswith("_sample.csv"):
+        return {"rows": [], "n": 0, "max_abs_var_pct": 0.0,
+                "skipped": "benchmark runs on real data only (load the real Kaggle CSV to benchmark vs filings)"}
     out = []
     for r in _FIL:
         metric, period = r.get("metric"), r.get("period")
