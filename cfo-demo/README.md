@@ -1,7 +1,7 @@
 # CFO AI Office — public demo
 
 An HR-friendly, **no-API-key, zero-cost** web demo of the multi-agent CFO
-office. It replays a **real saved run** (`demo_snapshot.json`) so anyone can
+office. It replays a **saved run** (`demo_snapshot.json`) so anyone can
 explore it instantly, and the interactive widgets recompute live from those
 same numbers — no AI calls, so it can never run up an API bill.
 

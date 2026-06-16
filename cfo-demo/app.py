@@ -103,7 +103,7 @@ st.markdown("""
 
 st.title("📊 CFO AI Office")
 st.markdown(
-    "#### An AI finance team that runs a company's month-end close end to end — and keeps a human in control."
+    "#### An AI finance operating model that runs a month-end close workflow from raw data to board pack, with human approval at key points."
 )
 st.markdown(
     "<span class='small'>Eight specialist agents — across accounting, treasury, working capital, "
@@ -125,7 +125,9 @@ with st.expander("ℹ️  What am I looking at? (30-second version)"):
         "- **Two-tier human control (maker-checker):** each function is signed off by the domain "
         "expert who actually has that depth (a generalist CFO can't competently approve everything), "
         "and the **CFO gives the final consolidated sign-off** (you'll do that below).\n"
-        "- This page replays a **real saved run** so it's instant and free. The widgets recompute live.\n"
+        "- This page replays a saved run so it is instant and free. Human approvals are simulated in "
+        "this public version. In a real deployment, each approval gate would be owned by the relevant "
+        "finance lead. The widgets recompute live.\n"
         "- Built by **Ignacio Viola** — 17 years in senior finance, now building the AI systems. "
         "Full source on [GitHub](https://github.com/ignacioviola1984-spec/ai-finance-engineering)."
     )

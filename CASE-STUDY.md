@@ -1,6 +1,6 @@
 # Case study — the CFO AI Office runs a month-end close
 
-A walk-through of one real, saved run of the multi-agent CFO office, end to end,
+A walk-through of one saved run of the multi-agent CFO office, end to end,
 on a synthetic SaaS company (**Lumen Inc.**) closing **May 2026**. Every figure
 below was computed by code and produced by the system — nothing here is mocked up
 for the page. The interactive version is in [`cfo-demo/`](cfo-demo/); the operating
