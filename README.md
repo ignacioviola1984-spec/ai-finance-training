@@ -3,11 +3,11 @@
 Finance AI engineering projects: live API integration, a custom MCP
 connector for a multi-entity finance system, a multi-agent month-end close
 model with reliability controls, and a multi-agent CFO office that runs the
-close over a shared, auditable state. Built by a finance operator with 17
-years of experience, now building the systems.
-
-> **See it run:** [`CASE-STUDY.md`](CASE-STUDY.md) walks a month-end close end to end
-> on synthetic data (every figure computed in code). **Work with me:** [`OFFERING.md`](OFFERING.md).
+close over a shared, auditable state. The deterministic numbers are also
+validated against real public filings: they tie **17 of 17** to dLocal
+(NASDAQ: DLO) reported FY2024 and FY2025 figures, statement-level, public data
+only. Built by a finance operator with 17 years of experience, now building the
+systems.
 
 > **Validated against real public filings:** the deterministic statement-level math
 > now ties **17 of 17** figures to dLocal (NASDAQ: DLO) reported FY2024/FY2025
@@ -19,6 +19,9 @@ years of experience, now building the systems.
 > which no public company discloses. Public data only; dLocal is not affiliated
 > with this project and did not endorse or review it. Full evidence and boundaries:
 > [`test-dlocal/AUDIT_EVIDENCE.md`](test-dlocal/AUDIT_EVIDENCE.md).
+
+> **See it run:** [`CASE-STUDY.md`](CASE-STUDY.md) walks a month-end close end to end
+> on synthetic data (every figure computed in code). **Work with me:** [`OFFERING.md`](OFFERING.md).
 
 ## Projects
 
