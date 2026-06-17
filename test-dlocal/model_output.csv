@@ -1,21 +1,18 @@
-key,value,source
-gross_profit_fy2025,402756.0,finance_core.pnl_usd
-operating_profit_fy2025,219915.0,finance_core.pnl_usd
-profit_before_tax_fy2025,228654.0,extension (atomic lines)
-net_income_fy2025,196902.0,extension (atomic lines)
-net_income_fy2024,120469.0,extension (atomic lines)
-adjusted_ebitda_fy2025,278078.0,extension (+reconciliation addbacks)
-total_assets_fy2025,1540964.0,finance_core BS
-total_assets_fy2024,1171329.0,finance_core BS
-total_liabilities_fy2025,971535.0,finance_core BS
-total_equity_fy2025,569429.0,finance_core BS
-closing_cash_fy2025,719897.0,finance_core.cash_total_usd
-gross_margin_fy2025_pct,36.8,computed
-net_margin_fy2025_pct,18.0,computed
-adjusted_ebitda_margin_fy2025_pct,25.4,computed
-revenue_growth_yoy_pct,46.6,computed
-gross_profit_growth_yoy_pct,36.7,computed
-net_income_growth_yoy_pct,63.4,computed
-trial_balance_imbalance_2025,0.0,finance_core control C1
-trial_balance_imbalance_2024,0.0,finance_core control C1
-rule_of_40_fy2025,66.7,finance_core def
+key,value
+gross_profit_fy2025,402756
+operating_profit_fy2025,219915
+profit_before_tax_fy2025,228654
+net_income_fy2025,196902
+net_income_fy2024,120469
+adjusted_ebitda_fy2025,278078
+total_assets_fy2025,1540964
+total_assets_fy2024,1171329
+total_liabilities_fy2025,971535
+total_equity_fy2025,569429
+closing_cash_fy2025,719897
+gross_margin_fy2025_pct,36.8
+net_margin_fy2025_pct,18.0
+adjusted_ebitda_margin_fy2025_pct,25.4
+revenue_growth_yoy_pct,46.6
+gross_profit_growth_yoy_pct,36.7
+net_income_growth_yoy_pct,63.4

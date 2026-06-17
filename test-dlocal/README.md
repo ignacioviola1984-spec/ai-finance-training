@@ -2,7 +2,18 @@
 
 Tests the CFO multi-agent model on dLocal's real, audited public financials (FY2024 and FY2025), then audits the result independently. Built from dLocal's SEC Form 6-K earnings releases. FY2025 full-year figures are audited. Amounts in thousands of USD; dLocal reports in USD under IFRS, so no FX conversion is needed.
 
-## Why this is a real audit, not the model grading itself
+## Reproducibility and dual-model AI-assisted external audit
+
+Step 1 and Step 2 are also available as deterministic, dependency-free Python, so the run and the audit can be reproduced without an LLM:
+
+```
+py -3 test-dlocal\run_dlocal_test.py     # regenerates model_output.csv from the public inputs
+py -3 test-dlocal\audit_dlocal_test.py   # diffs model_output.csv against the SEC-derived answer key
+```
+
+The dLocal output matched all 17 expected figures (17 PASS, 0 FAIL, exit 0), and Codex independently reviewed the design, evidence, local eval results, and claim boundaries after Claude Code implemented and ran the workflow. This is a dual-model AI-assisted external audit in the engineering sense (external to the model-output generation path); it is not a formal external or statutory audit, a certification, or a substitute for a human auditor. See [AUDIT_EVIDENCE.md](AUDIT_EVIDENCE.md) for the full detail, scope, and claim boundaries.
+
+## Why this is independent audit evidence, not the model grading itself
 
 The independence does not come from who runs the comparison. It comes from two things:
 
