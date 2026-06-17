@@ -32,22 +32,6 @@ If you would rather be the auditor yourself: after Step 1, open model_output.csv
 - 1_RUN_PROMPT.md / 2_AUDIT_PROMPT.md : the two steps.
 - model_output.csv : created by Step 1 (the model's computed numbers).
 
-## Honest scope (say this in the post)
-
-This exercises the statement-level and analytical agents (Controller, Accounting and Reporting, FP&A, Strategic Finance, cross-checks) on dLocal's real reported numbers. It does NOT feed the operational subledger agents (AR aging, AP, tax by invoice) with real data, because no public company discloses transaction-level detail. Those keep running on representative data. Same reason the multi-entity, multi-currency consolidation layer is not exercised: dLocal publishes consolidated USD only.
-
-## Draft LinkedIn caption
-
-> I pointed my multi-agent CFO AI model at real public data, not synthetic: dLocal's audited FY2025 results (NASDAQ: DLO). I ran it as a real audit: the model computed blind, then a separate pass checked every figure against dLocal's reported numbers.
->
-> Every figure tied out: net income 196.9M USD, Adjusted EBITDA 278.1M USD, the balance sheet balances both years, and the cash flow foots to the reported 719.9M USD closing cash. Guidance vs actual: TPV +60% and revenue +47% beat the top of dLocal's guided range.
->
-> Honest note: this ran on public consolidated filings. The subledger agents (AR, AP, tax at invoice level) still run on representative data, because no public company discloses transaction-level detail.
->
-> The design principle held on real data: numbers computed deterministically in code, the model only reasons and writes. It even surfaced a ~2M USD reconciling item in the retained-earnings roll that traces to dLocal's 2025 equity restructuring, the kind of real-world item synthetic data never shows.
->
-> Public data only. Not affiliated with or endorsed by dLocal.
-
 ## Sources (primary)
 
 - dLocal 4Q/FY2025 earnings release (Form 6-K, filed 2026-03-18): https://www.sec.gov/Archives/edgar/data/0001846832/000207097926000110/a991dlocal4q25_earningsres.htm
