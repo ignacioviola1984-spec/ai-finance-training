@@ -105,11 +105,13 @@ def ctl_order_to_billing_schedule(dfs, period):
 
 def ctl_billing_completeness(dfs, period):
     unb = core.calculate_unbilled_revenue(dfs, period)
-    fail = unb["unbilled_amount_usd"] > P.MATERIALITY_THRESHOLD_USD
+    # any scheduled, due line that is neither invoiced nor blocked is a break -
+    # completeness is exact, not subject to a materiality floor.
+    fail = unb["unbilled_count"] > 0
     return ControlResult(
         "D_BILLING_COMPLETENESS", "Scheduled billable amounts are invoiced",
         "HARD", "FAIL" if fail else "PASS", "Billing Operations", "Billing Manager",
-        "Scheduled, due, billable amounts must be invoiced or carry a valid billing block.",
+        "Every scheduled, due line must be invoiced (invoice exists) or carry a valid billing block.",
         failing_record_count=unb["unbilled_count"], failing_amount_usd=unb["unbilled_amount_usd"],
         source_tables=["billing", "invoices"], exception_details=_ids(unb["unbilled"]["billing_schedule_id"]),
         recommended_action="Invoice the unbilled lines; this is direct revenue leakage.",
@@ -165,10 +167,11 @@ def ctl_invoice_duplicate(dfs, period):
 
 def ctl_ar_subledger_completeness(dfs, period):
     items = core.calculate_invoice_open_amounts(dfs, period)
+    inv_status = items["invoice_status"].fillna("").astype(str).str.strip().str.lower()
     by_open = round(float(items[items["open_usd"] > 1.0]["open_usd"].sum()), 2)         # control balance
-    by_status = round(float(items[items["invoice_status"] != "paid"]["open_usd"].sum()), 2)  # subledger
+    by_status = round(float(items[inv_status != "paid"]["open_usd"].sum()), 2)          # subledger
     diff = round(by_open - by_status, 2)
-    bad = items[(items["open_usd"] > 1.0) & (items["invoice_status"] == "paid")]
+    bad = items[(items["open_usd"] > 1.0) & (inv_status == "paid")]
     fail = abs(diff) > P.AR_TO_GL_TOLERANCE_USD
     return ControlResult(
         "H_AR_SUBLEDGER_COMPLETENESS", "AR subledger ties to the control balance",
@@ -201,22 +204,29 @@ def ctl_cash_receipt_to_bank(dfs, period):
 
 
 def ctl_cash_application_completeness(dfs, period):
+    """Bank-receipt-centric: every bank receipt must tie to a cash application with
+    applied_amount > 0, OR carry a documented unapplied reason. A zero-amount
+    application is NOT a valid application, and a receipt with no application row at
+    all fails. The failing record is the bank_receipt_id."""
+    rec = dfs["bank_receipts"].copy()
     ca = dfs["cash_application"]
-    bad = ca[(ca["application_status"] == "unapplied")
-             & (ca["unapplied_reason"].fillna("").astype(str).str.len() == 0)]
-    bad = bad.merge(dfs["payments"][["payment_id", "payment_amount", "currency"]],
-                    on="payment_id", how="left")
-    bad["amt_usd"] = loader.to_usd(bad["payment_amount"].fillna(0.0), bad["currency"].fillna("USD"))
+    applied = set(ca[ca["applied_amount"].fillna(0.0) > 0]["bank_receipt_id"].astype(str))
+    documented = set(ca[ca["unapplied_reason"].fillna("").astype(str).str.strip().ne("")]
+                     ["bank_receipt_id"].astype(str))
+    ok = applied | documented
+    bad = rec[~rec["bank_receipt_id"].astype(str).isin(ok)].copy()
+    bad["receipt_amount_usd"] = loader.to_usd(bad["receipt_amount"], bad["currency"])
     fail = len(bad) > 0
     return ControlResult(
-        "J_CASH_APPLICATION_COMPLETENESS", "Receipts are applied or documented",
+        "J_CASH_APPLICATION_COMPLETENESS", "Bank receipts are applied or documented",
         "HARD", "FAIL" if fail else "PASS", "Cash Application", "Treasury / AR Manager",
-        "Cash must be applied to AR or carry a valid unapplied reason.",
+        "Every bank receipt must tie to a cash application with applied_amount > 0, "
+        "or carry a documented unapplied reason. A zero-amount application is not valid.",
         failing_record_count=int(len(bad)),
-        failing_amount_usd=round(float(bad["amt_usd"].sum()), 2) if fail else 0.0,
-        source_tables=["cash_application", "bank_receipts"],
-        exception_details=_ids(bad["cash_application_id"]),
-        recommended_action="Apply the cash or document the unapplied reason.",
+        failing_amount_usd=round(float(bad["receipt_amount_usd"].sum()), 2) if fail else 0.0,
+        source_tables=["bank_receipts", "cash_application", "payments"],
+        exception_details=_ids(bad["bank_receipt_id"]),
+        recommended_action="Apply the receipt to AR or document the unapplied reason.",
         blocks_reporting=fail)
 
 
@@ -267,8 +277,10 @@ def ctl_credit_hold_new_order(dfs, period):
     orders = dfs["orders"]
     cust = dfs["customers"][["customer_id", "customer_status", "credit_status"]]
     j = orders.merge(cust, on="customer_id", how="left")
-    bad = j[(j["order_status"] == "active")
-            & ((j["credit_status"] == "hold") | (j["customer_status"] == "credit-hold"))]
+    ostat = j["order_status"].fillna("").astype(str).str.strip().str.lower()
+    cstat = j["credit_status"].fillna("").astype(str).str.strip().str.lower()
+    custat = j["customer_status"].fillna("").astype(str).str.strip().str.lower()
+    bad = j[(ostat == "active") & ((cstat == "hold") | (custat == "credit-hold"))]
     bad = bad.copy()
     bad["order_amount_usd"] = loader.to_usd(bad["order_amount"], bad["currency"])
     fail = len(bad) > 0

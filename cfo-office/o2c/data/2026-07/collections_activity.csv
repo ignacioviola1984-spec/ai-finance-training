@@ -1,0 +1,11 @@
+collections_activity_id,invoice_id,customer_id,activity_date,activity_type,owner,promise_to_pay_date,promised_amount,outcome,next_step,escalation_level,created_at
+COLL-002,INV-012,CUST-003,2026-09-07,Email Reminder,Alan Reed,2026-09-17,3630,Promise to pay,Follow up before promise date,,2026-09-07
+COLL-003,INV-013,CUST-006,2026-08-24,Email Reminder,Alan Reed,2026-09-03,1815,Promise to pay,Follow up before promise date,,2026-08-24
+COLL-004,INV-014,CUST-006,2026-09-24,Email Reminder,Alan Reed,2026-10-04,1815,Promise to pay,Follow up before promise date,,2026-09-24
+COLL-005,INV-015,CUST-009,2026-08-11,Email Reminder,Alan Reed,2026-08-21,1815,Promise to pay,Follow up before promise date,,2026-08-11
+COLL-006,INV-016,CUST-012,2026-07-28,Email Reminder,Alan Reed,2026-08-07,3630,Promise to pay,Follow up before promise date,,2026-07-28
+COLL-007,INV-017,CUST-015,2026-09-12,Email Reminder,Alan Reed,2026-09-22,4840,Promise to pay,Follow up before promise date,,2026-09-12
+COLL-008,INV-018,CUST-015,2026-10-13,Email Reminder,Alan Reed,2026-10-23,4840,Promise to pay,Follow up before promise date,,2026-10-13
+COLL-009,INV-019,CUST-021,2026-08-15,Email Reminder,Alan Reed,2026-08-25,6050,Promise to pay,Follow up before promise date,,2026-08-15
+COLL-010,INV-020,CUST-002,2026-08-31,Email Reminder,Julia Chen,2026-09-10,4840,Promise to pay,Follow up before promise date,,2026-08-31
+COLL-011,INV-021,CUST-005,2026-08-07,Email Reminder,Julia Chen,2026-08-17,1815,Promise to pay,Follow up before promise date,,2026-08-07

@@ -1,0 +1,26 @@
+credit_policy_id,customer_id,effective_date,credit_limit,currency,current_exposure_amount,utilization_pct,credit_status,hold_flag,approved_by,next_review_date,risk_score
+CL-001,CUST-001,2026-07-01,148648,USD,0,0.0,Approved,False,Credit Manager,2026-10-01,65
+CL-002,CUST-002,2026-07-01,295819,ARS,4840,1.64,Approved,False,Credit Manager,2026-10-01,51
+CL-003,CUST-003,2026-07-01,24012,BRL,3630,15.12,Approved,False,Credit Manager,2026-10-01,29
+CL-004,CUST-004,2026-07-01,63024,MXN,0,0.0,Approved,False,Credit Manager,2026-10-01,32
+CL-005,CUST-005,2026-07-01,152314,GBP,1815,1.19,Approved,False,Credit Manager,2026-10-01,38
+CL-006,CUST-006,2026-07-01,299572,EUR,3630,1.21,Approved,False,Credit Manager,2026-10-01,33
+CL-007,CUST-007,2026-07-01,18358,USD,0,0.0,Approved,False,Credit Manager,2026-10-01,23
+CL-008,CUST-008,2026-07-01,72870,ARS,0,0.0,Approved,False,Credit Manager,2026-10-01,57
+CL-009,CUST-009,2026-07-01,147848,BRL,1815,1.23,Approved,False,Credit Manager,2026-10-01,67
+CL-010,CUST-010,2026-07-01,314349,MXN,0,0.0,Approved,False,Credit Manager,2026-10-01,54
+CL-011,CUST-011,2026-07-01,28825,GBP,0,0.0,Approved,False,Credit Manager,2026-10-01,23
+CL-012,CUST-012,2026-07-01,56041,EUR,3630,6.48,Approved,False,Credit Manager,2026-10-01,67
+CL-013,CUST-013,2026-07-01,145976,USD,0,0.0,Approved,False,Credit Manager,2026-10-01,40
+CL-014,CUST-014,2026-07-01,298070,ARS,0,0.0,Approved,False,Credit Manager,2026-10-01,23
+CL-015,CUST-015,2026-07-01,22164,BRL,9680,43.67,Approved,False,Credit Manager,2026-10-01,23
+CL-016,CUST-016,2026-07-01,62623,MXN,0,0.0,Approved,False,Credit Manager,2026-10-01,57
+CL-017,CUST-017,2026-07-01,161559,GBP,0,0.0,Approved,False,Credit Manager,2026-10-01,50
+CL-018,CUST-018,2026-07-01,314726,EUR,0,0.0,Approved,False,Credit Manager,2026-10-01,52
+CL-019,CUST-019,2026-07-01,15869,USD,0,0.0,Approved,False,Credit Manager,2026-10-01,53
+CL-020,CUST-020,2026-07-01,73390,ARS,0,0.0,Approved,False,Credit Manager,2026-10-01,30
+CL-021,CUST-021,2026-07-01,151515,BRL,6050,3.99,Approved,False,Credit Manager,2026-10-01,23
+CL-022,CUST-022,2026-07-01,312856,MXN,0,0.0,Approved,False,Credit Manager,2026-10-01,52
+CL-023,CUST-023,2026-07-01,28746,GBP,0,0.0,Approved,False,Credit Manager,2026-10-01,25
+CL-024,CUST-024,2026-07-01,62223,EUR,0,0.0,Approved,False,Credit Manager,2026-10-01,31
+CL-025,CUST-025,2026-07-01,159719,USD,0,0.0,Approved,False,Credit Manager,2026-10-01,24

@@ -1,0 +1,22 @@
+revenue_schedule_id,contract_id,invoice_id,customer_id,revenue_month,performance_obligation,recognition_method,recognized_revenue,deferred_revenue_amount,currency,legal_entity,gl_revenue_account,recognition_status
+RS-001,CON-001,INV-001,CUST-004,2026-07,Platform access,Usage-based,5080,0,MXN,BLEND360-MX,4000-REV,Recognized
+RS-002,CON-002,INV-002,CUST-007,2026-07,Platform access,Straight-line,2000,0,USD,BLEND360-US,4000-REV,Recognized
+RS-003,CON-002,INV-003,CUST-007,2026-07,Platform access,Straight-line,2000,0,USD,BLEND360-US,4000-REV,Recognized
+RS-004,CON-003,INV-004,CUST-010,2026-07,Platform access,Point-in-time,3000,0,MXN,BLEND360-MX,4000-REV,Recognized
+RS-005,CON-004,INV-005,CUST-013,2026-07,Platform access,Straight-line,5000,0,USD,BLEND360-US,4000-REV,Recognized
+RS-006,CON-004,INV-006,CUST-013,2026-08,Platform access,Straight-line,5000,0,USD,BLEND360-US,4000-REV,Recognized
+RS-007,CON-005,INV-007,CUST-016,2026-07,Platform access,Straight-line,2000,0,MXN,BLEND360-MX,4000-REV,Recognized
+RS-008,CON-006,INV-008,CUST-019,2026-07,Platform access,Straight-line,1500,0,USD,BLEND360-US,4000-REV,Recognized
+RS-009,CON-007,INV-009,CUST-022,2026-07,Platform access,Point-in-time,2000,0,MXN,BLEND360-MX,4000-REV,Recognized
+RS-010,CON-007,INV-010,CUST-022,2026-08,Platform access,Point-in-time,2000,0,MXN,BLEND360-MX,4000-REV,Recognized
+RS-012,CON-009,INV-012,CUST-003,2026-07,Platform access,Point-in-time,3000,0,BRL,BLEND360-BR,4000-REV,Recognized
+RS-013,CON-010,INV-013,CUST-006,2026-07,Platform access,Point-in-time,1500,0,EUR,BLEND360-EU,4000-REV,Recognized
+RS-014,CON-010,INV-014,CUST-006,2026-08,Platform access,Point-in-time,1500,0,EUR,BLEND360-EU,4000-REV,Recognized
+RS-015,CON-011,INV-015,CUST-009,2026-07,Platform access,Usage-based,1500,0,BRL,BLEND360-BR,4000-REV,Recognized
+RS-016,CON-012,INV-016,CUST-012,2026-07,Platform access,Usage-based,3000,0,EUR,BLEND360-EU,4000-REV,Recognized
+RS-017,CON-013,INV-017,CUST-015,2026-07,Platform access,Point-in-time,4000,0,BRL,BLEND360-BR,4000-REV,Recognized
+RS-018,CON-013,INV-018,CUST-015,2026-08,Platform access,Point-in-time,4000,0,BRL,BLEND360-BR,4000-REV,Recognized
+RS-019,CON-014,INV-019,CUST-021,2026-07,Platform access,Usage-based,5000,0,BRL,BLEND360-BR,4000-REV,Recognized
+RS-020,CON-016,INV-020,CUST-002,2026-07,Platform access,Point-in-time,4000,0,ARS,BLEND360-AR,4000-REV,Recognized
+RS-021,CON-017,INV-021,CUST-005,2026-07,Platform access,Usage-based,1500,0,GBP,BLEND360-UK,4000-REV,Recognized
+RS-022,CON-003,INV-004,CUST-010,2026-06,Platform access,Straight-line,750,0,MXN,BLEND360-MX,4000-REV,Recognized

@@ -35,6 +35,23 @@ def as_of_date(period):
     return period_bounds(period)[1]
 
 
+def _lc(series):
+    """Case-insensitive status normalization: NaN-safe lower+strip.
+
+    Statuses arrive with inconsistent casing across source systems ('Active' vs
+    'active'); controls must compare on meaning, not casing. fillna('') first
+    because in pandas a NaN compares unequal to every string, which would slip a
+    blank status past an equality check.
+    """
+    return series.fillna("").astype(str).str.strip().str.lower()
+
+
+def _present_in(series, valid_ids):
+    """True where the (NaN-safe) string id is non-empty AND present in valid_ids."""
+    s = series.fillna("").astype(str).str.strip()
+    return s.ne("") & s.isin(set(valid_ids))
+
+
 def _aging_bucket(days):
     if days <= 0:
         return "current"
@@ -81,11 +98,11 @@ def calculate_invoice_open_amounts(dfs, period=P.DEFAULT_PERIOD):
     inv = dfs["invoices"].copy()
 
     apps = _applications_usd(dfs)
-    applied = (apps[apps["application_status"] == "applied"]
+    applied = (apps[(_lc(apps["application_status"]) == "applied") & (apps["applied_amount_usd"] > 0)]
                .groupby("invoice_id")["applied_amount_usd"].sum().rename("applied_usd"))
 
     cm = dfs["credit_memos"]
-    credited = (cm[cm["approval_status"] == "approved"]
+    credited = (cm[_lc(cm["approval_status"]) == "approved"]
                 .groupby("invoice_id")["credit_amount_usd"].sum().rename("credited_usd"))
 
     disp = dfs["disputes"]
@@ -142,18 +159,19 @@ def build_opportunity_to_cash_chain(dfs, period=P.DEFAULT_PERIOD):
     opp, ctr, orders, bill = dfs["opportunities"], dfs["contracts"], dfs["orders"], dfs["billing"]
 
     won = opp[opp["closed_won_flag"] == 1].copy()
-    won["has_contract"] = won["opportunity_id"].isin(set(ctr["opportunity_id"]))
+    won["has_contract"] = won["opportunity_id"].astype(str).isin(set(ctr["opportunity_id"].astype(str)))
 
-    active_ctr = ctr[ctr["contract_status"] == "active"].copy()
-    active_ctr["has_order"] = active_ctr["contract_id"].isin(set(orders["contract_id"]))
+    active_ctr = ctr[_lc(ctr["contract_status"]) == "active"].copy()
+    active_ctr["has_order"] = active_ctr["contract_id"].astype(str).isin(set(orders["contract_id"].astype(str)))
 
-    active_ord = orders[orders["order_status"] == "active"].copy()
-    active_ord["has_billing"] = active_ord["order_id"].isin(set(bill["order_id"]))
+    # an "active / billable" order must have a billing schedule
+    active_ord = orders[_lc(orders["order_status"]).isin(["active", "billable"])].copy()
+    active_ord["has_billing"] = active_ord["order_id"].astype(str).isin(set(bill["order_id"].astype(str)))
 
     due = bill[(bill["scheduled_invoice_date"] <= asof)].copy()
-    due["billable"] = due["billing_status"].isin(["billable", "billed"])
-    due["has_invoice"] = due["invoice_id"].astype(str).str.len() > 0
-    due["is_blocked"] = due["billing_status"] == "blocked"
+    due["billable"] = _lc(due["billing_status"]).isin(["billable", "billed"])
+    due["has_invoice"] = _present_in(due["invoice_id"], dfs["invoices"]["invoice_id"])
+    due["is_blocked"] = _lc(due["billing_status"]) == "blocked"
 
     return {"closed_won": won, "active_contracts": active_ctr,
             "active_orders": active_ord, "due_billing": due}
@@ -163,16 +181,20 @@ def build_opportunity_to_cash_chain(dfs, period=P.DEFAULT_PERIOD):
 # Billing completeness / timeliness / accuracy / unbilled revenue
 # --------------------------------------------------------------------------
 def calculate_unbilled_revenue(dfs, period=P.DEFAULT_PERIOD):
-    """Scheduled, billable, due bill lines with no invoice and no valid block.
+    """Scheduled, due bill lines that are neither genuinely invoiced nor blocked.
 
-    This is the revenue-leakage candidate: work delivered/scheduled that was
-    never billed.
+    A line scheduled on/before the period end is COMPLETE only if its invoice_id
+    is present AND exists in invoices.csv, or it carries a documented billing
+    block reason. Anything else (any non-invoiced status, a dangling invoice id,
+    a blank line) is unbilled revenue leakage. This is robust to status casing
+    and to invoice ids that do not actually exist.
     """
-    chain = build_opportunity_to_cash_chain(dfs, period)
-    due = chain["due_billing"]
-    unbilled = due[(due["billing_status"] == "billable")
-                   & (~due["has_invoice"])
-                   & (due["billing_exception_reason"].fillna("") == "")].copy()
+    asof = as_of_date(period)
+    bill = dfs["billing"].copy()
+    due = bill[bill["scheduled_invoice_date"] <= asof].copy()
+    has_invoice = _present_in(due["invoice_id"], dfs["invoices"]["invoice_id"])
+    documented_block = due["billing_exception_reason"].fillna("").astype(str).str.strip().ne("")
+    unbilled = due[~has_invoice & ~documented_block].copy()
     unbilled["scheduled_bill_amount_usd"] = loader.to_usd(
         unbilled["scheduled_bill_amount"], unbilled["currency"])
     total = round(float(unbilled["scheduled_bill_amount_usd"].sum()), 2)
@@ -183,12 +205,13 @@ def calculate_unbilled_revenue(dfs, period=P.DEFAULT_PERIOD):
 
 def calculate_billing_completeness(dfs, period=P.DEFAULT_PERIOD):
     """Invoiced amount vs total scheduled-and-due billable amount."""
-    chain = build_opportunity_to_cash_chain(dfs, period)
-    due = chain["due_billing"]
-    billable = due[due["billing_status"].isin(["billable", "billed"])].copy()
-    billable["scheduled_usd"] = loader.to_usd(billable["scheduled_bill_amount"], billable["currency"])
-    scheduled_total = float(billable["scheduled_usd"].sum())
-    invoiced_total = float(billable[billable["has_invoice"]]["scheduled_usd"].sum())
+    asof = as_of_date(period)
+    bill = dfs["billing"].copy()
+    due = bill[bill["scheduled_invoice_date"] <= asof].copy()
+    due["scheduled_usd"] = loader.to_usd(due["scheduled_bill_amount"], due["currency"])
+    has_invoice = _present_in(due["invoice_id"], dfs["invoices"]["invoice_id"])
+    scheduled_total = float(due["scheduled_usd"].sum())
+    invoiced_total = float(due[has_invoice]["scheduled_usd"].sum())
     pct = (invoiced_total / scheduled_total * 100.0) if scheduled_total else 100.0
     unb = calculate_unbilled_revenue(dfs, period)
     return {"scheduled_due_usd": round(scheduled_total, 2),
@@ -243,10 +266,11 @@ def calculate_cash_application_status(dfs, period=P.DEFAULT_PERIOD):
     rec = dfs["bank_receipts"]
     received_usd = float((rec["receipt_amount"] * rec["currency"].map(P.FX_TO_USD).fillna(1.0)).sum())
     apps = _applications_usd(dfs)
-    applied_usd = float(apps[apps["application_status"] == "applied"]["applied_amount_usd"].sum())
+    applied_usd = float(apps[(_lc(apps["application_status"]) == "applied")
+                             & (apps["applied_amount_usd"] > 0)]["applied_amount_usd"].sum())
     rate = (applied_usd / received_usd * 100.0) if received_usd else 100.0
-    matched = rec[rec["matched_status"] == "matched"]
-    unmatched = rec[rec["matched_status"] != "matched"]
+    matched = rec[_lc(rec["matched_status"]) == "matched"]
+    unmatched = rec[_lc(rec["matched_status"]) != "matched"]
     return {"received_usd": round(received_usd, 2), "applied_usd": round(applied_usd, 2),
             "cash_application_rate_pct": round(rate, 2),
             "matched_receipt_count": int(len(matched)),
@@ -258,14 +282,14 @@ def calculate_unapplied_cash(dfs, period=P.DEFAULT_PERIOD):
     apps = _applications_usd(dfs)
     pmt = dfs["payments"][["payment_id", "payment_amount", "currency"]].copy()
     pmt["payment_amount_usd"] = loader.to_usd(pmt["payment_amount"], pmt["currency"])
-    unapp = apps[apps["application_status"] == "unapplied"].merge(
+    unapp = apps[_lc(apps["application_status"]) == "unapplied"].merge(
         pmt[["payment_id", "payment_amount_usd"]], on="payment_id", how="left")
     unapplied_app_usd = round(float(unapp["payment_amount_usd"].fillna(0.0).sum()), 2)
 
     rec = dfs["bank_receipts"]
     rec_usd = rec.copy()
     rec_usd["receipt_amount_usd"] = loader.to_usd(rec_usd["receipt_amount"], rec_usd["currency"])
-    unmatched = rec_usd[rec_usd["matched_status"] != "matched"]
+    unmatched = rec_usd[_lc(rec_usd["matched_status"]) != "matched"]
     unmatched_usd = round(float(unmatched["receipt_amount_usd"].sum()), 2)
     return {"unapplied_application_usd": unapplied_app_usd,
             "unmatched_receipt_usd": unmatched_usd,
@@ -281,27 +305,32 @@ def calculate_unapplied_cash(dfs, period=P.DEFAULT_PERIOD):
 def calculate_revenue_recognition_rollforward(dfs, period=P.DEFAULT_PERIOD):
     """Recognized revenue to date and in-period, plus cutoff exceptions."""
     rev = dfs["revenue"].copy()
-    recognized = rev[rev["recognition_status"] == "recognized"]
+    recognized = rev[_lc(rev["recognition_status"]) == "recognized"]
     recognized_to_date = round(float(recognized["recognized_revenue_usd"].sum()), 2)
-    in_period = round(float(recognized[recognized["revenue_month"] == period]
+    in_period = round(float(recognized[recognized["revenue_month"].astype(str) == period]
                             ["recognized_revenue_usd"].sum()), 2)
 
-    # cutoff: recognized before service start, or after contract end w/o renewal
+    # cutoff: recognized before the invoice service period OR before the contract
+    # start, or after contract end without a renewal.
     inv = dfs["invoices"][["invoice_id", "service_period_start", "service_period_end"]]
-    ctr = dfs["contracts"][["contract_id", "contract_end_date", "auto_renew_flag"]]
+    ctr = dfs["contracts"][["contract_id", "contract_start_date", "contract_end_date", "auto_renew_flag"]]
     chk = recognized.merge(inv, on="invoice_id", how="left").merge(ctr, on="contract_id", how="left")
-    chk["rev_ts"] = pd.to_datetime(chk["revenue_month"] + "-01", errors="coerce")
+    chk["rev_ts"] = pd.to_datetime(chk["revenue_month"].astype(str) + "-01", errors="coerce")
     start_month = chk["service_period_start"].dt.to_period("M").dt.to_timestamp()
+    cstart_month = chk["contract_start_date"].dt.to_period("M").dt.to_timestamp()
     end_month = chk["contract_end_date"].dt.to_period("M").dt.to_timestamp()
     chk["before_service_start"] = chk["rev_ts"] < start_month
+    chk["before_contract_start"] = chk["rev_ts"] < cstart_month
     chk["after_contract_end_no_renew"] = (chk["rev_ts"] > end_month) & (chk["auto_renew_flag"] == 0)
-    cutoff = chk[chk["before_service_start"] | chk["after_contract_end_no_renew"]]
+    cutoff = chk[chk["before_service_start"] | chk["before_contract_start"]
+                 | chk["after_contract_end_no_renew"]]
     return {"recognized_to_date_usd": recognized_to_date,
             "recognized_in_period_usd": in_period,
             "cutoff_exception_count": int(len(cutoff)),
             "cutoff_exceptions": cutoff[["revenue_schedule_id", "invoice_id", "contract_id",
                                          "revenue_month", "recognized_revenue_usd",
-                                         "before_service_start", "after_contract_end_no_renew"]]}
+                                         "before_service_start", "before_contract_start",
+                                         "after_contract_end_no_renew"]]}
 
 
 def calculate_deferred_revenue_rollforward(dfs, period=P.DEFAULT_PERIOD):
