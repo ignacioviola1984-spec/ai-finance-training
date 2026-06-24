@@ -33,9 +33,6 @@ audit trail, and a hard gate that blocks reporting.
 ```mermaid
 flowchart TD
   CFO["CFO orchestrator (cfo_orchestrator.py)"]
-  CFO --> CLOSE
-  CFO --> O2C
-  CFO --> SI
 
   subgraph CLOSE["Month-end close · maker/checker per function"]
     Controller["Controller"]
@@ -64,6 +61,9 @@ flowchart TD
   subgraph SI["Bounded self-improvement · propose-only"]
     Prop["Proposer · deterministic"] --> Gate["Gate · bounds + evals + owner approval"] --> Champ["Champion · versioned · rollback"]
   end
+CFO --> CLOSE
+CFO --> O2C
+CFO --> SI
 
   CLOSE --> GOV
   O2C --> GOV
