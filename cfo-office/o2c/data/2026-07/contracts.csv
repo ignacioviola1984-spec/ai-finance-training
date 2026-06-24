@@ -1,0 +1,19 @@
+contract_id,opportunity_id,customer_id,signed_date,contract_start_date,contract_end_date,contract_value,arr_amount,currency,legal_entity,billing_model,billing_frequency,revenue_recognition_method,performance_obligation_count,payment_terms,auto_renew_flag,po_required_flag,non_standard_terms_flag,contract_status,source_system
+CON-001,OPP-001,CUST-004,2026-06-06,2026-07-06,2027-07-05,48000,36000,MXN,BLEND360-MX,Professional Services,Quarterly,Usage-based,2,Net 15,False,False,True,Active,DocuSign
+CON-002,OPP-002,CUST-007,2026-06-07,2026-07-11,2027-07-10,24000,18000,USD,BLEND360-US,Subscription,Monthly,Straight-line,1,Net 60,True,False,True,Active,DocuSign
+CON-003,OPP-003,CUST-010,2026-06-08,2026-07-16,2027-07-15,36000,36000,MXN,BLEND360-MX,Milestone,Monthly,Point-in-time,2,Net 45,True,False,False,Active,DocuSign
+CON-004,OPP-004,CUST-013,2026-06-09,2026-07-01,2027-06-30,60000,45000,USD,BLEND360-US,Subscription,Annual,Straight-line,1,Net 30,False,False,True,Active,DocuSign
+CON-005,OPP-005,CUST-016,2026-06-10,2026-07-06,2027-07-05,24000,18000,MXN,BLEND360-MX,Subscription,Annual,Straight-line,1,Net 15,False,False,False,Active,DocuSign
+CON-006,OPP-006,CUST-019,2026-06-11,2026-07-11,2027-07-10,18000,13500,USD,BLEND360-US,Subscription,Quarterly,Straight-line,1,Net 60,True,False,False,Active,DocuSign
+CON-007,OPP-007,CUST-022,2026-06-12,2026-07-16,2027-07-15,24000,24000,MXN,BLEND360-MX,Milestone,Quarterly,Point-in-time,2,Net 45,True,True,True,Active,DocuSign
+CON-008,OPP-008,CUST-025,2026-06-13,2026-07-01,2027-06-30,18000,13500,USD,BLEND360-US,Usage-Based,Monthly,Usage-based,1,Net 30,False,False,False,Active,DocuSign
+CON-009,OPP-009,CUST-003,2026-06-14,2026-07-06,2027-07-05,36000,36000,BRL,BLEND360-BR,Milestone,Monthly,Point-in-time,2,Net 60,False,True,False,Active,DocuSign
+CON-010,OPP-010,CUST-006,2026-06-15,2026-07-11,2027-07-10,18000,18000,EUR,BLEND360-EU,Milestone,Monthly,Point-in-time,2,Net 45,False,False,False,Active,DocuSign
+CON-011,OPP-011,CUST-009,2026-06-16,2026-07-16,2027-07-15,18000,13500,BRL,BLEND360-BR,Professional Services,Annual,Usage-based,2,Net 30,True,False,False,Active,DocuSign
+CON-012,OPP-012,CUST-012,2026-06-17,2026-07-01,2027-06-30,36000,36000,EUR,BLEND360-EU,Usage-Based,Annual,Usage-based,1,Net 15,False,False,True,Active,DocuSign
+CON-013,OPP-013,CUST-015,2026-06-18,2026-07-06,2027-07-05,48000,48000,BRL,BLEND360-BR,Milestone,Monthly,Point-in-time,2,Net 60,True,False,False,Active,DocuSign
+CON-014,OPP-015,CUST-021,2026-06-20,2026-07-16,2027-07-15,60000,60000,BRL,BLEND360-BR,Professional Services,Quarterly,Usage-based,2,Net 30,True,False,False,Active,DocuSign
+CON-015,OPP-016,CUST-024,2026-06-21,2026-07-01,2027-06-30,48000,48000,EUR,BLEND360-EU,Subscription,Annual,Straight-line,1,Net 15,True,False,False,Active,DocuSign
+CON-016,OPP-017,CUST-002,2026-06-22,2026-07-06,2027-07-05,48000,48000,ARS,BLEND360-AR,Milestone,Quarterly,Point-in-time,2,Net 45,False,False,False,Active,DocuSign
+CON-017,OPP-018,CUST-005,2026-06-23,2026-07-11,2027-07-10,18000,13500,GBP,BLEND360-UK,Usage-Based,Annual,Usage-based,1,Net 30,False,False,False,Active,DocuSign
+CON-018,OPP-019,CUST-008,2026-06-28,2026-07-01,2027-06-30,42000,42000,ARS,BLEND360-AR,Subscription,Monthly,Straight-line,1,Net 30,True,True,False,Active,DocuSign

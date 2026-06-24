@@ -1,0 +1,3 @@
+credit_memo_id,invoice_id,customer_id,credit_date,credit_amount,currency,reason_code,approved_by,approval_status,gl_account,created_at
+CM-002,INV-002,CUST-007,2026-07-19,100,USD,Service credit,Revenue Accounting Manager,Approved,4050-REV-ADJ,2026-07-22
+CM-005,INV-005,CUST-013,2026-07-21,250,USD,Service credit,Revenue Accounting Manager,Approved,4050-REV-ADJ,2026-07-22

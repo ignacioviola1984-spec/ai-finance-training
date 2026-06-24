@@ -1,0 +1,122 @@
+collections_activity_id,invoice_id,customer_id,activity_date,activity_type,owner,promise_to_pay_date,promised_amount,outcome,next_step,escalation_level,created_at
+COL-000001,INV-000006,CUST-0001,2026-06-23,Dunning notice,N. Costa,2026-07-22,580765.28,Promise to pay,Follow up,0,2026-06-30
+COL-000002,INV-000006,CUST-0001,2026-06-10,Dunning notice,N. Costa,2026-06-04,506979.74,Promise to pay,Follow up,0,2026-06-30
+COL-000003,INV-000013,CUST-0003,2026-05-18,Call,C. Bianchi,2026-06-27,1084.23,Promise to pay,Follow up,2,2026-06-30
+COL-000004,INV-000013,CUST-0003,2026-06-26,Escalation,C. Bianchi,,,Dispute raised,Send statement,0,2026-06-30
+COL-000005,INV-000021,CUST-0007,2026-06-09,Call,A. Romero,,,No response,Follow up,1,2026-06-30
+COL-000006,INV-000021,CUST-0007,2026-06-03,Call,A. Romero,,,No response,Escalate,1,2026-06-30
+COL-000007,INV-000033,CUST-0007,2026-06-19,Dunning notice,A. Romero,,,No response,Follow up,1,2026-06-30
+COL-000008,INV-000033,CUST-0007,2026-05-28,Call,A. Romero,,,No response,Escalate,1,2026-06-30
+COL-000009,INV-000033,CUST-0007,2026-06-09,Email,A. Romero,,,No response,Follow up,0,2026-06-30
+COL-000010,INV-000047,CUST-0011,2026-06-24,Call,T. Nguyen,,,Paid,Follow up,0,2026-06-30
+COL-000011,INV-000047,CUST-0011,2026-05-24,Dunning notice,T. Nguyen,,,No response,Follow up,0,2026-06-30
+COL-000012,INV-000057,CUST-0011,2026-06-27,Dunning notice,T. Nguyen,,,Paid,Follow up,0,2026-06-30
+COL-000013,INV-000057,CUST-0011,2026-06-16,Call,T. Nguyen,,,No response,Follow up,0,2026-06-30
+COL-000014,INV-000057,CUST-0011,2026-06-03,Escalation,T. Nguyen,,,No response,Escalate,0,2026-06-30
+COL-000015,INV-000067,CUST-0013,2026-05-28,Call,D. Fischer,,,Paid,Send statement,0,2026-06-30
+COL-000016,INV-000069,CUST-0013,2026-06-11,Email,D. Fischer,,,No response,Escalate,1,2026-06-30
+COL-000017,INV-000069,CUST-0013,2026-05-20,Escalation,D. Fischer,,,Paid,Follow up,0,2026-06-30
+COL-000018,INV-000080,CUST-0013,2026-05-20,Email,D. Fischer,2026-07-09,1898.89,Promise to pay,Send statement,3,2026-06-30
+COL-000019,INV-000080,CUST-0013,2026-06-28,Email,D. Fischer,,,Left message,Follow up,1,2026-06-30
+COL-000020,INV-000085,CUST-0013,2026-06-18,Call,D. Fischer,,,Dispute raised,Follow up,0,2026-06-30
+COL-000021,INV-000085,CUST-0013,2026-05-20,Call,D. Fischer,,,No response,Send statement,0,2026-06-30
+COL-000022,INV-000114,CUST-0017,2026-05-30,Call,N. Costa,2026-07-16,650277.52,Promise to pay,Follow up,1,2026-06-30
+COL-000023,INV-000114,CUST-0017,2026-06-29,Call,N. Costa,,,Dispute raised,Follow up,3,2026-06-30
+COL-000024,INV-000114,CUST-0017,2026-06-03,Email,N. Costa,,,Left message,Follow up,2,2026-06-30
+COL-000025,INV-000157,CUST-0023,2026-06-21,Call,A. Romero,,,No response,Follow up,0,2026-06-30
+COL-000026,INV-000157,CUST-0023,2026-06-10,Call,A. Romero,2026-07-12,52339.27,Promise to pay,Follow up,0,2026-06-30
+COL-000027,INV-000161,CUST-0025,2026-05-25,Dunning notice,M. Silva,,,Paid,Follow up,3,2026-06-30
+COL-000028,INV-000161,CUST-0025,2026-05-22,Call,M. Silva,,,No response,Follow up,2,2026-06-30
+COL-000029,INV-000163,CUST-0025,2026-06-10,Email,M. Silva,,,Left message,Follow up,1,2026-06-30
+COL-000030,INV-000165,CUST-0025,2026-05-19,Email,M. Silva,,,Paid,Escalate,0,2026-06-30
+COL-000031,INV-000165,CUST-0025,2026-05-31,Email,M. Silva,2026-07-16,22046.73,Promise to pay,Send statement,1,2026-06-30
+COL-000032,INV-000177,CUST-0028,2026-05-30,Escalation,S. Cohen,,,Left message,Follow up,0,2026-06-30
+COL-000033,INV-000177,CUST-0028,2026-06-11,Call,S. Cohen,,,No response,Follow up,0,2026-06-30
+COL-000034,INV-000186,CUST-0028,2026-06-09,Dunning notice,S. Cohen,2026-06-18,11457.17,Promise to pay,Follow up,0,2026-06-30
+COL-000035,INV-000186,CUST-0028,2026-06-09,Email,S. Cohen,,,Dispute raised,Send statement,0,2026-06-30
+COL-000036,INV-000206,CUST-0031,2026-05-20,Call,R. Brooks,2026-07-06,36802.59,Promise to pay,Follow up,0,2026-06-30
+COL-000037,INV-000219,CUST-0031,2026-06-21,Call,R. Brooks,,,Paid,Send statement,0,2026-06-30
+COL-000038,INV-000219,CUST-0031,2026-05-29,Email,R. Brooks,,,No response,Follow up,0,2026-06-30
+COL-000039,INV-000219,CUST-0031,2026-05-18,Email,R. Brooks,,,Dispute raised,Escalate,1,2026-06-30
+COL-000040,INV-000227,CUST-0031,2026-06-23,Dunning notice,R. Brooks,,,Left message,Follow up,1,2026-06-30
+COL-000041,INV-000227,CUST-0031,2026-06-21,Escalation,R. Brooks,,,Paid,Send statement,0,2026-06-30
+COL-000042,INV-000233,CUST-0032,2026-05-19,Email,K. Sato,2026-07-15,74334.33,Promise to pay,Follow up,0,2026-06-30
+COL-000043,INV-000277,CUST-0036,2026-06-27,Dunning notice,G. Haddad,,,Paid,Follow up,0,2026-06-30
+COL-000044,INV-000282,CUST-0036,2026-06-16,Escalation,G. Haddad,,,Left message,Send statement,0,2026-06-30
+COL-000045,INV-000286,CUST-0036,2026-05-21,Dunning notice,G. Haddad,,,No response,Follow up,0,2026-06-30
+COL-000046,INV-000286,CUST-0036,2026-06-20,Escalation,G. Haddad,,,Paid,Follow up,0,2026-06-30
+COL-000047,INV-000286,CUST-0036,2026-06-25,Call,G. Haddad,2026-07-22,4487.3,Promise to pay,Escalate,3,2026-06-30
+COL-000048,INV-000302,CUST-0039,2026-05-28,Email,A. Romero,2026-06-06,7041.13,Promise to pay,Send statement,0,2026-06-30
+COL-000049,INV-000309,CUST-0043,2026-06-05,Email,T. Nguyen,,,No response,Escalate,1,2026-06-30
+COL-000050,INV-000309,CUST-0043,2026-05-22,Email,T. Nguyen,2026-06-07,27639.91,Promise to pay,Follow up,0,2026-06-30
+COL-000051,INV-000311,CUST-0043,2026-06-18,Email,T. Nguyen,2026-07-13,50777.94,Promise to pay,Escalate,2,2026-06-30
+COL-000052,INV-000311,CUST-0043,2026-06-06,Dunning notice,T. Nguyen,,,Left message,Follow up,0,2026-06-30
+COL-000053,INV-000330,CUST-0044,2026-06-27,Dunning notice,S. Cohen,2026-06-23,1091.3,Promise to pay,Follow up,0,2026-06-30
+COL-000054,INV-000330,CUST-0044,2026-06-16,Email,S. Cohen,,,Left message,Send statement,1,2026-06-30
+COL-000055,INV-000330,CUST-0044,2026-06-01,Call,S. Cohen,,,Left message,Escalate,1,2026-06-30
+COL-000056,INV-000381,CUST-0050,2026-06-12,Email,E. Moreau,,,No response,Follow up,0,2026-06-30
+COL-000057,INV-000398,CUST-0055,2026-06-08,Dunning notice,A. Romero,,,Left message,Follow up,0,2026-06-30
+COL-000058,INV-000398,CUST-0055,2026-05-27,Call,A. Romero,,,Left message,Follow up,0,2026-06-30
+COL-000059,INV-000436,CUST-0063,2026-05-21,Call,R. Brooks,,,Paid,Follow up,2,2026-06-30
+COL-000060,INV-000436,CUST-0063,2026-06-09,Call,R. Brooks,,,No response,Follow up,0,2026-06-30
+COL-000061,INV-000436,CUST-0063,2026-06-26,Call,R. Brooks,2026-06-06,40163.18,Promise to pay,Follow up,0,2026-06-30
+COL-000062,INV-000444,CUST-0064,2026-06-05,Call,K. Sato,2026-06-16,1637.37,Promise to pay,Follow up,3,2026-06-30
+COL-000063,INV-000448,CUST-0064,2026-05-27,Escalation,K. Sato,,,Left message,Follow up,3,2026-06-30
+COL-000064,INV-000478,CUST-0071,2026-05-30,Call,A. Romero,2026-06-15,152998.81,Promise to pay,Escalate,0,2026-06-30
+COL-000065,INV-000484,CUST-0071,2026-06-26,Call,A. Romero,2026-07-05,231320.68,Promise to pay,Escalate,0,2026-06-30
+COL-000066,INV-000484,CUST-0071,2026-06-12,Email,A. Romero,2026-07-25,290387.28,Promise to pay,Send statement,2,2026-06-30
+COL-000067,INV-000484,CUST-0071,2026-06-24,Dunning notice,A. Romero,,,No response,Escalate,3,2026-06-30
+COL-000068,INV-000502,CUST-0076,2026-05-27,Dunning notice,S. Cohen,,,No response,Follow up,0,2026-06-30
+COL-000069,INV-000502,CUST-0076,2026-06-21,Email,S. Cohen,2026-07-23,1475.44,Promise to pay,Follow up,0,2026-06-30
+COL-000070,INV-000512,CUST-0077,2026-05-17,Call,D. Fischer,,,Paid,Follow up,0,2026-06-30
+COL-000071,INV-000512,CUST-0077,2026-06-02,Email,D. Fischer,,,Left message,Follow up,0,2026-06-30
+COL-000072,INV-000515,CUST-0078,2026-06-04,Dunning notice,P. Alvarez,,,No response,Send statement,0,2026-06-30
+COL-000073,INV-000515,CUST-0078,2026-05-22,Dunning notice,P. Alvarez,,,Dispute raised,Follow up,1,2026-06-30
+COL-000074,INV-000515,CUST-0078,2026-05-16,Email,P. Alvarez,,,Dispute raised,Send statement,1,2026-06-30
+COL-000075,INV-000532,CUST-0078,2026-06-15,Dunning notice,P. Alvarez,,,Left message,Follow up,0,2026-06-30
+COL-000076,INV-000532,CUST-0078,2026-06-26,Call,P. Alvarez,,,Paid,Escalate,0,2026-06-30
+COL-000077,INV-000532,CUST-0078,2026-05-26,Dunning notice,P. Alvarez,,,No response,Follow up,1,2026-06-30
+COL-000078,INV-000550,CUST-0080,2026-06-23,Email,K. Sato,,,No response,Escalate,0,2026-06-30
+COL-000079,INV-000561,CUST-0082,2026-06-03,Dunning notice,E. Moreau,,,Left message,Escalate,0,2026-06-30
+COL-000080,INV-000565,CUST-0082,2026-05-29,Email,E. Moreau,2026-06-08,8184.22,Promise to pay,Send statement,0,2026-06-30
+COL-000081,INV-000565,CUST-0082,2026-06-16,Call,E. Moreau,,,No response,Escalate,0,2026-06-30
+COL-000082,INV-000568,CUST-0082,2026-06-12,Email,E. Moreau,,,No response,Follow up,0,2026-06-30
+COL-000083,INV-000568,CUST-0082,2026-05-25,Call,E. Moreau,,,Paid,Send statement,2,2026-06-30
+COL-000084,INV-000568,CUST-0082,2026-05-18,Dunning notice,E. Moreau,2026-07-03,8795.54,Promise to pay,Follow up,1,2026-06-30
+COL-000085,INV-000587,CUST-0086,2026-05-22,Dunning notice,F. Dubois,,,No response,Follow up,2,2026-06-30
+COL-000086,INV-000587,CUST-0086,2026-05-26,Dunning notice,F. Dubois,,,No response,Follow up,0,2026-06-30
+COL-000087,INV-000593,CUST-0087,2026-06-29,Email,A. Romero,2026-06-04,20352.57,Promise to pay,Follow up,0,2026-06-30
+COL-000088,INV-000602,CUST-0088,2026-05-26,Email,J. Park,,,Paid,Escalate,2,2026-06-30
+COL-000089,INV-000602,CUST-0088,2026-05-29,Dunning notice,J. Park,,,Left message,Follow up,0,2026-06-30
+COL-000090,INV-000619,CUST-0089,2026-05-21,Call,M. Silva,2026-06-27,4761.44,Promise to pay,Send statement,1,2026-06-30
+COL-000091,INV-000673,CUST-0097,2026-06-26,Call,N. Costa,,,No response,Escalate,0,2026-06-30
+COL-000092,INV-000733,CUST-0100,2026-06-21,Email,G. Haddad,,,No response,Send statement,0,2026-06-30
+COL-000093,INV-000733,CUST-0100,2026-05-28,Escalation,G. Haddad,,,No response,Send statement,0,2026-06-30
+COL-000094,INV-000737,CUST-0100,2026-06-26,Email,G. Haddad,,,Paid,Send statement,1,2026-06-30
+COL-000095,INV-000737,CUST-0100,2026-05-24,Email,G. Haddad,2026-06-07,6647.35,Promise to pay,Send statement,3,2026-06-30
+COL-000096,INV-000752,CUST-0103,2026-06-21,Email,A. Romero,,,Left message,Send statement,1,2026-06-30
+COL-000097,INV-000752,CUST-0103,2026-05-18,Call,A. Romero,,,Dispute raised,Follow up,1,2026-06-30
+COL-000098,INV-000752,CUST-0103,2026-06-02,Escalation,A. Romero,,,No response,Follow up,1,2026-06-30
+COL-000099,INV-000760,CUST-0103,2026-05-28,Email,A. Romero,,,Dispute raised,Escalate,0,2026-06-30
+COL-000100,INV-000760,CUST-0103,2026-05-27,Call,A. Romero,,,No response,Send statement,0,2026-06-30
+COL-000101,INV-000760,CUST-0103,2026-05-19,Call,A. Romero,2026-07-08,1238.8,Promise to pay,Follow up,1,2026-06-30
+COL-000102,INV-000761,CUST-0103,2026-06-07,Dunning notice,A. Romero,,,No response,Send statement,0,2026-06-30
+COL-000103,INV-000761,CUST-0103,2026-06-24,Email,A. Romero,,,No response,Escalate,0,2026-06-30
+COL-000104,INV-000773,CUST-0109,2026-06-15,Email,D. Fischer,,,No response,Follow up,0,2026-06-30
+COL-000105,INV-000773,CUST-0109,2026-06-02,Email,D. Fischer,,,Left message,Send statement,2,2026-06-30
+COL-000106,INV-000773,CUST-0109,2026-05-16,Call,D. Fischer,,,Paid,Send statement,0,2026-06-30
+COL-000107,INV-000778,CUST-0109,2026-05-24,Call,D. Fischer,,,No response,Send statement,2,2026-06-30
+COL-000108,INV-000778,CUST-0109,2026-05-28,Call,D. Fischer,2026-07-21,109807.19,Promise to pay,Follow up,0,2026-06-30
+COL-000109,INV-000788,CUST-0109,2026-05-30,Email,D. Fischer,,,Dispute raised,Send statement,0,2026-06-30
+COL-000110,INV-000788,CUST-0109,2026-05-20,Call,D. Fischer,,,No response,Follow up,0,2026-06-30
+COL-000111,INV-000788,CUST-0109,2026-06-25,Call,D. Fischer,,,Dispute raised,Follow up,0,2026-06-30
+COL-000112,INV-000792,CUST-0110,2026-05-23,Dunning notice,P. Alvarez,,,Dispute raised,Escalate,0,2026-06-30
+COL-000113,INV-000808,CUST-0114,2026-06-16,Dunning notice,E. Moreau,,,Left message,Follow up,2,2026-06-30
+COL-000114,INV-000808,CUST-0114,2026-06-08,Call,E. Moreau,2026-07-11,51980.59,Promise to pay,Follow up,1,2026-06-30
+COL-000115,INV-000808,CUST-0114,2026-05-16,Call,E. Moreau,,,No response,Send statement,0,2026-06-30
+COL-000116,INV-000822,CUST-0116,2026-06-07,Escalation,G. Haddad,2026-07-12,27634.49,Promise to pay,Escalate,2,2026-06-30
+COL-000117,INV-000822,CUST-0116,2026-06-16,Email,G. Haddad,2026-06-03,21947.25,Promise to pay,Escalate,0,2026-06-30
+COL-000118,INV-000842,CUST-0120,2026-06-02,Escalation,J. Park,2026-06-11,4374.79,Promise to pay,Follow up,0,2026-06-30
+COL-000119,INV-000865,CUST-0123,2026-06-05,Call,T. Nguyen,,,No response,Send statement,0,2026-06-30
+COL-000120,INV-000878,CUST-0125,2026-06-16,Email,D. Fischer,,,No response,Escalate,0,2026-06-30
+COL-000121,INV-000878,CUST-0125,2026-06-19,Call,D. Fischer,2026-06-16,1461.46,Promise to pay,Send statement,0,2026-06-30

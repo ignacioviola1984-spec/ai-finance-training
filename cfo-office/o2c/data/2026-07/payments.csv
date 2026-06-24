@@ -1,0 +1,12 @@
+payment_id,customer_id,payment_date,payment_amount,currency,payment_method,bank_receipt_id,remittance_reference,payer_name,payment_status,created_at
+PAY-001,CUST-004,2026-07-26,6146.8,MXN,Wire,BR-001,REM-INV-001,Aquila Mid-Market Co.,Received,2026-07-26
+PAY-002,CUST-007,2026-07-27,2160.0,USD,ACH,BR-002,REM-INV-002,Nexo SMB Co.,Received,2026-07-27
+PAY-003,CUST-007,2026-07-27,2160.0,USD,ACH,BR-003,REM-INV-003,Nexo SMB Co.,Received,2026-07-27
+PAY-004,CUST-010,2026-07-28,3630.0,MXN,Wire,BR-004,REM-INV-004,Rio Strategic Co.,Received,2026-07-28
+PAY-005,CUST-013,2026-07-29,5400.0,USD,ACH,BR-005,REM-INV-005,Lumen Enterprise Co.,Received,2026-07-29
+PAY-006,CUST-013,2026-08-29,5400.0,USD,ACH,BR-006,REM-INV-006,Lumen Enterprise Co.,Received,2026-08-29
+PAY-007,CUST-016,2026-07-31,2420.0,MXN,Wire,BR-007,REM-INV-007,Bluefin Mid-Market Co.,Received,2026-07-31
+PAY-008,CUST-019,2026-08-01,1620.0,USD,ACH,BR-008,REM-INV-008,Solara SMB Co.,Received,2026-08-01
+PAY-009,CUST-022,2026-08-02,2420.0,MXN,Wire,BR-009,REM-INV-009,Aster Strategic Co.,Received,2026-08-02
+PAY-010,CUST-022,2026-09-02,2420.0,MXN,Wire,BR-010,REM-INV-010,Aster Strategic Co.,Received,2026-09-02
+PAY-018,CUST-005,2026-07-24,1815.0,GBP,Wire,BR-404,REM-INV-021,Cobalt Enterprise Co.,Received,2026-07-24

@@ -1,0 +1,26 @@
+customer_id,customer_name,parent_customer_id,region,country,legal_entity,customer_segment,customer_status,default_currency,payment_terms,credit_limit,credit_status,tax_profile,po_required_flag,sales_owner,revops_owner,collections_owner,risk_tier,created_date,last_review_date
+CUST-001,Northstar Enterprise Co.,,North America,United States,BLEND360-US,Enterprise,Active,USD,Net 30,148648,Approved,LATAM-VAT,False,Diego Perez,Rocio Cabanellas,Camila Torres,Medium,2024-01-20,2026-05-02
+CUST-002,Andes Strategic Co.,,LATAM,Argentina,BLEND360-AR,Strategic,Active,ARS,Net 45,295819,Approved,EU-VAT,False,Lucia Santos,Marco Silva,Julia Chen,Medium,2024-02-08,2026-05-03
+CUST-003,Pampas SMB Co.,,LATAM,Brazil,BLEND360-BR,SMB,Active,BRL,Net 60,24012,Approved,EXPORT-EXEMPT,True,Mia Johnson,Nora Evans,Alan Reed,High,2024-02-27,2026-05-04
+CUST-004,Aquila Mid-Market Co.,,LATAM,Mexico,BLEND360-MX,Mid-Market,Active,MXN,Net 15,63024,Approved,US-SALES-TAX,False,Tom Wilson,Rocio Cabanellas,Camila Torres,Low,2024-03-17,2026-05-05
+CUST-005,Cobalt Enterprise Co.,,EMEA,United Kingdom,BLEND360-UK,Enterprise,Active,GBP,Net 30,152314,Approved,LATAM-VAT,False,Ava Miller,Marco Silva,Julia Chen,Medium,2024-04-05,2026-05-06
+CUST-006,Atlas Strategic Co.,,EMEA,Germany,BLEND360-EU,Strategic,Active,EUR,Net 45,299572,Approved,EU-VAT,False,Diego Perez,Nora Evans,Alan Reed,Medium,2024-04-24,2026-05-07
+CUST-007,Nexo SMB Co.,CUST-001,North America,United States,BLEND360-US,SMB,Active,USD,Net 60,18358,Approved,EXPORT-EXEMPT,False,Lucia Santos,Rocio Cabanellas,Camila Torres,High,2024-05-13,2026-05-08
+CUST-008,Verde Mid-Market Co.,,LATAM,Argentina,BLEND360-AR,Mid-Market,Active,ARS,Net 15,72870,Approved,US-SALES-TAX,True,Mia Johnson,Marco Silva,Julia Chen,Low,2024-06-01,2026-05-09
+CUST-009,Summit Enterprise Co.,,LATAM,Brazil,BLEND360-BR,Enterprise,Active,BRL,Net 30,147848,Approved,LATAM-VAT,False,Tom Wilson,Nora Evans,Alan Reed,Medium,2024-06-20,2026-05-10
+CUST-010,Rio Strategic Co.,,LATAM,Mexico,BLEND360-MX,Strategic,Active,MXN,Net 45,314349,Approved,EU-VAT,False,Ava Miller,Rocio Cabanellas,Camila Torres,Medium,2024-07-09,2026-05-11
+CUST-011,Delta SMB Co.,,EMEA,United Kingdom,BLEND360-UK,SMB,Active,GBP,Net 60,28825,Approved,EXPORT-EXEMPT,False,Diego Perez,Marco Silva,Julia Chen,High,2024-07-28,2026-05-12
+CUST-012,Nova Mid-Market Co.,,EMEA,Germany,BLEND360-EU,Mid-Market,Active,EUR,Net 15,56041,Approved,US-SALES-TAX,False,Lucia Santos,Nora Evans,Alan Reed,Low,2024-08-16,2026-05-13
+CUST-013,Lumen Enterprise Co.,,North America,United States,BLEND360-US,Enterprise,Active,USD,Net 30,145976,Approved,LATAM-VAT,False,Mia Johnson,Rocio Cabanellas,Camila Torres,Medium,2024-09-04,2026-05-14
+CUST-014,Vector Strategic Co.,CUST-008,LATAM,Argentina,BLEND360-AR,Strategic,Active,ARS,Net 45,298070,Approved,EU-VAT,True,Tom Wilson,Marco Silva,Julia Chen,Medium,2024-09-23,2026-05-15
+CUST-015,Horizon SMB Co.,,LATAM,Brazil,BLEND360-BR,SMB,Active,BRL,Net 60,22164,Approved,EXPORT-EXEMPT,False,Ava Miller,Nora Evans,Alan Reed,High,2024-10-12,2026-05-16
+CUST-016,Bluefin Mid-Market Co.,,LATAM,Mexico,BLEND360-MX,Mid-Market,Active,MXN,Net 15,62623,Approved,US-SALES-TAX,False,Diego Perez,Rocio Cabanellas,Camila Torres,Low,2024-10-31,2026-05-17
+CUST-017,Orion Enterprise Co.,,EMEA,United Kingdom,BLEND360-UK,Enterprise,Active,GBP,Net 30,161559,Approved,LATAM-VAT,False,Lucia Santos,Marco Silva,Julia Chen,Medium,2024-11-19,2026-05-18
+CUST-018,Patagonia Strategic Co.,,EMEA,Germany,BLEND360-EU,Strategic,Active,EUR,Net 45,314726,Approved,EU-VAT,False,Mia Johnson,Nora Evans,Alan Reed,Medium,2024-12-08,2026-05-19
+CUST-019,Solara SMB Co.,,North America,United States,BLEND360-US,SMB,Active,USD,Net 60,15869,Approved,EXPORT-EXEMPT,False,Tom Wilson,Rocio Cabanellas,Camila Torres,High,2024-12-27,2026-05-20
+CUST-020,Beacon Mid-Market Co.,,LATAM,Argentina,BLEND360-AR,Mid-Market,Active,ARS,Net 15,73390,Approved,US-SALES-TAX,False,Ava Miller,Marco Silva,Julia Chen,Low,2025-01-15,2026-05-01
+CUST-021,Meridian Enterprise Co.,CUST-015,LATAM,Brazil,BLEND360-BR,Enterprise,Active,BRL,Net 30,151515,Approved,LATAM-VAT,False,Diego Perez,Nora Evans,Alan Reed,Medium,2025-02-03,2026-05-02
+CUST-022,Aster Strategic Co.,,LATAM,Mexico,BLEND360-MX,Strategic,Active,MXN,Net 45,312856,Approved,EU-VAT,True,Lucia Santos,Rocio Cabanellas,Camila Torres,Medium,2025-02-22,2026-05-03
+CUST-023,Condor SMB Co.,,EMEA,United Kingdom,BLEND360-UK,SMB,Active,GBP,Net 60,28746,Approved,EXPORT-EXEMPT,False,Mia Johnson,Marco Silva,Julia Chen,High,2025-03-13,2026-05-04
+CUST-024,Faro Mid-Market Co.,,EMEA,Germany,BLEND360-EU,Mid-Market,Active,EUR,Net 15,62223,Approved,US-SALES-TAX,False,Tom Wilson,Nora Evans,Alan Reed,Low,2025-04-01,2026-05-05
+CUST-025,Zenith Enterprise Co.,,North America,United States,BLEND360-US,Enterprise,Active,USD,Net 30,159719,Approved,LATAM-VAT,False,Ava Miller,Rocio Cabanellas,Camila Torres,Medium,2025-04-20,2026-05-06

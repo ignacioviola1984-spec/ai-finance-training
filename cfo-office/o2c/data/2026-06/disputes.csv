@@ -1,0 +1,31 @@
+dispute_id,invoice_id,customer_id,opened_date,disputed_amount,currency,reason_code,owner_team,root_cause,dispute_status,expected_resolution_date,cash_blocked_flag,created_at
+DISP-00001,INV-000502,CUST-0076,2025-11-29,888.81,GBP,Billing error,Customer Success,Quote-to-cash gap,resolved,2026-07-30,0,2025-11-29
+DISP-00002,INV-000760,CUST-0103,2026-05-28,982.7,USD,Duplicate,Legal,Manual error,open,2026-07-30,1,2026-05-28
+DISP-00003,INV-000761,CUST-0103,2026-06-27,1321.09,USD,Billing error,Billing,Manual error,resolved,2026-07-30,1,2026-06-27
+DISP-00004,INV-000381,CUST-0050,2026-03-01,864.83,USD,Duplicate,Billing,Expectation gap,open,2026-07-30,1,2026-03-01
+DISP-00005,INV-000878,CUST-0125,2026-06-27,1300.07,GBP,Pricing,Billing,Manual error,open,2026-07-30,1,2026-06-27
+DISP-00006,INV-000792,CUST-0110,2026-04-27,1585.18,USD,Service quality,Sales,Expectation gap,resolved,2026-07-30,1,2026-04-27
+DISP-00007,INV-000444,CUST-0064,2025-12-30,1855.34,USD,Billing error,Sales,Quote-to-cash gap,resolved,2026-07-30,0,2025-12-30
+DISP-00008,INV-000067,CUST-0013,2025-05-30,3269.8,EUR,Service quality,Sales,Quote-to-cash gap,open,2026-07-30,1,2025-05-30
+DISP-00009,INV-000069,CUST-0013,2025-07-30,2646.23,EUR,Duplicate,Customer Success,Manual error,open,2026-07-30,1,2025-07-30
+DISP-00010,INV-000080,CUST-0013,2026-06-27,1400.06,EUR,Service quality,Sales,Expectation gap,open,2026-07-30,1,2026-06-27
+DISP-00011,INV-000085,CUST-0013,2026-06-27,3207.97,EUR,Contract terms,Sales,Expectation gap,escalated,2026-07-30,1,2026-06-27
+DISP-00012,INV-000448,CUST-0064,2026-04-27,2820.64,USD,Billing error,Customer Success,Expectation gap,open,2026-07-30,0,2026-04-27
+DISP-00013,INV-000286,CUST-0036,2026-03-15,2354.45,EUR,Service quality,Billing,Expectation gap,open,2026-07-30,1,2026-03-15
+DISP-00014,INV-000842,CUST-0120,2026-02-28,2580.94,EUR,Pricing,Billing,Expectation gap,open,2026-07-30,1,2026-02-28
+DISP-00015,INV-000733,CUST-0100,2025-10-30,4735.2,GBP,Billing error,Sales,Manual error,resolved,2026-07-30,1,2025-10-30
+DISP-00016,INV-000619,CUST-0089,2025-10-30,5503.29,EUR,Billing error,Sales,Quote-to-cash gap,open,2026-07-30,0,2025-10-30
+DISP-00017,INV-000587,CUST-0086,2026-03-15,6494.65,USD,Contract terms,Billing,Manual error,resolved,2026-07-30,1,2026-03-15
+DISP-00018,INV-000302,CUST-0039,2025-09-14,5688.46,USD,Duplicate,Sales,Quote-to-cash gap,resolved,2026-07-30,1,2025-09-14
+DISP-00019,INV-000568,CUST-0082,2026-05-28,8820.69,USD,Pricing,Billing,Quote-to-cash gap,open,2026-07-30,1,2026-05-28
+DISP-00020,INV-000737,CUST-0100,2025-09-29,4933.53,GBP,Pricing,Customer Success,Expectation gap,escalated,2026-07-30,1,2025-09-29
+DISP-00021,INV-000282,CUST-0036,2026-06-12,7645.37,EUR,Service quality,Customer Success,Expectation gap,resolved,2026-07-30,0,2026-06-12
+DISP-00022,INV-000033,CUST-0007,2026-06-12,5258.77,USD,Billing error,Sales,Expectation gap,resolved,2026-07-30,0,2026-06-12
+DISP-00023,INV-000532,CUST-0078,2026-06-12,5440.9,USD,Pricing,Customer Success,Manual error,open,2026-07-30,1,2026-06-12
+DISP-00024,INV-000561,CUST-0082,2025-10-30,9963.03,USD,Billing error,Sales,Quote-to-cash gap,open,2026-07-30,1,2025-10-30
+DISP-00025,INV-000515,CUST-0078,2025-06-14,12032.49,USD,Duplicate,Customer Success,Quote-to-cash gap,resolved,2026-07-30,1,2025-06-14
+DISP-00026,INV-000277,CUST-0036,2026-01-14,7019.52,EUR,Pricing,Billing,Expectation gap,resolved,2026-07-30,1,2026-01-14
+DISP-00027,INV-000565,CUST-0082,2026-03-01,11730.98,USD,Billing error,Sales,Expectation gap,open,2026-07-30,0,2026-03-01
+DISP-00028,INV-000021,CUST-0007,2025-09-14,8934.44,USD,Pricing,Legal,Quote-to-cash gap,open,2026-07-30,1,2025-09-14
+DISP-00029,INV-000550,CUST-0080,2026-04-27,12422.46,USD,Pricing,Customer Success,Quote-to-cash gap,open,2026-07-30,1,2026-04-27
+DISP-00030,INV-000186,CUST-0028,2026-04-27,16943.52,USD,Pricing,Sales,Quote-to-cash gap,open,2026-07-30,1,2026-04-27

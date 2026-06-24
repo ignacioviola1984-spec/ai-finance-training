@@ -1,0 +1,4 @@
+dispute_id,invoice_id,customer_id,opened_date,disputed_amount,currency,reason_code,owner_team,root_cause,dispute_status,expected_resolution_date,cash_blocked_flag,created_at
+DISP-002,INV-012,CUST-003,2026-07-17,1500,BRL,Service issue,Sales,Delivery acceptance pending,Open,2026-08-12,True,2026-07-22
+DISP-003,INV-013,CUST-006,2026-07-18,750,EUR,Service issue,Sales,Tax rate review,Open,2026-08-13,True,2026-07-23
+DISP-004,INV-014,CUST-006,2026-08-18,750,EUR,Tax question,Operations,Tax rate review,Open,2026-08-14,True,2026-07-24
