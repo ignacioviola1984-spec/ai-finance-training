@@ -14,9 +14,9 @@ import o2c_data_loader as loader
 
 
 def _ensure_data():
-    if not os.path.exists(os.path.join(loader.DATA_DIR, "invoices.csv")):
+    if not os.path.exists(os.path.join(loader.period_data_dir("2026-05"), "invoices.csv")):
         import generate_data
-        generate_data.main()
+        generate_data.generate_all()
 
 
 # id columns that must be unique
@@ -53,7 +53,7 @@ class DataIntegrityTest(unittest.TestCase):
     def test_all_15_datasets_exist_and_load(self):
         self.assertEqual(len(self.dfs), 15)
         for key, fname in loader.FILES.items():
-            self.assertTrue(os.path.exists(os.path.join(loader.DATA_DIR, fname)),
+            self.assertTrue(os.path.exists(os.path.join(loader.period_data_dir("2026-05"), fname)),
                             f"missing dataset file {fname}")
             self.assertGreater(len(self.dfs[key]), 0, f"{key} is empty")
 

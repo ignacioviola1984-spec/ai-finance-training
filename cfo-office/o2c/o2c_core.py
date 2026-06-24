@@ -49,9 +49,9 @@ def _aging_bucket(days):
     return "120+"
 
 
-def load(data_dir=loader.DATA_DIR):
-    """Convenience: load + validate + normalize the datasets."""
-    return loader.load_o2c_data(data_dir)
+def load(period=P.DEFAULT_PERIOD):
+    """Convenience: load + validate + normalize the datasets for a period."""
+    return loader.load_o2c_data(period=period)
 
 
 # --------------------------------------------------------------------------

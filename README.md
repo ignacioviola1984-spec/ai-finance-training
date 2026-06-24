@@ -85,13 +85,18 @@ controls (15 hard + 10 soft)**. Finance numbers are computed in code; agents
 diagnose, prioritize, explain, route, and draft, but never invent a figure. **Hard
 controls block reporting** when CRM, billing, revenue recognition, cash
 application, AR, or deferred revenue do not tie out, and the orchestrator exits
-non-zero in CI. It needs no API key and runs from one command. The datasets are
-synthetic and illustrative (deterministic, with a known seeded-exception ground
-truth), so the controls and tests have a verifiable answer key. Details:
-[`cfo-office/o2c/README.md`](cfo-office/o2c/README.md).
+non-zero in CI. It needs no API key and runs from one command. It ships **two
+periods on identical controls**: a problematic month (`2026-05`) that is blocked
+with an adverse audit opinion, and a clean month (`2026-06`) where the source data
+ties out and reporting is released - no thresholds relaxed, only the data differs.
+The datasets are synthetic and illustrative (deterministic, with a known
+seeded-exception ground truth), so the controls and tests have a verifiable answer
+key. Details: [`cfo-office/o2c/README.md`](cfo-office/o2c/README.md) and the
+[interview script](cfo-office/o2c/INTERVIEW_SCRIPT.md).
 
 ```
-python run_o2c_control_tower.py
+python run_o2c_control_tower.py            # single period
+python run_o2c_control_tower.py --compare  # blocked 2026-05 vs clean 2026-06
 ```
 
 **Stack:** Python, pandas, deterministic O2C engine, agentic workflow

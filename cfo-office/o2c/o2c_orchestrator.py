@@ -325,7 +325,7 @@ def run(period=P.DEFAULT_PERIOD, output_dir=DEFAULT_OUTPUT_DIR, fail_on_hard=Fal
         print(f"O2C CONTROL TOWER | period {period} | run {run_id}")
         print("=" * 64)
 
-    dfs = core.load()                                   # load + validate + normalize
+    dfs = core.load(period)                             # load + validate + normalize
     if verbose:
         print(f"  loaded {len(dfs)} datasets, "
               f"{sum(len(d) for d in dfs.values()):,} records total")

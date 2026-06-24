@@ -1,12 +1,14 @@
 """
 run_o2c_control_tower.py - One-command entrypoint for the O2C / RevOps control tower.
 
-Runs the Order-to-Cash control tower for the default period and prints the
-headline: overall status, key metrics, hard control failures, the top 10 issues,
-and where the outputs were written. No API keys, no external services.
+Runs the Order-to-Cash control tower and prints the headline: overall status, key
+metrics, hard control failures, the top 10 issues, and where outputs were written.
+With --compare it runs both the problematic (2026-05) and clean (2026-06) periods
+and prints a side-by-side comparison. No API keys, no external services.
 
-    python run_o2c_control_tower.py
-    python run_o2c_control_tower.py --period 2026-05
+    python run_o2c_control_tower.py                  # single period (2026-05)
+    python run_o2c_control_tower.py --period 2026-06 # single period
+    python run_o2c_control_tower.py --compare        # 2026-05 vs 2026-06
 """
 
 import argparse
@@ -22,27 +24,45 @@ for _p in (O2C, os.path.join(O2C, "agents")):
 import o2c_policy as P            # noqa: E402
 import o2c_orchestrator as orch   # noqa: E402
 
+COMPARE_PERIODS = ("2026-05", "2026-06")
+
 
 def _m(x):
     return f"USD {x:,.0f}"
 
 
-def main():
-    ap = argparse.ArgumentParser(description="Run the O2C / RevOps control tower")
-    ap.add_argument("--period", default=P.DEFAULT_PERIOD)
-    args = ap.parse_args()
-
-    ctx, meta = orch.run(period=args.period, verbose=False)
+def gather(period):
+    """Run one period and return its comparison row + context."""
+    ctx, meta = orch.run(period=period, verbose=False)
     s = ctx.calc["summary"]
-    csum = ctx.calc["controls_summary"]
+    c = ctx.calc["controls_summary"]
+    row = {
+        "period": period,
+        "final_status": meta["final_status"],
+        "hard_failures": c["hard_failures"],
+        "soft_warnings": c["soft_warnings"],
+        "control_pass_rate_pct": c["control_pass_rate_pct"],
+        "dso": s["dso"],
+        "overdue_ar_usd": s["overdue_ar_usd"],
+        "unbilled_revenue_usd": s["unbilled_revenue_usd"],
+        "unapplied_cash_usd": s["unapplied_cash_usd"],
+        "disputed_ar_usd": s["disputed_ar_usd"],
+        "expected_cash_13w_usd": s["expected_cash_13w_usd"],
+        "audit_opinion": meta["audit_opinion"],
+    }
+    return row, ctx, meta
 
+
+def print_single(period):
+    row, ctx, meta = gather(period)
+    s = ctx.calc["summary"]
     print("=" * 64)
-    print(f"  O2C / REVENUE OPERATIONS CONTROL TOWER  |  period {args.period}")
+    print(f"  O2C / REVENUE OPERATIONS CONTROL TOWER  |  period {period}")
     print("=" * 64)
     print(f"  STATUS: {meta['final_status']}   (audit opinion: {meta['audit_opinion'].upper()}, "
           f"score {meta['audit_score']}%)")
-    print(f"  Control pass rate: {csum['control_pass_rate_pct']}%   "
-          f"hard failures: {csum['hard_failures']}   soft warnings: {csum['soft_warnings']}")
+    print(f"  Control pass rate: {row['control_pass_rate_pct']}%   "
+          f"hard failures: {row['hard_failures']}   soft warnings: {row['soft_warnings']}")
     print("\n  METRICS")
     print(f"    Open AR              {_m(s['open_ar_usd'])}")
     print(f"    Overdue AR           {_m(s['overdue_ar_usd'])}")
@@ -60,16 +80,69 @@ def main():
     print(f"\n  HARD CONTROL FAILURES ({len(hard_fail)}) - these BLOCK reporting")
     for r in hard_fail:
         print(f"    [FAIL] {r.control_id:32} {r.failing_record_count:>4} items  {_m(r.failing_amount_usd)}")
+    if not hard_fail:
+        print("    (none - all hard controls pass; reporting can be released)")
 
     print("\n  TOP 10 ISSUES")
-    for i, e in enumerate(ctx.escalations()[:10], 1):
+    issues = ctx.escalations()[:10]
+    for i, e in enumerate(issues, 1):
         print(f"    {i:>2}. [{e['severity']}] ({e['agent']}) {e['message']}")
+    if not issues:
+        print("    (none)")
 
-    out = orch.DEFAULT_OUTPUT_DIR
-    print(f"\n  OUTPUTS written to {out}:")
+    print(f"\n  OUTPUTS written to {orch.DEFAULT_OUTPUT_DIR}:")
     for fn in meta["output_files"]:
         print(f"    - {fn}")
     print("\n  (deterministic numbers; agents diagnose and narrate but never invent a figure)")
+
+
+def compare_periods(periods=COMPARE_PERIODS, do_print=True):
+    """Run each period and return {period: row}; optionally print side by side."""
+    rows = {}
+    for p in periods:
+        row, _ctx, _meta = gather(p)
+        rows[p] = row
+    if do_print:
+        labels = [
+            ("Final status", "final_status", str),
+            ("Hard failures", "hard_failures", str),
+            ("Soft warnings", "soft_warnings", str),
+            ("Control pass rate", "control_pass_rate_pct", lambda v: f"{v}%"),
+            ("DSO (days)", "dso", str),
+            ("Overdue AR", "overdue_ar_usd", _m),
+            ("Unbilled revenue", "unbilled_revenue_usd", _m),
+            ("Unapplied cash", "unapplied_cash_usd", _m),
+            ("Disputed AR", "disputed_ar_usd", _m),
+            ("Expected cash 13w", "expected_cash_13w_usd", _m),
+            ("Audit opinion", "audit_opinion", lambda v: v.upper()),
+        ]
+        ps = list(periods)
+        w = 22
+        print("=" * 64)
+        print("  O2C CONTROL TOWER - SCENARIO COMPARISON")
+        print("=" * 64)
+        header = f"  {'Metric':22}" + "".join(f"{p:>{w}}" for p in ps)
+        print(header)
+        print("  " + "-" * (22 + w * len(ps)))
+        for label, key, fmt in labels:
+            line = f"  {label:22}" + "".join(f"{fmt(rows[p][key]):>{w}}" for p in ps)
+            print(line)
+        print("\n  2026-05 is the intentionally problematic period (blocked by hard controls).")
+        print("  2026-06 is the clean period: the source data ties out, so it passes - no")
+        print("  thresholds were relaxed; only the data differs.")
+    return rows
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Run the O2C / RevOps control tower")
+    ap.add_argument("--period", default=P.DEFAULT_PERIOD)
+    ap.add_argument("--compare", action="store_true",
+                    help="run both 2026-05 and 2026-06 and print a side-by-side comparison")
+    args = ap.parse_args()
+    if args.compare:
+        compare_periods()
+    else:
+        print_single(args.period)
 
 
 if __name__ == "__main__":

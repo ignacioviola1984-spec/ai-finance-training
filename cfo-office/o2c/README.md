@@ -17,6 +17,40 @@ or deferred revenue do not tie out.
 > real company's data. The point is the operating model, the controls, and the
 > agentic workflow, in runnable code.
 
+## Architecture: Agent-First, Human-Led O2C Control Tower
+
+```mermaid
+flowchart TD
+  crm[CRM Opportunities] --> cust[Customer Master] --> ctr[Contracts] --> so[Sales Orders]
+  so --> bs[Billing Schedule] --> inv[Invoices] --> rev[Revenue Schedule / Deferred Revenue]
+  rev --> ar[AR Aging] --> col[Collections] --> pay[Payments] --> bank[Bank Receipts]
+  bank --> cash[Cash Application] --> gl[GL / Reporting] --> board[Board Pack]
+
+  inv --> calc[Deterministic calculations]
+  rev --> calc
+  cash --> calc
+  ar --> calc
+  calc --> hard[15 Hard controls<br/>block reporting]
+  calc --> soft[10 Soft controls<br/>warn only]
+  hard --> gate{Hard gate}
+  mc[Maker / checker] --> appr[Human approvals]
+  appr --> gate
+  gate -->|all pass| board
+  gate -->|any fail| blocked[Reporting BLOCKED]
+
+  agents["Agent layer (deterministic makers):<br/>Order Intake, Customer Master, Contract, Billing,<br/>Revenue Recognition, Collections, Cash Application,<br/>Disputes &amp; Credit, RevOps Analytics, O2C Audit"]
+  agents -. diagnose, prioritize, route, narrate .-> calc
+  agents -. every step recorded .-> audit[Audit trail]
+  soft -. route work .-> agents
+```
+
+The chain on top is the source-to-cash flow; every number on it is computed in
+`o2c_core.py`. The agent layer reads those numbers, diagnoses exceptions,
+prioritizes work, routes approvals, and narrates - it never invents a figure.
+The control layer turns the numbers into 15 hard controls (which gate reporting)
+and 10 soft controls (which route work), with maker/checker human approvals and a
+full audit trail.
+
 ## Why O2C is its own sub-orchestrator
 
 The CFO Office already runs the month-end close (`cfo-office/cfo_orchestrator.py`).
@@ -50,11 +84,23 @@ multi-region (NA / EMEA / LATAM), multi-currency (USD, EUR, GBP, BRL, MXN, ARS):
 | `disputes.csv` | Disputed invoices and blocked cash |
 | `credit_limits.csv` | Credit policy, exposure, utilization, reviews |
 
-Regenerate deterministically (fixed seed, no network, no API key):
+Regenerate deterministically (fixed seed, no network, no API key). This writes
+both periods into `data/<period>/`:
 
 ```
 python cfo-office/o2c/generate_data.py
 ```
+
+### Two scenarios (so you can demo both outcomes)
+
+- **`2026-05` (problematic)** seeds a known count of each exception type, so the
+  run is **`BLOCKED_HARD_CONTROLS`** with an ADVERSE audit opinion.
+- **`2026-06` (clean)** has no seeded exceptions and positive guarantees (credit
+  limits cover exposure, credit-hold customers carry no active orders, every due
+  billable line is invoiced at the scheduled amount), so the source data ties out
+  and **all hard controls PASS** (`PASS_WITH_WARNINGS`, UNQUALIFIED opinion). It
+  still carries realistic soft warnings. The controls and thresholds are
+  **identical** across periods - only the data differs.
 
 The generator seeds a known count of each exception type (closed-won not
 contracted, unbilled work, invoice mismatches, duplicate invoices, unapplied cash,
@@ -122,13 +168,17 @@ numbers, and issues an opinion (unqualified / qualified / adverse).
 # 1) one-command control tower (status, metrics, hard failures, top issues)
 python run_o2c_control_tower.py
 
-# 2) full orchestrator for a period (writes all 8 outputs)
-python cfo-office/o2c/o2c_orchestrator.py --period 2026-05
+# 2) side-by-side: the problematic period vs the clean period
+python run_o2c_control_tower.py --compare
 
-# 3) CI gate: non-zero exit if any hard control fails
+# 3) full orchestrator per period (writes all 8 outputs)
+python cfo-office/o2c/o2c_orchestrator.py --period 2026-05   # BLOCKED_HARD_CONTROLS
+python cfo-office/o2c/o2c_orchestrator.py --period 2026-06   # PASS_WITH_WARNINGS
+
+# 4) CI gate: non-zero exit if any hard control fails
 python cfo-office/o2c/o2c_orchestrator.py --period 2026-05 --fail-on-hard-controls
 
-# 4) tests (pytest if available, else the bundled runner)
+# 5) tests (pytest if available, else the bundled runner)
 python -m pytest cfo-office/o2c/tests
 python cfo-office/o2c/tests/run_tests.py
 ```

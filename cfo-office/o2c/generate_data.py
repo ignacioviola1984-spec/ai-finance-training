@@ -8,12 +8,21 @@ Builds 15 coherent CSVs with relational integrity across the full chain:
   customer -> credit limit.
 
 Multi-entity, multi-region (NA / EMEA / LATAM), multi-currency
-(USD, EUR, GBP, BRL, MXN, ARS). The data is mostly clean but seeds a KNOWN
-number of each exception type (see SEEDED at the end), so the controls have a
-ground truth to catch and the tests can assert exactly those breaks.
+(USD, EUR, GBP, BRL, MXN, ARS).
 
-Deterministic: fixed seed, no wall-clock, no network. Re-running reproduces the
-identical files. Run:  python cfo-office/o2c/generate_data.py
+Two scenarios are generated, one per reporting period and data subfolder:
+  - 2026-05 (scenario "problematic"): seeds a KNOWN number of each exception
+    type (see SEEDED), so every hard control has a ground truth to catch and the
+    run is BLOCKED.
+  - 2026-06 (scenario "clean"): NO seeded exceptions and positive guarantees
+    (credit limits cover exposure, credit-hold customers carry no active orders,
+    every due billable line is invoiced at the scheduled amount), so the source
+    data ties out and all hard controls PASS. The clean period still carries
+    realistic SOFT warnings (non-standard terms, stale reviews, FX, etc.); the
+    controls and thresholds are identical across periods - only the data differs.
+
+Deterministic: fixed per-scenario seed, no wall-clock, no network. Re-running
+reproduces the identical files. Run:  python cfo-office/o2c/generate_data.py
 """
 
 import csv
@@ -26,10 +35,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import o2c_policy as P  # noqa: E402
 
+# These are reset per scenario by main(); module-level defaults keep the module
+# importable. CLEAN gates every exception-seeding block.
 SEED = 7
 rng = random.Random(SEED)
 DATA = os.path.join(HERE, "data")
-AS_OF = date(2026, 5, 31)          # reporting as-of date (period 2026-05)
+AS_OF = date(2026, 5, 31)          # reporting as-of date; set by main()
+CLEAN = False                      # True = clean scenario (no seeded exceptions)
 FX = P.FX_TO_USD
 
 SEEDED = {}                        # manifest of intentionally-seeded exceptions
@@ -224,7 +236,7 @@ def gen_opportunities(customers):
 def gen_contracts(opps):
     won = [o for o in opps if o["_won"] == 1]
     # EXCEPTION A: closed-won opportunities NOT converted to a contract
-    uncontracted = set(o["opportunity_id"] for o in won[::13][:8])
+    uncontracted = set() if CLEAN else set(o["opportunity_id"] for o in won[::13][:8])
     SEEDED["A_closed_won_not_contracted"] = len(uncontracted)
     rows, cid = [], 0
     for o in won:
@@ -239,6 +251,10 @@ def gen_contracts(opps):
         status = wchoice([("active", 90), ("expired", 6), ("terminated", 4)])
         if o["_cend"] < AS_OF and status == "active":
             status = "expired"
+        # CLEAN guarantee: a credit-hold customer carries no ACTIVE contract, so it
+        # cannot have an active order (controls B and N stay clean by construction).
+        if CLEAN and c["_status"] == "credit-hold" and status == "active":
+            status = "suspended"
         rows.append({
             "contract_id": f"CTR-{cid:05d}", "opportunity_id": o["opportunity_id"],
             "customer_id": c["customer_id"], "signed_date": iso(o["_cstart"]),
@@ -260,10 +276,10 @@ def gen_contracts(opps):
 def gen_orders(contracts):
     active = [c for c in contracts if c["_status"] == "active"]
     # EXCEPTION B: active contracts NOT converted to a sales order
-    unordered = set(c["contract_id"] for c in active[::11][:10])
+    unordered = set() if CLEAN else set(c["contract_id"] for c in active[::11][:10])
     SEEDED["B_contract_not_ordered"] = len(unordered)
     # EXCEPTION N: customers on credit hold that still get a NEW active order
-    hold_custs = [c for c in contracts if c["_cust"]["_status"] == "credit-hold"]
+    hold_custs = [] if CLEAN else [c for c in contracts if c["_cust"]["_status"] == "credit-hold"]
     credit_hold_orders = set()
     rows, oid = [], 0
     for c in contracts:
@@ -311,8 +327,13 @@ def gen_orders(contracts):
 # --------------------------------------------------------------------------
 def gen_billing(orders):
     # EXCEPTION C: active sales orders with NO billing schedule at all
-    no_sched = set(o["order_id"] for o in orders if o["order_status"] == "active")
-    no_sched = set(list(no_sched)[::14][:9])
+    if CLEAN:
+        no_sched = set()
+    else:
+        # slice an ORDERED list (not a set) so the seed is deterministic regardless
+        # of PYTHONHASHSEED
+        active_ids = [o["order_id"] for o in orders if o["order_status"] == "active"]
+        no_sched = set(active_ids[::14][:9])
     SEEDED["C_order_missing_billing_schedule"] = len(no_sched)
     rows, bid = [], 0
     for o in orders:
@@ -369,25 +390,26 @@ def gen_invoices(billing):
     # only bill lines scheduled on/before as-of are due to be invoiced now
     due = [b for b in billing if b["_sched"] <= AS_OF]
     # EXCEPTION D: billable, due lines that were NOT invoiced (revenue leakage)
-    not_invoiced = set(b["billing_schedule_id"] for b in due[::9][:12])
+    not_invoiced = set() if CLEAN else set(b["billing_schedule_id"] for b in due[::9][:12])
     SEEDED["D_billable_not_invoiced"] = len(not_invoiced)
     # blocked-billing lines (valid reason) - not a leakage exception
-    for b in due[::23][:10]:
-        if b["billing_schedule_id"] not in not_invoiced:
-            b["billing_status"] = "blocked"
-            b["billing_exception_reason"] = wchoice(
-                [("Customer dispute", 40), ("Pending PO", 35), ("Hold for credit review", 25)])
+    if not CLEAN:
+        for b in due[::23][:10]:
+            if b["billing_schedule_id"] not in not_invoiced:
+                b["billing_status"] = "blocked"
+                b["billing_exception_reason"] = wchoice(
+                    [("Customer dispute", 40), ("Pending PO", 35), ("Hold for credit review", 25)])
 
     invoices, memos = [], []
     iid = mid = 0
     # pick seed sets up front for amount mismatch / late / dup / tax / fx
     inv_candidates = [b for b in due if b["billing_schedule_id"] not in not_invoiced
                       and b["billing_status"] != "blocked"]
-    mismatch = set(b["billing_schedule_id"] for b in inv_candidates[::17][:14])
-    late = set(b["billing_schedule_id"] for b in inv_candidates[5::13][:30])
-    bad_tax = set(b["billing_schedule_id"] for b in inv_candidates[3::19][:9])
-    wrong_ccy = set(b["billing_schedule_id"] for b in inv_candidates[7::29][:5])
-    dup_src = inv_candidates[2::37][:6]
+    mismatch = set() if CLEAN else set(b["billing_schedule_id"] for b in inv_candidates[::17][:14])
+    late = set() if CLEAN else set(b["billing_schedule_id"] for b in inv_candidates[5::13][:30])
+    bad_tax = set() if CLEAN else set(b["billing_schedule_id"] for b in inv_candidates[3::19][:9])
+    wrong_ccy = set() if CLEAN else set(b["billing_schedule_id"] for b in inv_candidates[7::29][:5])
+    dup_src = [] if CLEAN else inv_candidates[2::37][:6]
     SEEDED["E_invoice_amount_mismatch"] = len(mismatch)
     SEEDED["late_invoices"] = len(late)
     SEEDED["invalid_tax_treatment"] = len(bad_tax)
@@ -421,7 +443,7 @@ def gen_invoices(billing):
             ccy = "USD" if ccy != "USD" else "EUR"
         po = o["po_number"]
         # EXCEPTION F: PO required by customer but missing on invoice
-        if cust["_po"] and rng.random() < 0.20:
+        if not CLEAN and cust["_po"] and rng.random() < 0.20:
             po = ""
             SEEDED["F_missing_po_required"] += 1
         inv_id = f"INV-{iid:06d}"
@@ -447,8 +469,8 @@ def gen_invoices(billing):
     for b in dup_src:
         invoices.append(make_invoice(b, force_dup=True))
 
-    # credit memos against a sample of invoices
-    memo_targets = invoices[::9][:90]
+    # credit memos against a sample of invoices (fewer in the clean book)
+    memo_targets = invoices[::18][:40] if CLEAN else invoices[::9][:90]
     SEEDED["credit_memos"] = len(memo_targets)
     for inv in memo_targets:
         mid += 1
@@ -493,16 +515,19 @@ def gen_cash(invoices, memos):
         risk = {"low": 0.0, "medium": 0.08, "high": 0.18}[cust["_risk"]]
         if due > AS_OF:
             p_paid = 0.10                      # not due yet: mostly open
+        elif CLEAN:
+            # the clean book collects well -> a healthier AR and lower DSO
+            p_paid = min(0.97, 0.78 + days_overdue / 200.0) - risk * 0.5
         else:
             # collect most overdue, but leave a believable working AR book
             p_paid = min(0.86, 0.50 + days_overdue / 260.0) - risk
         pay_plan.append((inv, max(0.03, p_paid)))
 
     paid = [inv for inv, p in pay_plan if rng.random() < p]
-    # seed payment-quality exceptions among the paid set
-    short = set(id(inv) for inv in paid[::11][:13])
-    over = set(id(inv) for inv in paid[5::13][:9])
-    no_bank = set(id(inv) for inv in paid[3::23][:8])     # payment exists, no bank receipt
+    # seed payment-quality exceptions among the paid set (none in the clean book)
+    short = set() if CLEAN else set(id(inv) for inv in paid[::11][:13])
+    over = set() if CLEAN else set(id(inv) for inv in paid[5::13][:9])
+    no_bank = set() if CLEAN else set(id(inv) for inv in paid[3::23][:8])
     SEEDED["short_payments"] = len(short)
     SEEDED["overpayments"] = len(over)
     SEEDED["payment_not_in_bank"] = len(no_bank)
@@ -543,9 +568,15 @@ def gen_cash(invoices, memos):
     # cash application: apply matched receipts to their invoice; seed unapplied.
     # Use lists (not sets of ids) so the selection is deterministic across runs.
     apply_plan = [p for p in payments if p["_has_bank"]]
-    unapplied_list = apply_plan[4::15][:14]                   # EXCEPTION: unapplied cash
+    if CLEAN:
+        # a little unapplied cash is realistic, but ALL of it is documented, so the
+        # hard cash-application control passes (only undocumented unapplied fails it).
+        unapplied_list = apply_plan[7::40][:4]
+        no_reason = set()
+    else:
+        unapplied_list = apply_plan[4::15][:14]               # EXCEPTION: unapplied cash
+        no_reason = set(id(p) for p in unapplied_list[::3][:5])  # unapplied AND undocumented
     unapplied = set(id(p) for p in unapplied_list)
-    no_reason = set(id(p) for p in unapplied_list[::3][:5])   # unapplied AND undocumented
     SEEDED["unapplied_cash"] = len(unapplied)
     SEEDED["J_unapplied_no_reason"] = len(no_reason)
     for p in payments:
@@ -596,14 +627,13 @@ def gen_cash(invoices, memos):
 # --------------------------------------------------------------------------
 def gen_revenue(invoices):
     rows, rid = [], 0
-    # EXCEPTION seeds
+    # EXCEPTION seeds (none in the clean book)
     before_start = set()
     after_end = set()
     cand = [i for i in invoices if i["_ctr"]["billing_model"] in ("subscription",)]
-    bs_pick = cand[::21][:8]
-    ae_pick = cand[7::23][:7]
+    bs_pick = [] if CLEAN else cand[::21][:8]
+    ae_pick = [] if CLEAN else cand[7::23][:7]
     for inv in invoices:
-        rid_local = []
         cust = inv["_cust"]
         ctr = inv["_ctr"]
         model = ctr["billing_model"]
@@ -613,6 +643,11 @@ def gen_revenue(invoices):
         months = max(1, (svc_end.year - svc_start.year) * 12 + (svc_end.month - svc_start.month))
         if model in ("usage", "implementation", "services"):
             months = 1
+        if CLEAN:
+            # never recognize past the contract end in the clean book (cutoff control)
+            cend = date.fromisoformat(ctr["contract_end_date"])
+            max_k = (cend.year - svc_start.year) * 12 + (cend.month - svc_start.month) + 1
+            months = max(1, min(months, max_k))
         per = round(amt / months, 2)
         deferred = amt
         for k in range(months):
@@ -699,7 +734,7 @@ def gen_deferred(rev_rows, invoices):
             })
             opening = closing
     # EXCEPTION L: break the rollforward math on a few rows (closing not footing)
-    break_pick = flat[9::40][:6]
+    break_pick = [] if CLEAN else flat[9::40][:6]
     for row in break_pick:
         row["closing_deferred_revenue"] = round(row["closing_deferred_revenue"]
                                                 + rng.choice([1500.0, -2200.0, 3100.0]), 2)
@@ -733,7 +768,7 @@ def gen_collections_disputes(invoices, memos, applications):
     # EXCEPTION H: subledger status out of sync with the transactions (status says
     # 'paid' but the invoice still carries an open balance) -> AR subledger does
     # not tie to the transaction-derived control balance.
-    h_break = open_invs[9::40][:6]
+    h_break = [] if CLEAN else open_invs[9::40][:6]
     for inv in h_break:
         inv["invoice_status"] = "paid"
     SEEDED["H_ar_subledger_break"] = len(h_break)
@@ -745,8 +780,9 @@ def gen_collections_disputes(invoices, memos, applications):
     # sample disputes ACROSS the size distribution (not just the largest invoices)
     # so disputed AR is a believable slice of the book, not a tail-heavy outlier.
     overdue_sorted = sorted(overdue, key=lambda i: i["_open"])
-    step = max(1, len(overdue_sorted) // 130)
-    disp_targets = overdue_sorted[5::step][:110]
+    cap = 30 if CLEAN else 110          # clean book has only a few disputes
+    step = max(1, len(overdue_sorted) // (cap + 20))
+    disp_targets = overdue_sorted[5::step][:cap]
     blocked = 0
     disputed_invoices = set()
     for inv in disp_targets:
@@ -823,7 +859,7 @@ def gen_credit_limits(customers, open_invs):
         exposure[c] = exposure.get(c, 0.0) + inv["_open"]
     rows, pid = [], 0
     # EXCEPTION M: exposure ABOVE limit without approval (breach)
-    breach_custs = set(c["customer_id"] for c in customers[::11][:10])
+    breach_custs = set() if CLEAN else set(c["customer_id"] for c in customers[::11][:10])
     SEEDED["M_credit_limit_breach"] = len(breach_custs)
     for c in customers:
         pid += 1
@@ -832,6 +868,9 @@ def gen_credit_limits(customers, open_invs):
         exp_local = round(exposure.get(cid, 0.0), 2)
         if cid in breach_custs:
             exp_local = round(limit_local * rng.uniform(1.1, 1.6), 2)   # force breach
+        elif CLEAN and exp_local > limit_local:
+            # the clean book sets approved limits that cover real exposure with headroom
+            limit_local = round(exp_local * rng.uniform(1.15, 1.4), 2)
         util = round((exp_local / limit_local * 100.0) if limit_local else 0.0, 1)
         hold = 1 if c["_status"] == "credit-hold" else 0
         risk_score = {"low": rng.randint(70, 95), "medium": rng.randint(45, 70),
@@ -922,7 +961,25 @@ COLS = {
 }
 
 
-def main():
+def _period_as_of(period):
+    """Last calendar day of a YYYY-MM period."""
+    y, m = (int(x) for x in period.split("-"))
+    nxt = date(y + 1, 1, 1) if m == 12 else date(y, m + 1, 1)
+    return date.fromordinal(nxt.toordinal() - 1)
+
+
+SCENARIO_SEED = {"problematic": 7, "clean": 23}
+SCENARIOS = {"2026-05": "problematic", "2026-06": "clean"}
+
+
+def main(period="2026-05", scenario=None):
+    global rng, AS_OF, CLEAN, DATA, SEEDED
+    scenario = scenario or SCENARIOS.get(period, "problematic")
+    rng = random.Random(SCENARIO_SEED.get(scenario, 7))
+    AS_OF = _period_as_of(period)
+    CLEAN = (scenario == "clean")
+    DATA = os.path.join(HERE, "data", period)
+    SEEDED = {}
     os.makedirs(DATA, exist_ok=True)
     customers = gen_customers(125)
     opps = gen_opportunities(customers)
@@ -953,13 +1010,23 @@ def main():
     counts["disputes.csv"] = write_csv("disputes.csv", disputes, COLS["disputes.csv"])
     counts["credit_limits.csv"] = write_csv("credit_limits.csv", credit_rows, COLS["credit_limits.csv"])
 
-    print("Generated O2C datasets (rows):")
-    for k in COLS:
-        print(f"  {k:38} {counts[k]:>6}")
-    print("\nSeeded exceptions (ground truth for the controls):")
-    for k, v in SEEDED.items():
-        print(f"  {k:34} {v:>4}")
+    # business-volume keys are not control exceptions; exclude them from the count
+    volume_keys = {"credit_memos", "disputes", "disputes_cash_blocked",
+                   "collections_activities", "broken_promises"}
+    seeded_exc = sum(v for k, v in SEEDED.items() if k not in volume_keys)
+    print(f"[{period} / {scenario}] -> {DATA}  ({sum(counts.values()):,} rows, "
+          f"{seeded_exc} seeded control exceptions)")
+    return counts
+
+
+def generate_all():
+    """Generate every period/scenario the orchestrator can run."""
+    for period, scenario in SCENARIOS.items():
+        main(period, scenario)
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) >= 2:
+        main(sys.argv[1], sys.argv[2] if len(sys.argv) >= 3 else None)
+    else:
+        generate_all()

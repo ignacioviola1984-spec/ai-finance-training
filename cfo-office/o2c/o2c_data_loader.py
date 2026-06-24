@@ -18,6 +18,11 @@ except ImportError:                                   # pragma: no cover
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
+
+def period_data_dir(period):
+    """The dataset folder for a reporting period (data/<period>/)."""
+    return os.path.join(DATA_DIR, period)
+
 # Logical name -> file. The logical name is what the rest of the system uses.
 FILES = {
     "customers": "customer_master.csv",
@@ -155,12 +160,14 @@ def to_usd(amount_series, currency_series):
     return (amount_series.astype(float) * rates).round(2)
 
 
-def load_o2c_data(data_dir=DATA_DIR):
-    """Load all 15 datasets into a dict of DataFrames keyed by logical name.
+def load_o2c_data(period=P.DEFAULT_PERIOD, data_dir=None):
+    """Load all 15 datasets for a period into a dict of DataFrames keyed by name.
 
-    Parses dates, validates the schema, and adds USD-normalized columns. Raises
-    O2CSchemaError with a clear message if a file or a required column is missing.
+    Resolves data/<period>/ unless an explicit data_dir is given. Parses dates,
+    validates the schema, and adds USD-normalized columns. Raises O2CSchemaError
+    with a clear message if a file or a required column is missing.
     """
+    data_dir = data_dir or period_data_dir(period)
     if not os.path.isdir(data_dir):
         raise O2CSchemaError(
             f"O2C data directory not found: {data_dir}. "
@@ -216,7 +223,11 @@ def normalize_currency_amounts(dfs):
 
 
 if __name__ == "__main__":
-    data = load_o2c_data()
-    print(f"Loaded {len(data)} O2C tables from {DATA_DIR}:")
-    for k, df in data.items():
-        print(f"  {k:18} {len(df):>5} rows  x {len(df.columns):>2} cols")
+    for _period in ("2026-05", "2026-06"):
+        try:
+            data = load_o2c_data(period=_period)
+        except O2CSchemaError as e:
+            print(f"{_period}: {e}")
+            continue
+        total = sum(len(df) for df in data.values())
+        print(f"{_period}: {len(data)} tables, {total:,} rows from {period_data_dir(_period)}")

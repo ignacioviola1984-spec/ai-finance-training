@@ -21,9 +21,9 @@ import o2c_orchestrator as orch
 
 
 def _ensure_data():
-    if not os.path.exists(os.path.join(loader.DATA_DIR, "invoices.csv")):
+    if not os.path.exists(os.path.join(loader.period_data_dir("2026-05"), "invoices.csv")):
         import generate_data
-        generate_data.main()
+        generate_data.generate_all()
 
 
 class CollectionsRiskTest(unittest.TestCase):

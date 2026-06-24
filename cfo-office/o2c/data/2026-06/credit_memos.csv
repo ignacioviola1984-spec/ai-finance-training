@@ -1,0 +1,41 @@
+credit_memo_id,invoice_id,customer_id,credit_date,credit_amount,currency,reason_code,approved_by,approval_status,gl_account,created_at
+CM-00001,INV-000001,CUST-0001,2026-06-30,393216.61,BRL,Price adjustment,J. Park,approved,4900-Contra-Rev,2026-06-30
+CM-00002,INV-000019,CUST-0005,2026-02-28,424.95,EUR,Price adjustment,P. Alvarez,approved,4900-Contra-Rev,2026-02-28
+CM-00003,INV-000037,CUST-0007,2025-08-30,7047.34,USD,Price adjustment,L. Okafor,pending,4900-Contra-Rev,2025-08-30
+CM-00004,INV-000055,CUST-0011,2026-01-30,392106.68,ARS,Billing error,K. Sato,approved,4900-Contra-Rev,2026-01-30
+CM-00005,INV-000073,CUST-0013,2025-11-30,607.91,EUR,Price adjustment,S. Cohen,approved,4900-Contra-Rev,2025-11-30
+CM-00006,INV-000091,CUST-0014,2025-09-30,2244.48,USD,Price adjustment,A. Romero,approved,4900-Contra-Rev,2025-09-30
+CM-00007,INV-000109,CUST-0016,2026-04-28,547.35,USD,Billing error,L. Okafor,pending,4900-Contra-Rev,2026-04-28
+CM-00008,INV-000127,CUST-0020,2025-09-30,552.8,USD,Price adjustment,P. Alvarez,pending,4900-Contra-Rev,2025-09-30
+CM-00009,INV-000145,CUST-0020,2026-04-28,177.4,USD,Service credit,C. Bianchi,approved,4900-Contra-Rev,2026-04-28
+CM-00010,INV-000163,CUST-0025,2025-04-30,9300.3,EUR,Price adjustment,T. Nguyen,approved,4900-Contra-Rev,2025-04-30
+CM-00011,INV-000181,CUST-0028,2025-11-30,9466.91,USD,Goodwill,A. Romero,approved,4900-Contra-Rev,2025-11-30
+CM-00012,INV-000199,CUST-0030,2026-01-30,113194.58,USD,Goodwill,S. Cohen,approved,4900-Contra-Rev,2026-01-30
+CM-00013,INV-000217,CUST-0031,2026-06-28,7429.23,GBP,Price adjustment,N. Costa,approved,4900-Contra-Rev,2026-06-28
+CM-00014,INV-000235,CUST-0032,2025-11-30,6081.78,EUR,Goodwill,F. Dubois,approved,4900-Contra-Rev,2025-11-30
+CM-00015,INV-000253,CUST-0033,2026-03-28,26008.65,USD,Billing error,P. Alvarez,approved,4900-Contra-Rev,2026-03-28
+CM-00016,INV-000271,CUST-0036,2026-03-28,1648.03,EUR,Price adjustment,N. Costa,approved,4900-Contra-Rev,2026-03-28
+CM-00017,INV-000289,CUST-0036,2026-06-28,928.58,EUR,Price adjustment,A. Romero,approved,4900-Contra-Rev,2026-06-28
+CM-00018,INV-000307,CUST-0042,2026-04-30,1124.01,EUR,Service credit,P. Alvarez,approved,4900-Contra-Rev,2026-04-30
+CM-00019,INV-000325,CUST-0044,2026-07-28,290.38,USD,Billing error,T. Nguyen,approved,4900-Contra-Rev,2026-07-28
+CM-00020,INV-000343,CUST-0045,2026-05-30,21182.75,USD,Price adjustment,C. Bianchi,approved,4900-Contra-Rev,2026-05-30
+CM-00021,INV-000361,CUST-0048,2025-12-30,7659.63,GBP,Billing error,A. Romero,approved,4900-Contra-Rev,2025-12-30
+CM-00022,INV-000379,CUST-0050,2025-08-30,1106.85,USD,Goodwill,F. Dubois,approved,4900-Contra-Rev,2025-08-30
+CM-00023,INV-000397,CUST-0055,2026-04-28,139.71,EUR,Price adjustment,E. Moreau,approved,4900-Contra-Rev,2026-04-28
+CM-00024,INV-000415,CUST-0058,2026-03-28,797105.37,ARS,Billing error,C. Bianchi,approved,4900-Contra-Rev,2026-03-28
+CM-00025,INV-000433,CUST-0063,2026-03-28,10487.36,BRL,Service credit,D. Fischer,approved,4900-Contra-Rev,2026-03-28
+CM-00026,INV-000451,CUST-0064,2026-07-28,1216.66,USD,Billing error,M. Silva,approved,4900-Contra-Rev,2026-07-28
+CM-00027,INV-000469,CUST-0067,2026-07-30,5880.27,USD,Goodwill,M. Silva,pending,4900-Contra-Rev,2026-07-30
+CM-00028,INV-000487,CUST-0073,2025-07-30,9164633.85,ARS,Billing error,D. Fischer,approved,4900-Contra-Rev,2025-07-30
+CM-00029,INV-000505,CUST-0076,2026-02-28,370.84,GBP,Billing error,E. Moreau,approved,4900-Contra-Rev,2026-02-28
+CM-00030,INV-000523,CUST-0078,2025-08-30,3082.2,USD,Goodwill,J. Park,approved,4900-Contra-Rev,2025-08-30
+CM-00031,INV-000541,CUST-0079,2026-05-30,60581.34,USD,Service credit,N. Costa,approved,4900-Contra-Rev,2026-05-30
+CM-00032,INV-000559,CUST-0082,2025-08-30,2767.66,USD,Price adjustment,J. Park,approved,4900-Contra-Rev,2025-08-30
+CM-00033,INV-000577,CUST-0084,2026-02-28,914.87,USD,Service credit,N. Costa,approved,4900-Contra-Rev,2026-02-28
+CM-00034,INV-000595,CUST-0087,2026-02-28,4707.64,USD,Price adjustment,P. Alvarez,approved,4900-Contra-Rev,2026-02-28
+CM-00035,INV-000613,CUST-0088,2025-10-30,6532.95,USD,Goodwill,T. Nguyen,approved,4900-Contra-Rev,2025-10-30
+CM-00036,INV-000631,CUST-0090,2025-09-30,4886.0,USD,Price adjustment,E. Moreau,approved,4900-Contra-Rev,2025-09-30
+CM-00037,INV-000649,CUST-0091,2026-06-30,2548.79,USD,Price adjustment,R. Brooks,approved,4900-Contra-Rev,2026-06-30
+CM-00038,INV-000667,CUST-0096,2026-02-28,2480.85,USD,Service credit,S. Cohen,approved,4900-Contra-Rev,2026-02-28
+CM-00039,INV-000685,CUST-0097,2025-04-30,80122.27,USD,Billing error,R. Brooks,approved,4900-Contra-Rev,2025-04-30
+CM-00040,INV-000703,CUST-0098,2025-09-30,15246.1,USD,Price adjustment,S. Cohen,approved,4900-Contra-Rev,2025-09-30

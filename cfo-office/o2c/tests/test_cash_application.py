@@ -18,9 +18,9 @@ from base_agent import O2CContext
 
 
 def _ensure_data():
-    if not os.path.exists(os.path.join(loader.DATA_DIR, "invoices.csv")):
+    if not os.path.exists(os.path.join(loader.period_data_dir("2026-05"), "invoices.csv")):
         import generate_data
-        generate_data.main()
+        generate_data.generate_all()
 
 
 class CashApplicationTest(unittest.TestCase):
