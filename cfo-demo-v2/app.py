@@ -125,6 +125,8 @@ st.markdown("""
         border-radius:12px; padding:14px 16px; margin-bottom:8px; }
 .statcard { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
             border-radius:12px; padding:14px 16px; min-height:178px; }
+.teamcard { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
+            border-radius:12px; padding:14px 16px; margin-bottom:8px; min-height:108px; }
 .role { font-weight:700; font-size:0.98rem; }
 .boardpack { background:rgba(27,42,74,0.06); border-left:4px solid #1B2A4A;
              border-radius:8px; padding:18px 22px; }
@@ -169,6 +171,19 @@ NAV = [
     "5 · Self-improvement",
 ]
 choice = st.sidebar.radio("Walk the model", NAV, label_visibility="collapsed")
+
+# Scroll the main view back to the top whenever the station changes (Streamlit
+# otherwise keeps the previous scroll position, landing you mid-page).
+if st.session_state.get("_last_nav") != choice:
+    st.session_state["_last_nav"] = choice
+    st.html(
+        "<script>"
+        "const f=()=>{document.querySelectorAll("
+        "'section.main,[data-testid=\"stMain\"],[data-testid=\"stAppViewContainer\"]')"
+        ".forEach(e=>e.scrollTo({top:0,behavior:'instant'}));window.scrollTo(0,0);};"
+        "f();setTimeout(f,60);setTimeout(f,180);"
+        "</script>",
+        unsafe_allow_javascript=True)
 
 st.sidebar.divider()
 st.sidebar.markdown(
@@ -506,7 +521,7 @@ def render_close():
     for row in team_rows:
         cols = st.columns(4)
         for c, (role, desc) in zip(cols, row):
-            c.markdown(f"<div class='card'><div class='role'>{role}</div>"
+            c.markdown(f"<div class='teamcard'><div class='role'>{role}</div>"
                        f"<div class='tiny'>{desc}</div></div>", unsafe_allow_html=True)
 
     st.divider()
