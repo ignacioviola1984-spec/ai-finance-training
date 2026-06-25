@@ -56,18 +56,18 @@ def audit_escalations(res):
                   f"procedure(s) failed independent re-performance"]]
 
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Audit", "start", f"independent re-performance {PERIOD}")
+    ctx.audit("Audit", "start", f"independent re-performance {period}")
 
-    res = fc.audit_procedures(PERIOD)
+    res = fc.audit_procedures(period)
     esc = audit_escalations(res)
     register = "\n".join(
         f"[{'OK' if f['ok'] else 'EXCEPTION'}] {f['proc']} ({f['detail']})" for f in res["findings"]
     )
     facts = (
-        f"Independent audit procedures for {PERIOD} "
+        f"Independent audit procedures for {period} "
         f"({res['n_procedures']} performed, {res['n_exceptions']} exception(s)):\n{register}\n"
         f"Opinion: {res['opinion'].upper()}."
     )

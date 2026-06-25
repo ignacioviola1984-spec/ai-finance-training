@@ -70,7 +70,7 @@ def close_review_agent(period):
 # --------------------------------------------------------------------------
 
 def cash_forecast_agent(period):
-    cash = fc.cash_total_usd()
+    cash = fc.cash_total_usd(period)
     op_income = fc.pnl_usd(period)["operating_income"]
     burn = -op_income if op_income < 0 else 0.0
     runway = (cash / burn) if burn > 0 else float("inf")

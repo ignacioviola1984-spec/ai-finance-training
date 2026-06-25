@@ -278,22 +278,38 @@ def calculate_cash_application_status(dfs, period=P.DEFAULT_PERIOD):
 
 
 def calculate_unapplied_cash(dfs, period=P.DEFAULT_PERIOD):
-    """Cash received but not yet applied: unapplied applications + unmatched receipts."""
+    """Cash received but not applied to AR, in USD, counted once on the bank basis.
+
+    Unapplied cash = bank cash received - cash applied to invoices: every dollar
+    that landed in the bank but is not yet applied to AR, counted ONCE (floored at
+    0, since over-application is not negative unapplied cash). The two components
+    reported below - unapplied applications (a payment whose cash-application is
+    'unapplied') and unmatched receipts (a bank receipt not behind an applied
+    payment) - are the SAME dollars in this model: the generator marks a receipt
+    'unmatched' precisely because the application sitting on it is unapplied. They
+    are surfaced separately for traceability but deliberately NOT summed, because
+    summing them would double-count the identical cash.
+    """
+    rec = dfs["bank_receipts"].copy()
+    rec["receipt_amount_usd"] = loader.to_usd(rec["receipt_amount"], rec["currency"])
+    received_usd = float(rec["receipt_amount_usd"].sum())
+
     apps = _applications_usd(dfs)
+    applied_usd = float(apps[(_lc(apps["application_status"]) == "applied")
+                             & (apps["applied_amount_usd"] > 0)]["applied_amount_usd"].sum())
+    unapplied_cash_usd = round(max(0.0, received_usd - applied_usd), 2)
+
+    # Diagnostic components (the same dollars in this model; do NOT add them).
+    unmatched = rec[_lc(rec["matched_status"]) != "matched"]
+    unmatched_usd = round(float(unmatched["receipt_amount_usd"].sum()), 2)
     pmt = dfs["payments"][["payment_id", "payment_amount", "currency"]].copy()
     pmt["payment_amount_usd"] = loader.to_usd(pmt["payment_amount"], pmt["currency"])
     unapp = apps[_lc(apps["application_status"]) == "unapplied"].merge(
         pmt[["payment_id", "payment_amount_usd"]], on="payment_id", how="left")
     unapplied_app_usd = round(float(unapp["payment_amount_usd"].fillna(0.0).sum()), 2)
-
-    rec = dfs["bank_receipts"]
-    rec_usd = rec.copy()
-    rec_usd["receipt_amount_usd"] = loader.to_usd(rec_usd["receipt_amount"], rec_usd["currency"])
-    unmatched = rec_usd[_lc(rec_usd["matched_status"]) != "matched"]
-    unmatched_usd = round(float(unmatched["receipt_amount_usd"].sum()), 2)
     return {"unapplied_application_usd": unapplied_app_usd,
             "unmatched_receipt_usd": unmatched_usd,
-            "unapplied_cash_usd": round(unapplied_app_usd, 2),
+            "unapplied_cash_usd": unapplied_cash_usd,
             "unapplied_count": int(len(unapp)),
             "unapplied": unapp[["cash_application_id", "payment_id", "invoice_id", "customer_id",
                                 "payment_amount_usd", "unapplied_reason"]]}

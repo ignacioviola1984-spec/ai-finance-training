@@ -51,15 +51,17 @@ def tax_escalations(m):
     return out
 
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Tax", "start", f"tax obligations and compliance {PERIOD}")
+    ctx.audit("Tax", "start", f"tax obligations and compliance {period}")
 
+    # tax obligations are a pending-balance snapshot (no per-period subledger), so
+    # the period is used for the reporting label; the figures are as-of the close.
     m = fc.tax_metrics()
     esc = tax_escalations(m)
     facts = (
-        f"Tax obligations {PERIOD} (USD): pending {_money(m['pending_total'])}, "
+        f"Tax obligations {period} (USD): pending {_money(m['pending_total'])}, "
         f"overdue {_money(m['overdue'])}, due within 30 days {_money(m['upcoming_30d'])}, "
         f"across {len(m['by_jurisdiction'])} jurisdictions."
     )

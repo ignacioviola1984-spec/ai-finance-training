@@ -60,6 +60,10 @@ def _calibrate_threshold(outcomes):
     deterministic given the outcomes.
     """
     mags = sorted({float(o["magnitude"]) for o in outcomes})
+    if not mags:
+        # Defensive: propose() blocks an empty outcomes window before reaching here,
+        # so a direct caller is the only way in. Fail clearly instead of mags[0].
+        raise ValueError("cannot calibrate a threshold on an empty outcomes window")
     best_t, best_f1, best_pr = mags[0], -1.0, (0.0, 0.0)
     for t in mags:
         f1, prec, rec = _f1(t, outcomes)
@@ -164,6 +168,21 @@ def propose(param, outcomes, by="proposer", rationale_fn=None, sd=None):
         store["items"].append(proposal)
         save_proposals(store, sd)
         audit.record("proposal_blocked", f"{param} in cooldown ({remaining})",
+                     sd=sd, proposal_id=pid, param=param)
+        return proposal
+
+    # No outcomes to calibrate on: there is no number to compute, so block with a
+    # structured proposal rather than crashing the calibrator on an empty window.
+    if not outcomes:
+        proposal = {
+            "id": pid, "param": param, "old": old, "proposed": old,
+            "raw_candidate": old, "evidence": {"n_outcomes": 0},
+            "rationale": f"Blocked: no outcomes in the calibration window for '{param}'.",
+            "status": "blocked_no_outcomes", "by": by,
+        }
+        store["items"].append(proposal)
+        save_proposals(store, sd)
+        audit.record("proposal_blocked", f"{param}: empty outcomes window",
                      sd=sd, proposal_id=pid, param=param)
         return proposal
 

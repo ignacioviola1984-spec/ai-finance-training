@@ -1,0 +1,29 @@
+# AI Finance Engineering - Python dependencies (one reproducible install path).
+#
+#   python -m venv .venv && . .venv/bin/activate   (Windows: .venv\Scripts\activate)
+#   pip install -r requirements.txt
+#
+# The deterministic core (finance_core, the O2C control tower, the
+# self-improvement system) needs only pandas; the rest is for the LLM agents,
+# the web app, and the FX demo. Pinned to lower bounds, not exact versions, so a
+# fresh environment resolves a compatible set.
+
+# --- deterministic calculation engine (no API key, what CI runs) ---
+pandas>=2.0           # finance_core, O2C control tower, metrics, controls
+
+# --- LLM agents (CFO office, orchestration, RAG) ---
+anthropic>=0.40       # Claude client used by every narrating agent
+python-dotenv>=1.0    # loads ANTHROPIC_API_KEY from the repo-root .env
+
+# --- API integration demo and web app ---
+requests>=2.31        # live FX rate clients (api-integration/)
+streamlit>=1.30       # webapp/ and cfo-demo/ dashboards
+
+# --- document intelligence (RAG) ---
+numpy>=1.24           # vector search
+
+# Optional, heavy: the RAG embedder prefers sentence-transformers (PyTorch) but
+# falls back to model2vec (numpy-only) automatically, so neither is required to
+# run the deterministic suites. Install one of these only to exercise RAG:
+#   sentence-transformers>=2.2
+#   model2vec>=0.3

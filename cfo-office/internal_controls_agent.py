@@ -60,19 +60,19 @@ def controls_escalations(res):
     return out
 
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Internal Controls", "start", f"control testing {PERIOD}")
+    ctx.audit("Internal Controls", "start", f"control testing {period}")
 
-    res = fc.control_checks(PERIOD)
+    res = fc.control_checks(period)
     esc = controls_escalations(res)
 
     register = "\n".join(
         f"[{c['id']}] {c['name']}: {c['status']} - {c['detail']}" for c in res["checks"]
     )
     facts = (
-        f"Internal control register for {PERIOD} "
+        f"Internal control register for {period} "
         f"({res['n_pass']} passed, {res['n_fail']} failed, {res['n_exception']} exception(s)):\n"
         f"{register}"
     )

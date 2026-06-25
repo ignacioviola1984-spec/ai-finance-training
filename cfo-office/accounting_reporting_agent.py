@@ -48,19 +48,19 @@ def agent(system, prompt, max_tokens=450):
     return resp.content[0].text
 
 
-def run(ctx=None):
+def run(ctx=None, period="2026-05"):
     own = ctx is None
     ctx = ctx or CFOContext()
     ctx.audit("Accounting & Reporting", "start", "coordinating close and reporting")
 
     # Close first (signed off by the Accounting Manager), then reporting (signed
     # off by Technical Accounting / Reporting): maker-checker per function.
-    accounting_close_agent.run(ctx)
+    accounting_close_agent.run(ctx, period)
     cr = ctx.get("Accounting & Close", "reconciliations", {})
     review.review(ctx, "Accounting & Close",
                   f"close {'reconciled' if cr.get('all_reconciled') else str(cr.get('n_open_items',0))+' open item(s)'}, "
                   f"articulation {cr.get('articulation',{}).get('status','?')}")
-    financial_reporting_agent.run(ctx)
+    financial_reporting_agent.run(ctx, period)
     bs = ctx.get("Financial Reporting", "balance_sheet", {})
     cf = ctx.get("Financial Reporting", "cash_flow", {})
     review.review(ctx, "Financial Reporting",

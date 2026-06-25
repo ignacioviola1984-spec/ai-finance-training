@@ -44,6 +44,17 @@ FORECAST_PERIOD = "2026-06"
 LINES = ["revenue", "cogs", "gross", "opex", "operating_income"]
 
 
+def _next_period(period):
+    """The YYYY-MM month right after `period` (the one FP&A forecasts)."""
+    y, m = (int(x) for x in period.split("-"))
+    return f"{y + m // 12:04d}-{m % 12 + 1:02d}"
+
+
+def periods_through(period):
+    """The P&L series up to and including the close period (defaults to all)."""
+    return [p for p in PERIODS if p <= period] or PERIODS
+
+
 def agent(system, prompt, max_tokens=600):
     resp = client.messages.create(
         model=MODEL, max_tokens=max_tokens, system=system,
@@ -54,8 +65,8 @@ def agent(system, prompt, max_tokens=600):
 
 # --- Capa deterministica (numeros por codigo) ---------------------------
 
-def pnl_series():
-    return {p: fc.pnl_usd(p) for p in PERIODS}
+def pnl_series(periods=None):
+    return {p: fc.pnl_usd(p) for p in (periods or PERIODS)}
 
 
 def _avg_mom_growth(values):
@@ -64,13 +75,14 @@ def _avg_mom_growth(values):
     return sum(growths) / len(growths) if growths else 0.0
 
 
-def build_forecast(series):
+def build_forecast(series, periods=None):
     """Forecast del proximo periodo. Metodo: revenue, cogs y opex se
     proyectan con su crecimiento mensual promedio; gross y operating income
     se derivan. Metodo explicito y reproducible."""
-    rev = [series[p]["revenue"] for p in PERIODS]
-    cogs = [series[p]["cogs"] for p in PERIODS]
-    opex = [series[p]["opex"] for p in PERIODS]
+    periods = periods or PERIODS
+    rev = [series[p]["revenue"] for p in periods]
+    cogs = [series[p]["cogs"] for p in periods]
+    opex = [series[p]["opex"] for p in periods]
     g_rev, g_cogs, g_opex = _avg_mom_growth(rev), _avg_mom_growth(cogs), _avg_mom_growth(opex)
     f_rev = rev[-1] * (1 + g_rev)
     f_cogs = cogs[-1] * (1 + g_cogs)
@@ -85,8 +97,9 @@ def build_forecast(series):
     }
 
 
-def build_variance(series):
-    last, prev = series[PERIODS[-1]], series[PERIODS[-2]]
+def build_variance(series, periods=None):
+    periods = periods or PERIODS
+    last, prev = series[periods[-1]], series[periods[-2]]
     out = {}
     for k in LINES:
         delta = last[k] - prev[k]
@@ -95,8 +108,9 @@ def build_variance(series):
     return out
 
 
-def detect_anomalies(series, variance):
-    last, prev = series[PERIODS[-1]], series[PERIODS[-2]]
+def detect_anomalies(series, variance, periods=None):
+    periods = periods or PERIODS
+    last, prev = series[periods[-1]], series[periods[-2]]
     anomalies = []
     for k in LINES:
         if abs(variance[k]["pct"]) > 15:
@@ -162,35 +176,37 @@ def hitl_gate(prompt_txt):
         return False
 
 
-def run(ctx=None):
+def run(ctx=None, period="2026-05"):
     own = ctx is None
     ctx = ctx or CFOContext()
     ctx.audit("FP&A", "start", "forecast, MoM variance, budget variance and anomalies")
 
-    series = pnl_series()
-    forecast = build_forecast(series)
-    variance = build_variance(series)                  # MoM (mes vs mes anterior)
-    anomalies = detect_anomalies(series, variance)
-    budget = build_budget_variance(PERIODS[-1])        # actual vs plan
+    periods = periods_through(period)                  # P&L series up to the close
+    forecast_period = _next_period(periods[-1])
+    series = pnl_series(periods)
+    forecast = build_forecast(series, periods)
+    variance = build_variance(series, periods)         # MoM (mes vs mes anterior)
+    anomalies = detect_anomalies(series, variance, periods)
+    budget = build_budget_variance(periods[-1])        # actual vs plan
     escalations = fpa_escalations(budget["material"])
 
     ctx.put("FP&A", {
         "forecast": forecast, "variance_mom": variance, "anomalies": anomalies,
         "budget_variance": budget, "escalations": escalations,
     })
-    ctx.audit("FP&A", "ok", f"forecast {FORECAST_PERIOD}: rev {_money(forecast['revenue'])}, op {_money(forecast['operating_income'])}")
+    ctx.audit("FP&A", "ok", f"forecast {forecast_period}: rev {_money(forecast['revenue'])}, op {_money(forecast['operating_income'])}")
     ctx.audit("FP&A", "ok", f"{len(anomalies)} MoM anomaly(ies); {len(budget['material'])} material line(s) vs budget")
 
     # Numbers as text so the model can explain without inventing.
     var_txt = "\n".join(
         f"  {k}: {_money(variance[k]['prev'])} -> {_money(variance[k]['last'])} "
         f"({variance[k]['pct']:+.1f}%)" for k in LINES)
-    fc_txt = (f"Forecast {FORECAST_PERIOD}: revenue {_money(forecast['revenue'])}, "
+    fc_txt = (f"Forecast {forecast_period}: revenue {_money(forecast['revenue'])}, "
               f"gross {_money(forecast['gross'])}, opex {_money(forecast['opex'])}, "
               f"operating income {_money(forecast['operating_income'])}. "
               f"Method: {forecast['method']}.")
     anom_txt = "\n".join(f"  - {a}" for a in anomalies) or "  (no anomalies)"
-    bud_txt = (f"Budget variance {PERIODS[-1]} (USD; 'F' favorable, 'U' unfavorable):\n"
+    bud_txt = (f"Budget variance {periods[-1]} (USD; 'F' favorable, 'U' unfavorable):\n"
                + _budget_table(budget["rows"]))
     bud_txt += ("\n\nMaterial lines (>=5% and >=USD 20k):\n" + _budget_table(budget["material"])
                 if budget["material"] else "\n\nNo line exceeds the materiality threshold.")
@@ -198,7 +214,7 @@ def run(ctx=None):
     variance_expl = agent(
         "You are an FP&A analyst. Explain the variances with plausible business causes, in "
         "3-4 bullets. Use only the numbers given; do not invent figures. Write in English.",
-        f"MoM variance ({PERIODS[-2]} -> {PERIODS[-1]}):\n{var_txt}\n\nExplain the main drivers.")
+        f"MoM variance ({periods[-2]} -> {periods[-1]}):\n{var_txt}\n\nExplain the main drivers.")
 
     budget_expl = agent(
         "You are an FP&A analyst. Explain the budget variance in 3-4 bullets: the main "

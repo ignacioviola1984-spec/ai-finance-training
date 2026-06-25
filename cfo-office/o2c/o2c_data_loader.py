@@ -182,6 +182,7 @@ def load_o2c_data(period=P.DEFAULT_PERIOD, data_dir=None):
         df = pd.read_csv(path, dtype={"po_number": str, "parent_customer_id": str})
         dfs[key] = df
     validate_schema(dfs)
+    validate_currencies(dfs)
     _parse_dates(dfs)
     normalize_currency_amounts(dfs)
     return dfs
@@ -197,6 +198,29 @@ def validate_schema(dfs):
         missing = [c for c in required if c not in cols]
         if missing:
             raise O2CSchemaError(f"table '{key}' is missing columns: {missing}")
+    return True
+
+
+def validate_currencies(dfs):
+    """Every currency used for USD conversion must be known and non-null.
+
+    fx_to_usd / to_usd fall back to 1.0 for an unknown code, which would silently
+    treat a foreign amount as USD and quietly corrupt every consolidated figure.
+    Fail loudly here instead: a currency with no rate in o2c_policy.FX_TO_USD (or a
+    blank/null currency) is a data error, not something to convert at par.
+    """
+    known = set(P.FX_TO_USD)
+    bad = {}
+    for key, (_pairs, ccy_col) in USD_COLUMNS.items():
+        if key not in dfs or ccy_col not in dfs[key].columns:
+            continue
+        values = dfs[key][ccy_col].fillna("").astype(str).str.strip()
+        offending = sorted(set(values[~values.isin(known)]))
+        if offending:
+            bad[key] = ["<blank/null>" if v == "" else v for v in offending]
+    if bad:
+        raise O2CSchemaError(
+            f"unknown or missing currency codes (no FX rate in o2c_policy.FX_TO_USD): {bad}")
     return True
 
 

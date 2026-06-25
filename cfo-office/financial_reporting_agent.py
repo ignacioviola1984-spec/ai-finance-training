@@ -57,18 +57,18 @@ def reporting_escalations(inc, bs, cf):
     return out
 
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Financial Reporting", "start", f"three statements {PERIOD}")
+    ctx.audit("Financial Reporting", "start", f"three statements {period}")
 
-    inc = fc.income_statement(PERIOD)
-    bs = fc.balance_sheet_statement(PERIOD)
-    cf = fc.cash_flow_statement(PERIOD)
+    inc = fc.income_statement(period)
+    bs = fc.balance_sheet_statement(period)
+    cf = fc.cash_flow_statement(period)
     esc = reporting_escalations(inc, bs, cf)
 
     facts = (
-        f"Income statement {PERIOD}: revenue {_money(inc['revenue'])}, gross {_money(inc['gross'])} "
+        f"Income statement {period}: revenue {_money(inc['revenue'])}, gross {_money(inc['gross'])} "
         f"({inc['gross_margin_pct']:.1f}%), operating/net income {_money(inc['net_income'])} "
         f"({inc['net_margin_pct']:.1f}%).\n"
         f"Balance sheet: total assets {_money(bs['total_assets'])} = liabilities {_money(bs['total_liabilities'])} "

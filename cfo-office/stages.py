@@ -65,49 +65,49 @@ def _ctrl_audit(ctx):
 # --- stage runners: the maker does the work, then the single-function stages
 #     route through their reviewer here (composite stages review inside) -------
 
-def _run_controller(ctx):
-    controller_agent.run(ctx)
+def _run_controller(ctx, period):
+    controller_agent.run(ctx, period)
     p = ctx.get("Controller", "pnl", {})
     review.review(ctx, "Controller", f"operating income USD {p.get('operating_income', 0):,.0f}")
 
 
-def _run_treasury(ctx):
-    treasury_agent.run(ctx)
+def _run_treasury(ctx, period):
+    treasury_agent.run(ctx, period)
     rw = ctx.get("Treasury", "runway")
     review.review(ctx, "Treasury",
                   f"cash USD {ctx.get('Treasury', 'cash', 0):,.0f}, runway "
                   + (f"{rw:.1f} months" if rw else "n/a"))
 
 
-def _run_administration(ctx):
-    administration_agent.run(ctx)        # reviews AR / AP / Tax inside
+def _run_administration(ctx, period):
+    administration_agent.run(ctx, period)        # reviews AR / AP / Tax inside
 
 
-def _run_accounting_reporting(ctx):
-    accounting_reporting_agent.run(ctx)  # reviews Close / Financial Reporting inside
+def _run_accounting_reporting(ctx, period):
+    accounting_reporting_agent.run(ctx, period)  # reviews Close / Financial Reporting inside
 
 
-def _run_fpa(ctx):
-    fpa_agent.run(ctx)
+def _run_fpa(ctx, period):
+    fpa_agent.run(ctx, period)
     review.review(ctx, "FP&A", "forecast, MoM and budget variance, anomalies")
 
 
-def _run_strategic(ctx):
-    strategic_finance_agent.run(ctx)
+def _run_strategic(ctx, period):
+    strategic_finance_agent.run(ctx, period)
     sm = ctx.get("Strategic Finance", "metrics", {})
     review.review(ctx, "Strategic Finance",
                   f"Rule of 40 {sm.get('rule_of_40', 0):.0f}, burn multiple {sm.get('burn_multiple') or 0:.1f}x")
 
 
-def _run_internal_controls(ctx):
-    internal_controls_agent.run(ctx)
+def _run_internal_controls(ctx, period):
+    internal_controls_agent.run(ctx, period)
     cs = ctx.get("Internal Controls", "summary", {})
     review.review(ctx, "Internal Controls",
                   f"{cs.get('n_pass', 0)} pass / {cs.get('n_fail', 0)} fail / {cs.get('n_exception', 0)} exc")
 
 
-def _run_audit(ctx):
-    audit_agent.run(ctx)
+def _run_audit(ctx, period):
+    audit_agent.run(ctx, period)
     review.review(ctx, "Audit", f"opinion {ctx.get('Audit', 'opinion', '?')}")
 
 
@@ -133,7 +133,7 @@ STAGES = [
 ]
 
 
-def run_stage(ctx, stage):
+def run_stage(ctx, stage, period="2026-05"):
     """Run one stage end to end: maker -> deterministic control -> HITL sign-off.
 
     A deterministic CONTROL failure blocks immediately: the controls read static,
@@ -155,7 +155,7 @@ def run_stage(ctx, stage):
     for attempt in range(1, MAX_ATTEMPTS + 1):
         tag = f"stage {stage['id']}" + (f" (rework {attempt - 1})" if attempt > 1 else "")
         ctx.audit("Operating Model", tag, f"{stage['name']}: running")
-        stage["run"](ctx)
+        stage["run"](ctx, period)
 
         ok, detail = stage["control"](ctx) if stage["control"] else (True, "no code-level control")
         fl = review.first_line_status(ctx, stage["functions"])
@@ -181,13 +181,13 @@ def run_stage(ctx, stage):
         return _blocked(attempt, detail, reason)
 
 
-def run_all(ctx):
+def run_all(ctx, period="2026-05"):
     """Run every stage in order. Stops at the first BLOCKED stage. Returns the
     list of stage status dicts and whether the whole model passed."""
     results = []
     for stage in STAGES:
         print(f"\n[stage {stage['id']}/{len(STAGES)}] {stage['name']}...")
-        res = run_stage(ctx, stage)
+        res = run_stage(ctx, stage, period)
         results.append(res)
         if res["status"] == "blocked":
             break

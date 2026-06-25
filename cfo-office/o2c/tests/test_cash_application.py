@@ -52,6 +52,20 @@ class CashApplicationTest(unittest.TestCase):
         diff = capp["received_usd"] - capp["applied_usd"] - unapp["unmatched_receipt_usd"]
         self.assertLessEqual(abs(diff), max(1.0, capp["received_usd"] * 0.001))
 
+    def test_unapplied_cash_is_counted_once(self):
+        # Unapplied cash = received - applied (cash in the bank not applied to AR),
+        # counted ONCE. In this dataset an unmatched receipt is the same cash as the
+        # unapplied application sitting on it, so summing the two components would
+        # double-count; the headline must equal received - applied, not the sum.
+        capp = core.calculate_cash_application_status(self.dfs, "2026-05")
+        u = core.calculate_unapplied_cash(self.dfs, "2026-05")
+        expected = round(capp["received_usd"] - capp["applied_usd"], 2)
+        tol = max(1.0, capp["received_usd"] * 0.001)
+        self.assertLessEqual(abs(u["unapplied_cash_usd"] - expected), tol)
+        # explicitly NOT the double-counted sum of the two components
+        doubled = u["unapplied_application_usd"] + u["unmatched_receipt_usd"]
+        self.assertLess(u["unapplied_cash_usd"], doubled - tol)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

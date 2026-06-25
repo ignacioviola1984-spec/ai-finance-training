@@ -48,7 +48,7 @@ def agent(system, prompt, max_tokens=500):
     return resp.content[0].text
 
 
-def run(ctx=None):
+def run(ctx=None, period="2026-05"):
     own = ctx is None
     ctx = ctx or CFOContext()
     ctx.audit("Administration", "start", "coordinating AR, AP and Tax")
@@ -57,15 +57,15 @@ def run(ctx=None):
     # (maker-checker de primera linea): Collections firma AR, AP firma AP, el
     # Tax Manager firma Tax. No es el Head of Administration el que aprueba el
     # detalle de cada uno: cada funcion la firma quien tiene el conocimiento.
-    ar_agent.run(ctx)
+    ar_agent.run(ctx, period)
     ar = ctx.get("Accounts Receivable", "metrics", {})
     review.review(ctx, "Accounts Receivable",
                   f"AR overdue {ar.get('overdue_pct',0):.0f}% (USD {ar.get('overdue',0):,.0f}), DSO {ar.get('dso',0):.0f}d")
-    ap_agent.run(ctx)
+    ap_agent.run(ctx, period)
     ap = ctx.get("Accounts Payable", "metrics", {})
     review.review(ctx, "Accounts Payable",
                   f"AP overdue USD {ap.get('overdue',0):,.0f}, DPO {ap.get('dpo',0):.0f}d")
-    tax_agent.run(ctx)
+    tax_agent.run(ctx, period)
     tx = ctx.get("Tax", "metrics", {})
     review.review(ctx, "Tax",
                   f"Tax overdue USD {tx.get('overdue',0):,.0f} of USD {tx.get('pending_total',0):,.0f} pending")

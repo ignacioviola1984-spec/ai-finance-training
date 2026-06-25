@@ -205,6 +205,18 @@ class BoundsTest(unittest.TestCase):
             self.assertIsNone(mutate.search(_read(f)),
                               f"unexpected bounds mutation in {os.path.basename(f)}")
 
+    # 11b) An empty outcomes window is blocked with a structured proposal, not a
+    #      crash. The challenger has no data to calibrate on, so it must not change
+    #      anything (and must not raise on mags[0] of an empty window).
+    def test_empty_outcomes_blocked(self):
+        before = registry.champion_value("materiality_usd_threshold")
+        p = proposer.propose("materiality_usd_threshold", [])
+        self.assertEqual(p["status"], "blocked_no_outcomes")
+        self.assertEqual(p["proposed"], before)
+        self.assertEqual(registry.champion_value("materiality_usd_threshold"), before)
+        # the block is auditable
+        self.assertTrue(audit.entries_for(p["id"]))
+
     # 11) The system cannot flip the auto-adopt flag. Only a human editing config
     #     (the module attribute) can; nothing in the loop reassigns it.
     def test_system_cannot_flip_auto_adopt(self):

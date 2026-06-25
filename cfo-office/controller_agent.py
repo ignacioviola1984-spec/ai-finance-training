@@ -82,17 +82,17 @@ def close_escalations(close):
 
 # --- Orquestacion del agente -------------------------------------------
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Controller", "start", f"close review {PERIOD}")
+    ctx.audit("Controller", "start", f"close review {period}")
 
-    close = compute_close(PERIOD)
+    close = compute_close(period)
     esc = close_escalations(close)
     pnl = close["pnl"]
 
     facts = (
-        f"Close {PERIOD} (USD): revenue {_money(pnl['revenue'])}, "
+        f"Close {period} (USD): revenue {_money(pnl['revenue'])}, "
         f"gross {_money(pnl['gross'])} ({close['gross_margin_pct']:.1f}%), "
         f"opex {_money(pnl['opex'])}, operating income {_money(pnl['operating_income'])} "
         f"({close['op_margin_pct']:.1f}%).\n"

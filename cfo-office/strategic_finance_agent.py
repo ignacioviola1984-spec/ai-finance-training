@@ -89,12 +89,15 @@ def strategic_escalations(m):
 
 # --- Orquestacion del agente -------------------------------------------
 
-def run(ctx=None):
+def run(ctx=None, period="2026-05"):
     own = ctx is None
     ctx = ctx or CFOContext()
     ctx.audit("Strategic Finance", "start", "run-rate, capital efficiency, path to breakeven")
 
-    m = fc.strategic_metrics()
+    # Strategic metrics run on the P&L series UP TO the close period (the run-rate,
+    # growth and burn are anchored on that month). Defaults to the full series.
+    periods = [p for p in fc.PERIODS if p <= period] or fc.PERIODS
+    m = fc.strategic_metrics(periods)
     esc = strategic_escalations(m)
 
     bm_txt = f"{m['burn_multiple']:.1f}x" if m["burn_multiple"] is not None else "n/a"
@@ -103,7 +106,7 @@ def run(ctx=None):
         f"  {s['name']}: MoM growth {s['mom_growth']*100:.1f}% -> 12m run-rate {_money(s['run_rate_12m'])}, "
         f"Rule of 40 {s['rule_of_40']:.0f}" for s in m["scenarios"])
     facts = (
-        f"Strategic metrics (close {fc.LATEST}, USD):\n"
+        f"Strategic metrics (close {periods[-1]}, USD):\n"
         f"  Run-rate (ARR proxy): {_money(m['run_rate'])}\n"
         f"  Annualized growth (MoM proxy): {m['ann_growth']*100:.0f}%\n"
         f"  Operating margin: {m['op_margin']*100:.0f}%\n"

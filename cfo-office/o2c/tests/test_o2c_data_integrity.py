@@ -86,6 +86,23 @@ class DataIntegrityTest(unittest.TestCase):
         usd = self.dfs["invoices"][self.dfs["invoices"]["currency"] == "USD"]
         self.assertTrue((abs(usd["invoice_amount_usd"] - usd["invoice_amount"]) < 0.01).all())
 
+    def test_unknown_currency_is_rejected(self):
+        # An unknown currency has no FX rate and would silently convert at 1.0
+        # (treated as USD), corrupting the consolidation; loading must fail loudly.
+        bad = {k: v.copy() for k, v in self.dfs.items()}
+        bad["invoices"].loc[bad["invoices"].index[0], "currency"] = "XYZ"
+        with self.assertRaises(loader.O2CSchemaError):
+            loader.validate_currencies(bad)
+
+    def test_blank_currency_is_rejected(self):
+        bad = {k: v.copy() for k, v in self.dfs.items()}
+        bad["payments"].loc[bad["payments"].index[0], "currency"] = None
+        with self.assertRaises(loader.O2CSchemaError):
+            loader.validate_currencies(bad)
+
+    def test_clean_data_passes_currency_validation(self):
+        self.assertTrue(loader.validate_currencies(self.dfs))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

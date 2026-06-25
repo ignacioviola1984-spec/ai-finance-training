@@ -62,11 +62,17 @@ with tab_fx:
 with tab_ops:
     st.subheader("AI Finance Operating Model v2")
     st.write("Sub-agentes de cierre y caja, motor de escalamiento, y un gate humano antes del reporte al board.")
-    period = st.selectbox("Periodo", ["2026-05", "2026-04", "2026-03"], key="ops_period")
+    # El cierre demo corre sobre el ULTIMO periodo unicamente: el subledger de AR y
+    # la caja son una foto puntual del cierre (no hay snapshots por periodo previo),
+    # asi que ofrecer periodos anteriores mezclaria un P&L del periodo con AR/caja
+    # del ultimo cierre. Se restringe el selector al periodo soportado de punta a punta.
+    import finance_core as fc
+    period = st.selectbox("Periodo", [fc.LATEST], key="ops_period")
+    st.caption("El cierre demo corre sobre el ultimo periodo: AR y caja son una foto "
+               "puntual del cierre (no hay snapshots por periodo anterior).")
 
     if st.button("Correr cierre", key="ops_run"):
         with st.spinner("Corriendo sub-agentes..."):
-            import finance_core as fc
             from orchestrator import close_review_agent, cash_forecast_agent
             import operating_model as om
             _, close_out = close_review_agent(period)

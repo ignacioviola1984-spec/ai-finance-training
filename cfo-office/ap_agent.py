@@ -51,15 +51,15 @@ def ap_escalations(m):
     return out
 
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Accounts Payable", "start", f"payables and DPO {PERIOD}")
+    ctx.audit("Accounts Payable", "start", f"payables and DPO {period}")
 
-    m = fc.ap_metrics()
+    m = fc.ap_metrics(period)
     esc = ap_escalations(m)
     facts = (
-        f"Accounts payable {PERIOD} (USD): open {_money(m['open_total'])}, "
+        f"Accounts payable {period} (USD): open {_money(m['open_total'])}, "
         f"overdue {_money(m['overdue'])} ({m['n_overdue']} bills), "
         f"due within 30 days {_money(m['upcoming_30d'])}, DPO {m['dpo']:.0f} days."
     )

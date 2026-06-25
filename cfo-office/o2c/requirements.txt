@@ -1,0 +1,10 @@
+# Order-to-Cash control tower - dependencies.
+#
+# The tower is deterministic and self-contained: it loads CSVs, computes every
+# metric and control in code, and runs its agents without any LLM or API key.
+# Its only third-party dependency is pandas.
+#
+#   pip install -r cfo-office/o2c/requirements.txt
+#   python cfo-office/o2c/o2c_orchestrator.py --period 2026-05
+#   python cfo-office/o2c/tests/run_tests.py
+pandas>=2.0

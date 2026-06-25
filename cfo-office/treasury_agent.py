@@ -52,7 +52,7 @@ def _money(x):
 # --- Capa deterministica (numeros por codigo) ---------------------------
 
 def compute_treasury(period):
-    cash = fc.cash_total_usd()
+    cash = fc.cash_total_usd(period)
     op_income = fc.pnl_usd(period)["operating_income"]
     burn = -op_income if op_income < 0 else 0.0
     runway = (cash / burn) if burn > 0 else None   # None = sin burn (operativo positivo)
@@ -78,12 +78,12 @@ def treasury_escalations(t):
 
 # --- Orquestacion del agente -------------------------------------------
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Treasury", "start", f"liquidity and runway {PERIOD}")
+    ctx.audit("Treasury", "start", f"liquidity and runway {period}")
 
-    t = compute_treasury(PERIOD)
+    t = compute_treasury(period)
     esc = treasury_escalations(t)
     runway_txt = f"{t['runway']:.1f} months" if t["runway"] is not None else "no burn (operating positive)"
     f = t["forecast"]

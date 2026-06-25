@@ -58,12 +58,12 @@ def close_escalations(cr):
     return out
 
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Accounting & Close", "start", f"reconciliations and roll-forward {PERIOD}")
+    ctx.audit("Accounting & Close", "start", f"reconciliations and roll-forward {period}")
 
-    cr = fc.close_reconciliations(PERIOD)
+    cr = fc.close_reconciliations(period)
     esc = close_escalations(cr)
     art = cr["articulation"]
     recs_txt = "; ".join(
@@ -71,7 +71,7 @@ def run(ctx=None):
         for r in cr["recs"]
     )
     facts = (
-        f"Close {PERIOD} reconciliations:\n{recs_txt}.\n"
+        f"Close {period} reconciliations:\n{recs_txt}.\n"
         f"Retained earnings roll-forward: movement vs net income -> {art['status']} "
         f"(net income {_money(art['net_income'])}).\n"
         f"Open items: {cr['n_open_items']}."

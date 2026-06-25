@@ -505,8 +505,14 @@ def control_checks(period=LATEST, as_of="2026-05-31",
     })
 
     # C2 - Completitud de FX: toda combinacion periodo/moneda usada tiene tasa.
+    # El balance se traduce por el periodo de CADA fila (el balance compara contra
+    # el periodo previo: el flujo de efectivo y la auditoria reconvierten ese
+    # comparativo), no solo por el periodo pedido; si no, una tasa faltante del
+    # comparativo no se detectaria aca y recien explotaria (KeyError) cuando el
+    # flujo de efectivo o la auditoria reconviertan ese periodo. C2 lo expone antes
+    # como una falla de control controlada.
     needed = {(r["period"], _CCY[r["entity_id"]]) for r in _PNL}
-    needed |= {(period, _CCY[r["entity_id"]]) for r in _BS}
+    needed |= {(r["period"], _CCY[r["entity_id"]]) for r in _BS}
     missing = sorted(k for k in needed if k not in _FX)
     checks.append({
         "id": "C2", "name": "FX rate completeness",

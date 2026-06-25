@@ -159,6 +159,16 @@ def cfo_final_gate(ctx, esc):
         print("   NOT cleared by their reviewers (must resolve before the CFO can sign): "
               + ", ".join(fl["rejected"]))
         return False
+    # Order-to-Cash runs as a sub-orchestration under the CFO. If its hard controls
+    # block O2C reporting, the CFO cannot sign off a CONSOLIDATED board pack that
+    # includes Order-to-Cash. This is a hard gate, NOT overridable by auto-approve
+    # (the same way a blocked close stage halts the model): you do not release a
+    # pack over a function whose own controls block its reporting.
+    o2c_hard = ctx.get("Order-to-Cash", "hard_failures", 0)
+    if o2c_hard:
+        print(f"   Order-to-Cash reporting is BLOCKED by {o2c_hard} hard control failure(s); "
+              "the consolidated board pack cannot be signed off until they clear.")
+        return False
     serious = [e for e in esc if e[0] in ("HIGH", "CRITICAL")]
     if serious:
         print("   Material / cross-cutting items for the CFO:")
@@ -232,7 +242,7 @@ def run(period=PERIOD):
     # Run the operating model stage by stage. Each stage = agent(s) + a
     # deterministic control + the domain expert's sign-off, with rework and a
     # hard block if it cannot pass (stages.run_all).
-    stage_results, all_passed = stages.run_all(ctx)
+    stage_results, all_passed = stages.run_all(ctx, period)
     if not all_passed:
         blocked = next((s for s in stage_results if s["status"] == "blocked"), None)
         ctx.put("CFO", {"status": "blocked_stage",
@@ -275,6 +285,19 @@ def run(period=PERIOD):
 
     # Second tier: the CFO's final sign-off on the consolidated pack + material items.
     if not cfo_final_gate(ctx, esc):
+        o2c_hard = ctx.get("Order-to-Cash", "hard_failures", 0)
+        if o2c_hard:
+            # Blocked specifically by Order-to-Cash hard controls: no approved pack
+            # is released. The close work stays in the shared state for follow-up.
+            ctx.put("CFO", {"status": "blocked_o2c_hard_controls",
+                            "o2c_hard_failures": o2c_hard})
+            ctx.audit("CFO", "BLOCKED",
+                      f"Order-to-Cash hard controls block release: {o2c_hard} failure(s); "
+                      "no consolidated board pack issued")
+            ctx.save()
+            print(f"\n  Consolidated board pack BLOCKED by {o2c_hard} Order-to-Cash hard "
+                  "control failure(s); not released.")
+            return ctx
         ctx.put("CFO", {"status": "rejected"})
         ctx.audit("CFO", "REJECTED", "CFO did not approve; board pack not fixed")
         ctx.save()

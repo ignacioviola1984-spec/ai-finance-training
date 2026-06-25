@@ -52,15 +52,15 @@ def ar_escalations(m):
     return out
 
 
-def run(ctx=None):
+def run(ctx=None, period=PERIOD):
     own = ctx is None
     ctx = ctx or CFOContext()
-    ctx.audit("Accounts Receivable", "start", f"receivables and DSO {PERIOD}")
+    ctx.audit("Accounts Receivable", "start", f"receivables and DSO {period}")
 
-    m = fc.ar_metrics()
+    m = fc.ar_metrics(period)
     esc = ar_escalations(m)
     facts = (
-        f"Accounts receivable {PERIOD} (USD): total open {_money(m['total'])}, "
+        f"Accounts receivable {period} (USD): total open {_money(m['total'])}, "
         f"current {_money(m['current'])}, overdue {_money(m['overdue'])} ({m['overdue_pct']:.0f}%), "
         f"DSO {m['dso']:.0f} days, {m['n_overdue']} overdue invoices."
     )
