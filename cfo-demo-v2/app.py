@@ -325,7 +325,7 @@ def render_erp():
         c[2].metric("Balance sheet check (A−L−E)", money(bs["check"]),
                     "foots to zero" if abs(bs["check"]) < 1 else "off", delta_color="off")
         c[3].metric("Trial balance", "Balances" if abs(tb["debits"] - tb["credits"]) < 1 else "Off",
-                    f"Dr {money(tb['debits'])} = Cr {money(tb['credits'])}", delta_color="off")
+                    f"Debits {money(tb['debits'])} = Credits {money(tb['credits'])}", delta_color="off")
 
         cc = st.columns(2)
         with cc[0]:
