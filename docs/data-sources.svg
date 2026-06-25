@@ -1,0 +1,171 @@
+<svg viewBox="0 0 1500 720" width="1500" height="720" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#172238"/>
+    </pattern>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="ah-green" markerWidth="11" markerHeight="11" refX="7.5" refY="3.2" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,3.2 L0,6.4 Z" fill="#34e3a4"/>
+    </marker>
+    <marker id="ah-cyan" markerWidth="11" markerHeight="11" refX="7.5" refY="3.2" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,3.2 L0,6.4 Z" fill="#38bdf8"/>
+    </marker>
+    <marker id="ah-blue" markerWidth="11" markerHeight="11" refX="7.5" refY="3.2" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,3.2 L0,6.4 Z" fill="#6aa6ff"/>
+    </marker>
+  </defs>
+
+  <!-- backdrop -->
+  <rect x="0" y="0" width="1500" height="720" fill="#070b16"/>
+  <rect x="0" y="0" width="1500" height="720" fill="url(#dots)"/>
+
+  <!-- ============ EDGES (drawn first, under the boxes) ============ -->
+  <!-- QBO -> Mapper -->
+  <path d="M240,348 L444,348" fill="none" stroke="#34e3a4" stroke-width="2" marker-end="url(#ah-green)"/>
+  <!-- Synthetic -> Canonical -->
+  <path d="M664,139 C706,139 700,318 734,320" fill="none" stroke="#34e3a4" stroke-width="2" marker-end="url(#ah-green)"/>
+  <!-- Mapper -> Canonical -->
+  <path d="M664,348 L734,348" fill="none" stroke="#34e3a4" stroke-width="2" marker-end="url(#ah-green)"/>
+  <!-- Future -> Canonical (dashed) -->
+  <path d="M664,560 C706,560 700,388 734,384" fill="none" stroke="#34e3a4" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ah-green)"/>
+  <!-- Canonical -> Validate -->
+  <path d="M958,322 C992,322 1000,152 1016,152" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#ah-cyan)"/>
+  <!-- Validate -> Snapshot -->
+  <path d="M1248,152 L1276,156" fill="none" stroke="#6aa6ff" stroke-width="2" marker-end="url(#ah-blue)"/>
+  <!-- Canonical -> finance_core -->
+  <path d="M958,348 L1016,348" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#ah-cyan)"/>
+  <!-- Canonical -> MCP -->
+  <path d="M958,374 C992,374 1000,560 1016,560" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#ah-cyan)"/>
+
+  <!-- ============ NODES ============ -->
+
+  <!-- QuickBooks Online (source, green) -->
+  <g filter="url(#glow)">
+    <rect x="40" y="300" width="200" height="96" rx="14" fill="#0c1426" stroke="#34e3a4" stroke-width="2"/>
+  </g>
+  <circle cx="78" cy="348" r="16" fill="none" stroke="#34e3a4" stroke-width="2"/>
+  <text x="78" y="353" text-anchor="middle" font-size="13" font-weight="700" fill="#34e3a4">qb</text>
+  <text x="106" y="343" font-size="14.5" font-weight="600" fill="#e7f1f6">QuickBooks</text>
+  <text x="106" y="362" font-size="12.5" fill="#9fb2c0">Online · sandbox</text>
+
+  <!-- read-only adapter pill (on the QBO -> Mapper edge) -->
+  <rect x="262" y="330" width="160" height="36" rx="18" fill="#0c1426" stroke="#34e3a4" stroke-width="1.4"/>
+  <text x="342" y="353" text-anchor="middle" font-size="11.5" fill="#9fe9cf">read-only adapter · OAuth2</text>
+
+  <!-- Synthetic (source, green) -->
+  <g filter="url(#glow)">
+    <rect x="452" y="98" width="212" height="84" rx="14" fill="#0c1426" stroke="#34e3a4" stroke-width="2"/>
+  </g>
+  <g stroke="#34e3a4" stroke-width="2" fill="none" stroke-linecap="round">
+    <circle cx="490" cy="140" r="7"/>
+    <path d="M490,124 L490,129"/><path d="M490,151 L490,156"/>
+    <path d="M474,140 L479,140"/><path d="M501,140 L506,140"/>
+    <path d="M479,129 L482,132"/><path d="M498,148 L501,151"/>
+    <path d="M501,129 L498,132"/><path d="M482,148 L479,151"/>
+  </g>
+  <text x="520" y="135" font-size="14.5" font-weight="600" fill="#e7f1f6">Synthetic</text>
+  <text x="520" y="154" font-size="12.5" fill="#9fb2c0">Lumen</text>
+
+  <!-- Mapper (source-side, green) -->
+  <g filter="url(#glow)">
+    <rect x="452" y="300" width="212" height="96" rx="14" fill="#0c1426" stroke="#34e3a4" stroke-width="2"/>
+  </g>
+  <g stroke="#34e3a4" stroke-width="1.6" fill="none">
+    <path d="M482,338 C492,338 493,348 500,348"/>
+    <path d="M482,358 C492,358 493,348 500,348"/>
+  </g>
+  <g fill="#34e3a4">
+    <circle cx="479" cy="338" r="3.2"/>
+    <circle cx="479" cy="358" r="3.2"/>
+    <circle cx="503" cy="348" r="3.2"/>
+  </g>
+  <text x="520" y="343" font-size="14.5" font-weight="600" fill="#e7f1f6">Mapper</text>
+  <text x="520" y="362" font-size="12.5" fill="#9fb2c0">QuickBooks to canonical</text>
+
+  <!-- Future sources (green, dashed edge) -->
+  <g filter="url(#glow)">
+    <rect x="452" y="512" width="212" height="96" rx="14" fill="#0c1426" stroke="#34e3a4" stroke-width="2"/>
+  </g>
+  <g stroke="#34e3a4" stroke-width="1.8" fill="none" stroke-linejoin="round">
+    <path d="M490,545 L503,552 L490,559 L477,552 Z"/>
+    <path d="M477,552 L477,567 L490,574 L490,559"/>
+    <path d="M503,552 L503,567 L490,574"/>
+  </g>
+  <text x="522" y="555" font-size="14.5" font-weight="600" fill="#e7f1f6">NetSuite / SAP /</text>
+  <text x="522" y="574" font-size="12.5" fill="#9fb2c0">Odoo / Zoho · future</text>
+
+  <!-- Canonical tables (hub, cyan) -->
+  <g filter="url(#glow)">
+    <rect x="734" y="276" width="224" height="144" rx="16" fill="#0b1a2e" stroke="#38bdf8" stroke-width="2.4"/>
+  </g>
+  <g stroke="#38bdf8" stroke-width="2" fill="none">
+    <ellipse cx="846" cy="306" rx="24" ry="8"/>
+    <path d="M822,306 L822,330 C822,334.4 832.7,338 846,338 C859.3,338 870,334.4 870,330 L870,306"/>
+    <path d="M822,318 C822,322.4 832.7,326 846,326 C859.3,326 870,322.4 870,318"/>
+  </g>
+  <text x="846" y="362" text-anchor="middle" font-size="14.5" font-weight="700" fill="#eaf4fb">Canonical tables ·</text>
+  <text x="846" y="382" text-anchor="middle" font-size="12.5" fill="#a9c6dc">same columns as</text>
+  <text x="846" y="400" text-anchor="middle" font-size="12.5" fill="#a9c6dc">the engine CSVs</text>
+
+  <!-- Validate (purple) -->
+  <g filter="url(#glow)">
+    <rect x="1024" y="104" width="224" height="96" rx="14" fill="#130d24" stroke="#b06cf2" stroke-width="2"/>
+  </g>
+  <g stroke="#b06cf2" stroke-width="2" fill="none" stroke-linejoin="round">
+    <path d="M1056,134 L1070,140 L1070,153 C1070,163 1063,169 1056,171 C1049,169 1042,163 1042,153 L1042,140 Z"/>
+    <path d="M1050,151 L1055,157 L1063,146"/>
+  </g>
+  <text x="1086" y="147" font-size="14" font-weight="600" fill="#e7f1f6">Validate · balance foots ·</text>
+  <text x="1086" y="166" font-size="12.5" fill="#9fb2c0">AR ties · no future postings</text>
+
+  <!-- Immutable snapshot (blue) -->
+  <g filter="url(#glow)">
+    <rect x="1284" y="104" width="200" height="110" rx="14" fill="#0b1426" stroke="#6aa6ff" stroke-width="2"/>
+  </g>
+  <g stroke="#6aa6ff" stroke-width="2" fill="none" stroke-linejoin="round">
+    <path d="M1304,138 L1317,138 L1322,143 L1322,170 L1304,170 Z"/>
+    <path d="M1317,138 L1317,143 L1322,143"/>
+    <rect x="1308" y="156" width="9" height="8" rx="1.2"/>
+    <path d="M1309.5,156 L1309.5,153 A3,3 0 0 1 1315.5,153 L1315.5,156"/>
+  </g>
+  <text x="1338" y="139" font-size="13.5" font-weight="600" fill="#e7f1f6">Immutable snapshot</text>
+  <text x="1338" y="158" font-size="12" fill="#9fb2c0">raw + canonical +</text>
+  <text x="1338" y="175" font-size="12" fill="#9fb2c0">manifest · sha256</text>
+
+  <!-- finance_core (orange) -->
+  <g filter="url(#glow)">
+    <rect x="1024" y="300" width="224" height="96" rx="14" fill="#1c1407" stroke="#f6a93b" stroke-width="2"/>
+  </g>
+  <g stroke="#f6a93b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1038,341 L1053,332 L1068,341"/>
+    <path d="M1036,361 L1070,361"/>
+    <path d="M1044,343 L1044,358"/>
+    <path d="M1053,343 L1053,358"/>
+    <path d="M1062,343 L1062,358"/>
+  </g>
+  <text x="1086" y="343" font-size="14.5" font-weight="600" fill="#f6e7c8">finance_core</text>
+  <text x="1086" y="362" font-size="12.5" fill="#d8b888">CFO and O2C engine</text>
+
+  <!-- Source-agnostic MCP tools (purple) -->
+  <g filter="url(#glow)">
+    <rect x="1024" y="512" width="224" height="96" rx="14" fill="#130d24" stroke="#b06cf2" stroke-width="2"/>
+  </g>
+  <g stroke="#b06cf2" stroke-width="2" fill="none">
+    <circle cx="1054" cy="560" r="8"/>
+  </g>
+  <g stroke="#b06cf2" stroke-width="2" stroke-linecap="round">
+    <path d="M1054,547 L1054,551"/><path d="M1054,569 L1054,573"/>
+    <path d="M1041,560 L1045,560"/><path d="M1063,560 L1067,560"/>
+    <path d="M1045,551 L1048,554"/><path d="M1060,566 L1063,569"/>
+    <path d="M1063,551 L1060,554"/><path d="M1048,566 L1045,569"/>
+  </g>
+  <circle cx="1054" cy="560" r="2.6" fill="#b06cf2"/>
+  <text x="1086" y="555" font-size="14.5" font-weight="600" fill="#e7f1f6">Source-agnostic</text>
+  <text x="1086" y="574" font-size="12.5" fill="#9fb2c0">MCP tools</text>
+</svg>

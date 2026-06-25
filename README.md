@@ -40,18 +40,7 @@ swapping sources never touches the engine. QuickBooks Online (sandbox) is wired
 today; NetSuite / SAP / Odoo / Zoho would each be one more `SourceConnector`. See
 [`sources/`](sources/README.md).
 
-```mermaid
-flowchart LR
-  QBO["QuickBooks Online · sandbox"] -->|"read-only adapter · OAuth2"| MAP["Mapper · QuickBooks to canonical"]
-  SYN["Synthetic · Lumen"] --> CANON
-  MAP --> CANON
-  NEXT["NetSuite / SAP / Odoo / Zoho · future"] -.-> CANON
-  CANON["Canonical tables · same columns as the engine CSVs"]
-  CANON --> VAL["Validate · balance foots · AR ties · no future postings"]
-  VAL --> SNAP["Immutable snapshot · raw + canonical + manifest · sha256"]
-  CANON --> ENGINE["finance_core · CFO and O2C engine"]
-  CANON --> MCP["Source-agnostic MCP tools"]
-```
+![Data sources (swappable): QuickBooks Online (sandbox) reaches the engine through a read-only OAuth2 adapter and a mapper that rewrites its objects into canonical tables; the synthetic Lumen source and future connectors (NetSuite / SAP / Odoo / Zoho) feed those same canonical tables, which use the exact columns finance_core already reads. The canonical layer fans out to deterministic validations (balance foots, AR ties, no future postings) and an immutable raw-plus-canonical-plus-manifest snapshot hashed with sha256, and is read directly by both finance_core (the CFO and O2C engine) and the source-agnostic MCP tools.](docs/data-sources.svg)
 
 ## Projects
 
