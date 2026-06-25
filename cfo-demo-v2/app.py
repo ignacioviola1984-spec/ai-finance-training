@@ -123,6 +123,8 @@ st.markdown("""
 .tiny  { color:var(--text-color); opacity:0.7; font-size:0.8rem; }
 .card { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
         border-radius:12px; padding:14px 16px; margin-bottom:8px; }
+.statcard { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
+            border-radius:12px; padding:14px 16px; min-height:178px; }
 .role { font-weight:700; font-size:0.98rem; }
 .boardpack { background:rgba(27,42,74,0.06); border-left:4px solid #1B2A4A;
              border-radius:8px; padding:18px 22px; }
@@ -226,20 +228,20 @@ def render_overview():
     st.divider()
     st.markdown("##### The five stations")
     cards = [
-        ("1 · ERP - data in", "Pull from QuickBooks (read-only) into a canonical layer, "
-         f"run {SOURCES['clean']['n_total']} validations, freeze an sha256 snapshot."),
+        ("1 · ERP - data in", "Pull from QuickBooks (read-only) into a canonical layer and "
+         f"run {SOURCES['clean']['n_ok']}/{SOURCES['clean']['n_total']} validations."),
         ("2 · O2C control tower", "Collections, cash application, DSO, disputes, credit - "
          "with a hard gate that blocks reporting when controls fail."),
         ("3 · Month-end close", "Eight specialist agents produce the three financial "
          "statements and a board pack, each function signed off by its domain expert."),
         ("4 · Evals - does it hold?", "Four offline scoreboards: 22/22 numbers, 12/12 safety, "
          "48/48 O2C, 17/17 against real audited SEC filings."),
-        ("5 · Self-improvement", "The AI retunes four whitelisted parameters - bounded, "
-         "eval-gated, human-approved, fully reversible."),
+        ("5 · Self-improvement", "The system gets better over time, but only within strict "
+         "limits, only with sign-off from the right person, and every change can be undone."),
     ]
     cols = st.columns(5)
     for c, (title, desc) in zip(cols, cards):
-        c.markdown(f"<div class='card'><div class='role'>{title}</div>"
+        c.markdown(f"<div class='statcard'><div class='role'>{title}</div>"
                    f"<div class='tiny'>{desc}</div></div>", unsafe_allow_html=True)
 
     st.divider()
