@@ -147,10 +147,12 @@ st.markdown("""
 .tiny  { color:var(--text-color); opacity:0.7; font-size:0.8rem; }
 .card { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
         border-radius:12px; padding:14px 16px; margin-bottom:8px; }
-.statcard { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
-            border-radius:12px; padding:14px 16px; min-height:178px; }
-.teamcard { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
-            border-radius:12px; padding:14px 16px; margin-bottom:8px; min-height:108px; }
+.cardgrid { display:grid; gap:10px; margin-bottom:8px; grid-auto-rows:1fr; }
+.cardgrid.five { grid-template-columns:repeat(5,1fr); }
+.cardgrid.four { grid-template-columns:repeat(4,1fr); }
+.gcard { background:rgba(127,127,127,0.06); border:1px solid rgba(127,127,127,0.18);
+         border-radius:12px; padding:14px 16px; }
+@media (max-width:900px){ .cardgrid.five,.cardgrid.four{ grid-template-columns:repeat(2,1fr); } }
 .role { font-weight:700; font-size:0.98rem; }
 .boardpack { background:rgba(27,42,74,0.06); border-left:4px solid #1B2A4A;
              border-radius:8px; padding:18px 22px; }
@@ -271,10 +273,10 @@ def render_overview():
         ("5 · Self-improvement", "The system gets better over time, but only within strict "
          "limits, only with sign-off from the right person, and every change can be undone."),
     ]
-    cols = st.columns(5)
-    for c, (title, desc) in zip(cols, cards):
-        c.markdown(f"<div class='statcard'><div class='role'>{title}</div>"
-                   f"<div class='tiny'>{desc}</div></div>", unsafe_allow_html=True)
+    cards_html = "".join(
+        f"<div class='gcard'><div class='role'>{title}</div><div class='tiny'>{desc}</div></div>"
+        for title, desc in cards)
+    st.markdown(f"<div class='cardgrid five'>{cards_html}</div>", unsafe_allow_html=True)
 
     st.divider()
     st.markdown("##### Why this matters")
@@ -535,11 +537,10 @@ def render_close():
          ("🛡️ Internal Controls", "Trial balance, FX, cutoff, authorizations."),
          ("🔎 Audit", "Independent third line: re-derives the figures, issues an opinion.")],
     ]
-    for row in team_rows:
-        cols = st.columns(4)
-        for c, (role, desc) in zip(cols, row):
-            c.markdown(f"<div class='teamcard'><div class='role'>{role}</div>"
-                       f"<div class='tiny'>{desc}</div></div>", unsafe_allow_html=True)
+    team_html = "".join(
+        f"<div class='gcard'><div class='role'>{role}</div><div class='tiny'>{desc}</div></div>"
+        for row in team_rows for role, desc in row)
+    st.markdown(f"<div class='cardgrid four'>{team_html}</div>", unsafe_allow_html=True)
 
     st.divider()
     if "close_ran" not in st.session_state:
