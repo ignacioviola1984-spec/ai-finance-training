@@ -303,6 +303,42 @@ Bitacora de avance, fase por fase.
   empresa en produccion. budget y tax_obligations salen vacios para ERPNext en esta
   version (fuera de alcance), documentado.
 
+### Fase 7.8 - Tie-out independiente contra los reportes nativos del ERP  [OK]
+- sources/reconcile/: tie-out software-contra-software. Prueba que mi capa canonica +
+  finance_core REPRODUCEN los estados financieros que el propio ERP genera. La answer key
+  NO la produzco yo: la generan los reportes nativos del ERP (ProfitAndLoss, BalanceSheet,
+  TrialBalance). Mismo patron que dLocal (corre blind, diffea contra una answer key, sale
+  non-zero ante cualquier break), pero la fuente de verdad es el ERP, no la SEC.
+- REGLA DURA respetada: el compute path (finance_core sobre canonico) NO ve los reportes
+  nativos; el reconciler es el unico que lee ambos lados y diffea. compute.py no importa
+  nada del path nativo (corre finance_core en subprocess, FINANCE_DATA_DIR aislado).
+- Fetch read-only de los reportes nativos detras de la interfaz: fetch_native_statements
+  en SourceConnector (base NotImplementedError; QuickBooks lo implementa con sus reportes;
+  ERPNext lo implementa despues con los suyos, mismo reconciler). El adapter QBO ya tenia
+  GET de ProfitAndLoss/BalanceSheet/TrialBalance.
+- Backbone: el Trial Balance. El saldo de cierre de CADA codigo canonico (el mio, de
+  finance_core.trial_balance_usd, vs el TB nativo del ERP rolleado a los 12 codigos) tiene
+  que atar, debito y credito. Mas tie-out statement-level: P&L (revenue, COGS, gross,
+  opex, operating income, net income) y Balance (total assets/liab/equity, cash, AR, AP).
+  Tolerancia 0.01 USD (redondeo), documentada. Cada TB tiene que auto-cuadrar (debitos =
+  creditos); una cuenta no ruteada aflora como break, nunca se absorbe.
+- Output: tabla PASS/FAIL por linea (estilo dLocal) + snapshot inmutable (mis estados
+  computados, los reportes nativos raw, la tabla de reconciliacion, period/company/source/
+  timestamp, validation_result). Fail-closed: exit non-zero ante cualquier break.
+- Tests offline contra el fixture QBO (le sume el reporte nativo TrialBalance, consistente
+  con P&L+BS): un caso PASS (mis 36 lineas reproducen los reportes nativos al centavo,
+  delta 0.00) y un caso tamper (rompo una cuenta canonica -> FAIL). Auto-discovered por
+  sources/tests/run_tests.py -> ya corre en el CI existente, sin instancia viva ni secret.
+  Sin regresiones: 22/22 numbers, sources 52/52. finance_core.trial_balance_usd es aditiva.
+- BOUNDARY honesto: valida integracion + mapeo + computo contra un SEGUNDO engine
+  independiente (el de reportes del ERP) sobre data de sandbox/seeded, NO contra los libros
+  de una empresa en produccion. Es un tie-out software-contra-software, no una auditoria
+  externa ni estatutaria. Para QuickBooks, el canonico de P&L/Balance se construye DE los
+  reportes de QBO, asi que esas lineas statement-level son sobre todo una guarda de
+  regresion del mapeo+computo; el TB (mi TB derivado de P&L+Balance vs el reporte TB
+  SEPARADO de QBO, cuenta por cuenta) es el cross-check genuino. Con una fuente cuyo
+  canonico se computa desde transacciones/GL, el tie-out queda 100% independiente.
+
 ## Backlog del departamento (multi-agente, hacia el "full finance department")
 - Faltantes mapeados (ver chat de gap analysis): Strategic Finance [HECHO],
   Administration/AR/AP/Tax [HECHO], Internal Controls [HECHO], profundizar

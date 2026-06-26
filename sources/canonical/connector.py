@@ -111,6 +111,16 @@ class SourceConnector(ABC):
     def fetch_opportunities(self, period=None):
         return self.canonical_tables(period).get("crm_opportunities", [])
 
+    # ----- native ERP statements (the answer key for the independent tie-out) ---
+    def fetch_native_statements(self, period, company=None):
+        """The ERP's OWN financial reports (P&L / Balance Sheet / Trial Balance),
+        normalized into the vendor-neutral shape sources/reconcile/ compares
+        against. This is the ANSWER KEY: ONLY the reconciler calls it; the blind
+        compute path (finance_core) never does. Sources without native reports
+        (e.g. synthetic) do not support the tie-out."""
+        raise NotImplementedError(
+            f"the '{self.name}' source exposes no native ERP statements to reconcile against")
+
 
 class SyntheticConnector(SourceConnector):
     """The existing Lumen synthetic CSVs, read as canonical (they already are)."""
@@ -170,6 +180,12 @@ class QuickBooksConnector(SourceConnector):
             raise ValueError("QuickBooksConnector requires an explicit period (YYYY-MM)")
         import mapper
         return mapper.build_canonical(self.extract_raw(period), self.entity_id, self.entity_name, period)
+
+    def fetch_native_statements(self, period, company=None):
+        """QuickBooks' OWN ProfitAndLoss / BalanceSheet / TrialBalance reports,
+        normalized vendor-neutrally (the reconciler's answer key)."""
+        import mapper
+        return mapper.map_native_statements(self.extract_raw(period), self.entity_id, period)
 
 
 class ERPNextConnector(SourceConnector):

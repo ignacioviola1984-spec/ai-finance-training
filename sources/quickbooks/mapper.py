@@ -361,3 +361,71 @@ def build_canonical(raw, entity_id, entity_name, period):
         "vendors": map_vendors(raw.get("vendors"), entity_id),
         "journal_entries": map_journal_entries(raw.get("journal_entries"), accounts, entity_id, period),
     }
+
+
+# --------------------------------------------------------------------------
+# Native financial statements (the ERP's OWN reports) -> vendor-neutral shape.
+# This is the ANSWER KEY for the independent tie-out (sources/reconcile/). It is
+# ONLY called by the reconciler, never by the blind compute path.
+# --------------------------------------------------------------------------
+def _walk_tb_leaves(report):
+    """Yield (account_name, debit, credit) for every leaf of a QBO TrialBalance
+    report. ColData is [account, debit, credit]."""
+    def visit(node):
+        coldata = node.get("ColData")
+        nested = node.get("Rows", {}).get("Row")
+        if coldata and not nested and node.get("type", "Data") != "Section":
+            name = coldata[0].get("value", "")
+            debit = _money(coldata[1].get("value")) if len(coldata) > 1 else 0.0
+            credit = _money(coldata[2].get("value")) if len(coldata) > 2 else 0.0
+            if name:
+                yield (name, debit, credit)
+        for child in (nested or []):
+            yield from visit(child)
+    for r in (report or {}).get("Rows", {}).get("Row", []):
+        yield from visit(r)
+
+
+def map_native_trial_balance(tb_report, code_map):
+    """Native TrialBalance report -> {canonical_code: {debit, credit}} (rolled up)."""
+    agg = {}
+    for name, debit, credit in _walk_tb_leaves(tb_report):
+        code = code_map.get(name)
+        if not code:
+            continue
+        a = agg.setdefault(code, {"debit": 0.0, "credit": 0.0})
+        a["debit"] = round(a["debit"] + debit, 2)
+        a["credit"] = round(a["credit"] + credit, 2)
+    return agg
+
+
+def map_native_statements(raw, entity_id, period):
+    """The ERP's native P&L / BalanceSheet / TrialBalance reports, normalized into
+    the vendor-neutral shape the reconciler compares against (statement totals in
+    canonical lines + a per-canonical-code trial balance)."""
+    accounts = raw.get("accounts", [])
+    code_map = account_code_map(accounts)
+    pnl = map_pnl(raw.get("profit_and_loss"), code_map, entity_id, period)
+    bs = map_balance_sheet(raw.get("balance_sheet"), code_map, entity_id, period)
+    tb = map_native_trial_balance(raw.get("trial_balance"), code_map)
+
+    def s(rows, codes):
+        return round(sum(float(r["amount_local"]) for r in rows if r["account_code"] in codes), 2)
+
+    revenue, cogs = s(pnl, (PNL_REVENUE,)), s(pnl, (PNL_COGS,))
+    opex = s(pnl, (PNL_SM, PNL_RD, PNL_GA))
+    gross = round(revenue - cogs, 2)
+    oi = round(gross - opex, 2)
+    cash, ar, fixed = s(bs, (BS_CASH,)), s(bs, (BS_AR,)), s(bs, (BS_FIXED,))
+    ap, deferred = s(bs, (BS_AP,)), s(bs, (BS_DEFERRED,))
+    paid, retained = s(bs, (BS_PAID_IN,)), s(bs, (BS_RETAINED,))
+    return {
+        "period": period, "entity_id": entity_id,
+        "pnl": {"revenue": revenue, "cogs": cogs, "gross": gross, "opex": opex,
+                "operating_income": oi, "net_income": oi},
+        "balance": {"total_assets": round(cash + ar + fixed, 2),
+                    "total_liabilities": round(ap + deferred, 2),
+                    "total_equity": round(paid + retained, 2),
+                    "cash": cash, "ar": ar, "ap": ap},
+        "trial_balance": tb,
+    }

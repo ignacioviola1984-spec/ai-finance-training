@@ -712,6 +712,39 @@ def balance_sheet_statement(period=LATEST):
             "balance_check": ta - (tl + te)}
 
 
+def trial_balance_usd(period=LATEST):
+    """Pre-closing trial balance per canonical account code, in USD, computed from
+    the engine's OWN P&L + balance aggregation (never from any ERP native report).
+
+    Normal-balance convention: assets and expenses are debits; liabilities, equity
+    and income are credits. Retained earnings is rolled back by the period's net
+    income (pre-closing), so total debits equal total credits whenever the balance
+    foots. Used by the independent ERP tie-out (sources/reconcile/) as the backbone
+    against the ERP's native trial-balance report."""
+    p = pnl_usd(period)
+    b = _bs_usd(period)
+    net_income = p["operating_income"]   # no below-the-line items in this dataset
+    rows = {}
+
+    def put(code, amount, debit):
+        amt = round(amount, 2)
+        rows[code] = {"debit": amt if debit else 0.0, "credit": 0.0 if debit else amt}
+
+    put("1000", b.get("1000", 0.0), True)            # cash
+    put("1100", b.get("1100", 0.0), True)            # AR
+    put("1500", b.get("1500", 0.0), True)            # fixed assets
+    put("2000", b.get("2000", 0.0), False)           # AP
+    put("2500", b.get("2500", 0.0), False)           # deferred revenue
+    put("3000", b.get("3000", 0.0), False)           # paid-in capital
+    put("3900", b.get("3900", 0.0) - net_income, False)  # retained (rolled back, pre-closing)
+    put("4000", p["revenue"], False)                 # revenue
+    put("5000", p["cogs"], True)                     # COGS
+    put("6000", p["sm"], True)                        # S&M
+    put("6100", p["rd"], True)                        # R&D
+    put("6200", p["ga"], True)                        # G&A
+    return rows
+
+
 def cash_flow_statement(period=LATEST, tolerance=1.0):
     """Estado de flujo de efectivo (metodo indirecto), consolidado en USD.
     Articula: resultado +/- variacion de capital de trabajo (operativo) +/-
