@@ -31,11 +31,29 @@ for _s in ("canonical", "snapshots", "erpnext"):     # NOT quickbooks: avoid ada
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from auth import Config            # noqa: E402  (sources/erpnext/auth.py)
+from auth import Config, ERPNextAuthError  # noqa: E402  (sources/erpnext/auth.py)
 from adapter import ERPNextAdapter  # noqa: E402  (sources/erpnext/adapter.py)
 from connector import ERPNextConnector  # noqa: E402  (sources/canonical/connector.py)
 
+REPO = os.path.dirname(SRC)
 FIXTURE_DIR = os.path.join(SRC, "fixtures", "erpnext_demo")
+
+
+def _load_dotenv(path=None):
+    """Best-effort .env loader (stdlib only, no python-dotenv dependency): set any
+    KEY=VALUE from the repo-root .env that is not already in the environment. The
+    .env is gitignored; nothing here writes or prints a secret value."""
+    path = path or os.path.join(REPO, ".env")
+    if not os.path.exists(path):
+        return
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, val = line.partition("=")
+            key, val = key.strip(), val.strip().strip('"').strip("'")
+            os.environ.setdefault(key, val)
 
 
 def main(argv=None):
@@ -44,7 +62,14 @@ def main(argv=None):
     ap.add_argument("--out", default=None, help="output path (default: the committed fixture)")
     args = ap.parse_args(argv)
 
-    config = Config().require()
+    _load_dotenv()                       # so ERPNEXT_* in the repo-root .env are picked up
+    try:
+        config = Config().require()
+    except ERPNextAuthError as e:
+        print(f"cannot record: {e}\n"
+              "Set ERPNEXT_BASE_URL / ERPNEXT_API_KEY / ERPNEXT_API_SECRET in the repo-root .env "
+              "(see sources/erpnext/README.md for the read-only-user setup).")
+        return 2
     conn = ERPNextConnector(ERPNextAdapter(config))
     raw = conn.extract_raw(args.period)
 
