@@ -9,6 +9,12 @@ validated against real public filings: they tie **17 of 17** to dLocal
 only. Built by a finance operator with 17 years of experience, now building the
 systems.
 
+> **▶️ Live demo (instant, no signup):** click through the whole operating model end to
+> end, in the order data flows (ERP data pull → Order-to-Cash control tower → month-end
+> close → evals → self-improvement), at
+> **[ignacio-viola-finance-agentic-workflow.streamlit.app](https://ignacio-viola-finance-agentic-workflow.streamlit.app/)**.
+> Every number is computed in code; the page replays saved runs, so it needs no API key.
+
 > **Validated against real public filings:** the deterministic statement-level math
 > now ties **17 of 17** figures to dLocal (NASDAQ: DLO) reported FY2024/FY2025
 > consolidated numbers (IFRS, USD), regenerated from dLocal public SEC filings and
@@ -164,6 +170,17 @@ system cannot change its own bounds or flip the auto-adopt flag. Details:
 **Stack:** Python, deterministic calibration, champion/challenger over a bounded
 registry, eval-gated promotion, maker-checker approval, append-only audit trail,
 rollback.
+
+### Operating Model Live Demo, v2 (`cfo-demo-v2/`)
+A polished, HR-friendly walkthrough of the full operating model, following the data
+lifecycle: **ERP data pull → Order-to-Cash control tower → month-end close → evals →
+self-improvement**. It replays saved runs (every figure computed in code), so it is
+instant, free, and needs no API key. Live:
+**[ignacio-viola-finance-agentic-workflow.streamlit.app](https://ignacio-viola-finance-agentic-workflow.streamlit.app/)**.
+The deterministic snapshots it reads are regenerated offline by `build_snapshots.py`.
+Details: [`cfo-demo-v2/README.md`](cfo-demo-v2/README.md).
+
+**Stack:** Python, Streamlit, pandas; deterministic snapshot replay (no secrets at runtime).
 
 ### Web App / Live Demo (`webapp/`)
 A Streamlit app that puts a usable interface over three of the projects so a
