@@ -121,6 +121,12 @@ class SourceConnector(ABC):
         raise NotImplementedError(
             f"the '{self.name}' source exposes no native ERP statements to reconcile against")
 
+    def reconcile_units(self, period):
+        """The units the tie-out reconciles independently. Single-entity sources
+        return [None]; multi-company sources (ERPNext) return one id per company,
+        each reconciled in its own local currency against that company's reports."""
+        return [None]
+
 
 class SyntheticConnector(SourceConnector):
     """The existing Lumen synthetic CSVs, read as canonical (they already are)."""
@@ -217,3 +223,27 @@ class ERPNextConnector(SourceConnector):
             raise ValueError("ERPNextConnector requires an explicit period (YYYY-MM)")
         _, mapper = load_erpnext()
         return mapper.build_canonical(self.extract_raw(period), period, self.default_country)
+
+    @staticmethod
+    def _entity_id(company, raw):
+        return next((c.get("abbr") for c in raw.get("companies", []) if c.get("company") == company), company)
+
+    def reconcile_units(self, period):
+        return [c.get("company") for c in self.extract_raw(period).get("companies", [])]
+
+    def fetch_native_statements(self, period, company=None):
+        """ERPNext's OWN P&L / BalanceSheet / TrialBalance reports for one company,
+        normalized vendor-neutrally (the reconciler's answer key). Per company:
+        ERPNext reports are per legal entity, in the company's local currency."""
+        if company is None:
+            raise ValueError("ERPNext native statements are per-company; pass a company")
+        _, mapper = load_erpnext()
+        raw = self.extract_raw(period)
+        return mapper.map_native_statements(raw, company, self._entity_id(company, raw), period)
+
+    def compute_blind_statements(self, period, company):
+        """MY statements for one company, recomputed from the GL (BLIND: never reads
+        the native reports). Independent of fetch_native_statements by construction."""
+        _, mapper = load_erpnext()
+        raw = self.extract_raw(period)
+        return mapper.compute_statements_from_gl(raw, company, self._entity_id(company, raw), period)

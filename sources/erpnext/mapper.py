@@ -449,3 +449,109 @@ def build_canonical(raw, period, default_country="United States"):
             raw.get("dunnings"), raw.get("payment_requests"), cidx),
         "cash_bank": map_cash_bank(raw.get("bank_accounts"), cidx),
     }
+
+
+# --------------------------------------------------------------------------
+# Independent ERP tie-out (sources/reconcile/): the ERP's native reports are the
+# ANSWER KEY, and MY statements are recomputed from the GL - so for ERPNext the
+# whole tie-out is independent (different derivation on each side), unlike a
+# source whose canonical P&L/Balance are built from its own reports.
+# Everything here is per Company (entity), in the company's local currency.
+# --------------------------------------------------------------------------
+def _statements_from_codes(net, period, entity_id, tb):
+    """Build the vendor-neutral {pnl, balance, trial_balance} from a code->net map
+    (net = debit - credit, i.e. debit-positive).
+
+    The trial balance is PRE-closing (retained earnings at opening, P&L accounts
+    still holding the period's activity), matching the ERP's TrialBalance report.
+    The balance sheet is a CLOSING view, so retained earnings folds in the period's
+    net income (RE_closing = RE_opening + net income) - exactly how the engine's TB
+    is rolled back for QuickBooks. The two views are internally consistent."""
+    def bal(code):
+        return round(net.get(code, 0.0), 2)
+    revenue, cogs = round(-bal(PNL_REVENUE), 2), bal(PNL_COGS)
+    opex = round(bal(PNL_SM) + bal(PNL_RD) + bal(PNL_GA), 2)
+    gross = round(revenue - cogs, 2)
+    net_income = round(gross - opex, 2)
+    cash, ar, fixed = bal(BS_CASH), bal(BS_AR), bal(BS_FIXED)
+    ap, deferred = round(-bal(BS_AP), 2), round(-bal(BS_DEFERRED), 2)
+    paid, retained_opening = round(-bal(BS_PAID_IN), 2), round(-bal(BS_RETAINED), 2)
+    retained_closing = round(retained_opening + net_income, 2)   # balance sheet is closing
+    return {
+        "period": period, "entity_id": entity_id,
+        "pnl": {"revenue": revenue, "cogs": cogs, "gross": gross, "opex": opex,
+                "operating_income": net_income, "net_income": net_income},
+        "balance": {"total_assets": round(cash + ar + fixed, 2),
+                    "total_liabilities": round(ap + deferred, 2),
+                    "total_equity": round(paid + retained_closing, 2),
+                    "cash": cash, "ar": ar, "ap": ap},
+        "trial_balance": tb,
+    }
+
+
+def compute_statements_from_gl(raw, company, entity_id, period):
+    """BLIND compute: MY statements for one company, recomputed from GL Entry (the
+    transactional ledger), NEVER from the ERP's native reports. Routes each GL
+    account to a canonical code and nets debit-credit; the per-code net is the
+    closing balance, from which the trial balance, P&L and balance sheet derive."""
+    ameta = account_meta(raw.get("accounts"))
+    net = {}
+    for g in raw.get("gl_entries", []):
+        if g.get("company") != company:
+            continue
+        name = g.get("account", "")
+        meta = ameta.get(name, {})
+        code = canonical_code(meta.get("root_type"), meta.get("account_type"), name)
+        if not code:
+            continue
+        net[code] = round(net.get(code, 0.0) + _money(g.get("debit")) - _money(g.get("credit")), 2)
+    tb = {code: {"debit": round(n, 2) if n >= 0 else 0.0, "credit": round(-n, 2) if n < 0 else 0.0}
+          for code, n in net.items()}
+    return _statements_from_codes(net, period, entity_id, tb)
+
+
+def _map_native_tb_rows(tb_rows, ameta):
+    """Native TrialBalance report rows -> {canonical_code: {debit, credit}}."""
+    agg = {}
+    for r in tb_rows or []:
+        name = r.get("account") or r.get("account_name") or ""
+        meta = ameta.get(name, {})
+        code = canonical_code(r.get("root_type") or meta.get("root_type"),
+                              r.get("account_type") or meta.get("account_type"), name)
+        if not code:
+            continue
+        a = agg.setdefault(code, {"debit": 0.0, "credit": 0.0})
+        a["debit"] = round(a["debit"] + _money(r.get("debit")), 2)
+        a["credit"] = round(a["credit"] + _money(r.get("credit")), 2)
+    return agg
+
+
+def map_native_statements(raw, company, entity_id, period):
+    """The ERP's OWN P&L / BalanceSheet / TrialBalance reports for one company,
+    normalized into the vendor-neutral shape (the reconciler's answer key)."""
+    ameta = account_meta(raw.get("accounts"))
+    rep = (raw.get("reports") or {}).get(company, {}) or {}
+    pnl = map_pnl_for_company(rep.get("profit_and_loss"), ameta, entity_id, period)
+    bs = map_bs_for_company(rep.get("balance_sheet"), ameta, entity_id, period)
+    tb = _map_native_tb_rows(rep.get("trial_balance"), ameta)
+
+    def s(rows, codes):
+        return round(sum(float(r["amount_local"]) for r in rows if r["account_code"] in codes), 2)
+
+    revenue, cogs = s(pnl, (PNL_REVENUE,)), s(pnl, (PNL_COGS,))
+    opex = s(pnl, (PNL_SM, PNL_RD, PNL_GA))
+    cash, ar, fixed = s(bs, (BS_CASH,)), s(bs, (BS_AR,)), s(bs, (BS_FIXED,))
+    ap, deferred = s(bs, (BS_AP,)), s(bs, (BS_DEFERRED,))
+    paid, retained = s(bs, (BS_PAID_IN,)), s(bs, (BS_RETAINED,))
+    gross = round(revenue - cogs, 2)
+    oi = round(gross - opex, 2)
+    return {
+        "period": period, "entity_id": entity_id,
+        "pnl": {"revenue": revenue, "cogs": cogs, "gross": gross, "opex": opex,
+                "operating_income": oi, "net_income": oi},
+        "balance": {"total_assets": round(cash + ar + fixed, 2),
+                    "total_liabilities": round(ap + deferred, 2),
+                    "total_equity": round(paid + retained, 2),
+                    "cash": cash, "ar": ar, "ap": ap},
+        "trial_balance": tb,
+    }

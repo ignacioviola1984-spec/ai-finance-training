@@ -61,8 +61,15 @@ def _tb_totals(stmt):
     return debit, credit
 
 
-def reconcile(computed, native, tolerance=TOLERANCE_USD):
-    """Return {pass, structural, rows, n_pass, n_fail, tolerance}. Pure; no I/O."""
+def reconcile(computed, native, tolerance=TOLERANCE_USD, statements_independent=False):
+    """Return {pass, structural, rows, n_pass, n_fail, tolerance}. Pure; no I/O.
+
+    `statements_independent` marks whether the P&L/Balance lines are an
+    independent cross-check (the compute side was derived differently from the
+    native reports, e.g. ERPNext recomputed from the GL) or a regression guard
+    (the canonical P&L/Balance share the ERP's report derivation, e.g.
+    QuickBooks). The trial-balance lines are always an independent cross-report
+    check. This only affects the honest label on each row, never the diff."""
     structural = []
 
     mine_s, their_s = _statement_lines(computed), _statement_lines(native)
@@ -97,7 +104,8 @@ def reconcile(computed, native, tolerance=TOLERANCE_USD):
         delta = round(m - t, 4)
         ok = abs(delta) <= tolerance
         rows.append({"line": key, "mine": m, "native": t, "delta": delta,
-                     "status": "PASS" if ok else "FAIL", "kind": _line_kind(key)})
+                     "status": "PASS" if ok else "FAIL",
+                     "kind": _line_kind(key, statements_independent)})
         n_pass += ok
         n_fail += (not ok)
 
@@ -107,14 +115,16 @@ def reconcile(computed, native, tolerance=TOLERANCE_USD):
             "n_cross_report": n_cross, "n_regression_guard": len(rows) - n_cross}
 
 
-def _line_kind(key):
-    """Honest labelling: the trial-balance lines are an INDEPENDENT cross-report
-    check (my TB, re-derived from P&L+Balance, vs the ERP's SEPARATE TrialBalance
-    report). The P&L/Balance lines are a REGRESSION GUARD: for a source whose
-    canonical P&L/Balance are built from the ERP's P&L/Balance reports (e.g.
-    QuickBooks), both sides share that derivation, so those lines tie by
-    construction unless the mapping or finance_core drifts."""
-    return "cross-report" if key.startswith("tb.") else "regression-guard"
+def _line_kind(key, statements_independent=False):
+    """Honest labelling. Trial-balance lines are always an INDEPENDENT cross-report
+    check. P&L/Balance lines are independent too when the compute side was derived
+    differently from the native reports (ERPNext: recomputed from the GL); for a
+    source whose canonical P&L/Balance are built from the ERP's own P&L/Balance
+    reports (QuickBooks) they are a REGRESSION GUARD that ties by construction
+    unless the mapping or finance_core drifts."""
+    if key.startswith("tb."):
+        return "cross-report"
+    return "cross-report" if statements_independent else "regression-guard"
 
 
 def render_table(result):

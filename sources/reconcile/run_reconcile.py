@@ -46,26 +46,53 @@ def _identity(connector, source):
     return getattr(cfg, "realm_id", "") or os.environ.get("QBO_REALM_ID", "sandbox")
 
 
+def _compute_blind(connector, period, unit, out_dir):
+    """MY statements for a unit, computed BLIND (never reads native reports).
+    ERPNext recomputes per company from the GL (fully independent); single-entity
+    sources (QuickBooks) compute via finance_core over the materialized canonical.
+    Returns (statements, statements_independent)."""
+    if unit is not None and hasattr(connector, "compute_blind_statements"):
+        return connector.compute_blind_statements(period, unit), True
+    materialize.write_canonical_tables(connector.canonical_tables(period), out_dir)
+    return compute_statements(out_dir, period), False
+
+
 def reconcile_connector(connector, period, source="quickbooks", out_dir=ACTIVE_DIR,
                         snapshot_base=SNAPSHOT_BASE, now_iso=None, write_snapshot=True):
-    """Run the tie-out for a connector. Returns (result, snapshot_dir|None)."""
-    tables = connector.canonical_tables(period)
-    materialize.write_canonical_tables(tables, out_dir)
-    mine = compute_statements(out_dir, period)                  # BLIND compute path
-    native = connector.fetch_native_statements(period)          # answer key (reconciler-only)
-    result = reconcile(mine, native)
+    """Run the tie-out for a connector across all its reconciliation units (one per
+    company for ERPNext; a single unit for QuickBooks). Returns (overall, snap_dir).
+    `overall` aggregates every unit's reconciliation and is itself pass/fail."""
+    units = connector.reconcile_units(period)
+    per_unit, rows, structural = [], [], []
+    n_pass = n_fail = n_cross = n_guard = 0
+    for unit in units:
+        mine, independent = _compute_blind(connector, period, unit, out_dir)
+        native = connector.fetch_native_statements(period, unit)   # answer key (reconciler-only)
+        res = reconcile(mine, native, statements_independent=independent)
+        per_unit.append({"unit": unit, "result": res, "computed": mine, "native": native})
+        rows += [{**r, "unit": unit} for r in res["rows"]]
+        structural += [f"{unit}: {s}" for s in res["structural"]]
+        n_pass += res["n_pass"]; n_fail += res["n_fail"]
+        n_cross += res.get("n_cross_report", 0); n_guard += res.get("n_regression_guard", 0)
+
+    overall = {"pass": n_fail == 0 and not structural, "structural": structural, "rows": rows,
+               "n_pass": n_pass, "n_fail": n_fail, "tolerance": per_unit[0]["result"]["tolerance"]
+               if per_unit else None, "n_cross_report": n_cross, "n_regression_guard": n_guard,
+               "units": [u["unit"] for u in per_unit],
+               "per_unit": [{"unit": u["unit"], "result": u["result"]} for u in per_unit]}
 
     snap_dir = None
     if write_snapshot:
         now_iso = now_iso or datetime.datetime.now(datetime.timezone.utc).isoformat()
         raw = dict(getattr(connector, "extract_raw", lambda p: {})(period))
-        raw["computed_statements"] = mine
-        raw["native_statements"] = native
-        raw["reconciliation"] = result
+        raw["reconciliation"] = {u["unit"]: {"computed": u["computed"], "native": u["native"],
+                                             "result": u["result"]} for u in per_unit}
         snap_dir, _ = snapshot_writer.write_snapshot(
-            snapshot_base, _identity(connector, source), period, raw, tables, result, now_iso,
-            source=source, extra={"reconciliation_pass": result["pass"]})
-    return result, snap_dir
+            snapshot_base, _identity(connector, source), period, raw,
+            connector.canonical_tables(period), overall, now_iso,
+            source=source, extra={"reconciliation_pass": overall["pass"],
+                                  "units": overall["units"]})
+    return overall, snap_dir
 
 
 def main(argv=None):
@@ -84,9 +111,14 @@ def main(argv=None):
     result, snap_dir = reconcile_connector(connector, args.period, source=source,
                                            write_snapshot=not args.no_snapshot)
     print(f"ERP tie-out | period {args.period} | source {source}")
-    print(render_table(result))
+    for u in result.get("per_unit", [{"unit": None, "result": result}]):
+        if u["unit"] is not None:
+            print(f"\n=== company: {u['unit']} ===")
+        print(render_table(u["result"]))
+    print(f"\nOVERALL: {'PASS' if result['pass'] else 'FAIL'}  "
+          f"({result['n_pass']} pass, {result['n_fail']} fail across {len(result['units'])} unit(s))")
     if snap_dir:
-        print(f"\nsnapshot: {snap_dir}")
+        print(f"snapshot: {snap_dir}")
     return 0 if result["pass"] else 1
 
 

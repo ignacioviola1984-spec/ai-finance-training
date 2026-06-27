@@ -32,6 +32,12 @@ balance sheet. (Honest boundary below.)
 The connector itself is `ERPNextConnector` in `sources/canonical/connector.py` (the
 shared interface lives there next to `SyntheticConnector` / `QuickBooksConnector`).
 
+It also implements `fetch_native_statements` and `compute_statements_from_gl`, so the
+independent ERP tie-out (`sources/reconcile/`) runs against ERPNext **per company**:
+my statements are recomputed **from the GL** and reconciled against ERPNext's own
+P&L / BalanceSheet / TrialBalance reports. Because the two sides derive differently,
+the ERPNext tie-out is **fully independent** (every line, not just the trial balance).
+
 ## DocType → canonical mapping
 
 | ERPNext | Canonical table |

@@ -59,10 +59,18 @@ and the `validation_result`.
 
 ## Vendor-neutral by design
 
-`fetch_native_statements(period, company)` is on the `SourceConnector` interface.
-QuickBooks implements it (its ProfitAndLoss / BalanceSheet / TrialBalance reports,
-normalized into the canonical shape). ERPNext can implement the same method with
-its own reports, and the reconciler does not change.
+`fetch_native_statements(period, company)` and `reconcile_units(period)` are on the
+`SourceConnector` interface, so the reconciler core does not change per vendor:
+
+- **QuickBooks** (single entity): one unit. The compute side is `finance_core` over
+  the canonical, which is built from QuickBooks' P&L/Balance reports, so the
+  P&L/Balance lines are a **regression guard**; the trial balance is the
+  independent cross-report check.
+- **ERPNext** (multi-company / multi-currency): one unit per company, each
+  reconciled in its local currency. The compute side recomputes each company's
+  statements **from the GL** (`compute_statements_from_gl`), independently of
+  ERPNext's reports, so **every line - P&L, Balance and trial balance - is an
+  independent cross-check.** The output labels each line accordingly.
 
 ## Honest boundary
 
@@ -75,8 +83,10 @@ its own reports, and the reconciler does not change.
   **mapping + recompute regression guard** (they tie by construction unless the
   mapping or `finance_core` drifts). The **trial-balance backbone is the genuine
   cross-report check**: my TB is derived from the P&L + Balance, and it must agree
-  with QuickBooks' *separate* TrialBalance report, account by account. For a source
-  whose canonical is computed from transactions / GL, the whole tie-out becomes
-  fully independent.
+  with QuickBooks' *separate* TrialBalance report, account by account.
+- **ERPNext is the fully-independent case:** its compute side is recomputed from
+  the GL, not from ERPNext's reports, so the P&L, Balance AND trial balance are all
+  independent cross-checks against ERPNext's own reports (per company, local
+  currency). This is the tie-out at full strength.
 - The committed fixture is **representative** (modeled on Intuit's documented report
   shapes); `sources/quickbooks/record_fixture.py` captures a real one.

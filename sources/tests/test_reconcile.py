@@ -33,6 +33,9 @@ class _FixtureConnector:
     def extract_raw(self, period):
         return self.raw
 
+    def reconcile_units(self, period):
+        return [None]   # single-entity QuickBooks: one reconciliation unit
+
     def canonical_tables(self, period=None):
         import mapper
         tables = mapper.build_canonical(self.raw, ENTITY_ID, ENTITY_NAME, period)

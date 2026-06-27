@@ -339,6 +339,24 @@ Bitacora de avance, fase por fase.
   SEPARADO de QBO, cuenta por cuenta) es el cross-check genuino. Con una fuente cuyo
   canonico se computa desde transacciones/GL, el tie-out queda 100% independiente.
 
+### Fase 7.9 - Tie-out ERPNext: 100% independiente (compute desde el GL)  [OK]
+- El MISMO reconciler ahora corre contra ERPNext, por company (multi-entidad /
+  multi-moneda), en la moneda local de cada una. fetch_native_statements y
+  reconcile_units en la interfaz SourceConnector; el reconciler core no cambia.
+- DIFERENCIA CLAVE vs QuickBooks: para ERPNext el lado computado se RECALCULA desde
+  el GL (gl_entries -> compute_statements_from_gl), no desde los reportes del ERP.
+  Asi el tie-out es 100% INDEPENDIENTE: P&L, Balance Y Trial Balance son todos
+  cross-check (0 lineas de regression-guard), porque cada lado deriva distinto. La
+  tabla y el snapshot etiquetan cada linea (independent vs regression-guard) honesto.
+- Sutileza contable manejada (la atrapo el propio tie-out): el TB es PRE-cierre (RE
+  en apertura, las cuentas de P&L con la actividad del periodo) y el Balance es vista
+  de CIERRE (RE = apertura + resultado). Las dos vistas son consistentes; el balance
+  cuadra y ata a los reportes nativos.
+- Fixture ERPNext: le sume el GL completo por company (24 asientos, cuadran 285.000 y
+  220.000) y el reporte nativo Trial Balance por company. Tests offline: PASS por las
+  dos companies (72 lineas atan) + tamper del GL -> FAIL. sources 54/54, sin secret ni
+  instancia viva, en el CI existente. Sin tocar el motor en esta fase.
+
 ## Backlog del departamento (multi-agente, hacia el "full finance department")
 - Faltantes mapeados (ver chat de gap analysis): Strategic Finance [HECHO],
   Administration/AR/AP/Tax [HECHO], Internal Controls [HECHO], profundizar

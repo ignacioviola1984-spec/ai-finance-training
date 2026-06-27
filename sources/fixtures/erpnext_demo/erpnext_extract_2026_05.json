@@ -282,37 +282,268 @@
   ],
   "gl_entries": [
     {
-      "account": "Sales - LUS",
+      "account": "Cash - LUS",
       "account_currency": "USD",
       "company": "Lumen US Inc.",
-      "credit": 100000,
-      "debit": 0,
-      "name": "GL-US-1",
+      "credit": 0.0,
+      "debit": 120000.0,
+      "name": "GL-LUS-1",
       "posting_date": "2026-05-31",
-      "voucher_no": "SINV-US-001",
-      "voucher_type": "Sales Invoice"
+      "voucher_no": "JV-LUS-1",
+      "voucher_type": "Journal Entry"
     },
     {
       "account": "Debtors - LUS",
       "account_currency": "USD",
       "company": "Lumen US Inc.",
-      "credit": 0,
-      "debit": 50000,
-      "name": "GL-US-2",
+      "credit": 0.0,
+      "debit": 50000.0,
+      "name": "GL-LUS-2",
       "posting_date": "2026-05-31",
-      "voucher_no": "SINV-US-001",
-      "voucher_type": "Sales Invoice"
+      "voucher_no": "JV-LUS-2",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Fixed Assets - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 0.0,
+      "debit": 30000.0,
+      "name": "GL-LUS-3",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-3",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Cost of Goods Sold - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 0.0,
+      "debit": 40000.0,
+      "name": "GL-LUS-4",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-4",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Marketing Expenses - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 0.0,
+      "debit": 15000.0,
+      "name": "GL-LUS-5",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-5",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Research and Development - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 0.0,
+      "debit": 10000.0,
+      "name": "GL-LUS-6",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-6",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Administrative Expenses - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 0.0,
+      "debit": 20000.0,
+      "name": "GL-LUS-7",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-7",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Creditors - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 25000.0,
+      "debit": 0.0,
+      "name": "GL-LUS-8",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-8",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Deferred Revenue - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 20000.0,
+      "debit": 0.0,
+      "name": "GL-LUS-9",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-9",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Paid-in Capital - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 100000.0,
+      "debit": 0.0,
+      "name": "GL-LUS-10",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-10",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Retained Earnings - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 40000.0,
+      "debit": 0.0,
+      "name": "GL-LUS-11",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-11",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Sales - LUS",
+      "account_currency": "USD",
+      "company": "Lumen US Inc.",
+      "credit": 100000.0,
+      "debit": 0.0,
+      "name": "GL-LUS-12",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUS-12",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Cash - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 0.0,
+      "debit": 96000.0,
+      "name": "GL-LUK-13",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-13",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Debtors - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 0.0,
+      "debit": 40000.0,
+      "name": "GL-LUK-14",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-14",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Fixed Assets - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 0.0,
+      "debit": 24000.0,
+      "name": "GL-LUK-15",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-15",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Cost of Goods Sold - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 0.0,
+      "debit": 32000.0,
+      "name": "GL-LUK-16",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-16",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Marketing Expenses - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 0.0,
+      "debit": 8000.0,
+      "name": "GL-LUK-17",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-17",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Research and Development - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 0.0,
+      "debit": 4000.0,
+      "name": "GL-LUK-18",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-18",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Administrative Expenses - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 0.0,
+      "debit": 16000.0,
+      "name": "GL-LUK-19",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-19",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Creditors - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 16000.0,
+      "debit": 0.0,
+      "name": "GL-LUK-20",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-20",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Deferred Revenue - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 24000.0,
+      "debit": 0.0,
+      "name": "GL-LUK-21",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-21",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Paid-in Capital - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 80000.0,
+      "debit": 0.0,
+      "name": "GL-LUK-22",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-22",
+      "voucher_type": "Journal Entry"
+    },
+    {
+      "account": "Retained Earnings - LUK",
+      "account_currency": "GBP",
+      "company": "Lumen UK Ltd.",
+      "credit": 20000.0,
+      "debit": 0.0,
+      "name": "GL-LUK-23",
+      "posting_date": "2026-05-31",
+      "voucher_no": "JV-LUK-23",
+      "voucher_type": "Journal Entry"
     },
     {
       "account": "Sales - LUK",
       "account_currency": "GBP",
       "company": "Lumen UK Ltd.",
-      "credit": 80000,
-      "debit": 0,
-      "name": "GL-UK-1",
+      "credit": 80000.0,
+      "debit": 0.0,
+      "name": "GL-LUK-24",
       "posting_date": "2026-05-31",
-      "voucher_no": "SINV-UK-001",
-      "voucher_type": "Sales Invoice"
+      "voucher_no": "JV-LUK-24",
+      "voucher_type": "Journal Entry"
     }
   ],
   "opportunities": [
@@ -497,6 +728,104 @@
           "amount": 16000,
           "root_type": "Expense"
         }
+      ],
+      "trial_balance": [
+        {
+          "account": "Cash - LUK",
+          "account_name": "Cash",
+          "account_type": "Bank",
+          "credit": 0.0,
+          "debit": 96000.0,
+          "root_type": "Asset"
+        },
+        {
+          "account": "Debtors - LUK",
+          "account_name": "Debtors",
+          "account_type": "Receivable",
+          "credit": 0.0,
+          "debit": 40000.0,
+          "root_type": "Asset"
+        },
+        {
+          "account": "Fixed Assets - LUK",
+          "account_name": "Fixed Assets",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 24000.0,
+          "root_type": "Asset"
+        },
+        {
+          "account": "Cost of Goods Sold - LUK",
+          "account_name": "Cost of Goods Sold",
+          "account_type": "Cost of Goods Sold",
+          "credit": 0.0,
+          "debit": 32000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Marketing Expenses - LUK",
+          "account_name": "Marketing Expenses",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 8000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Research and Development - LUK",
+          "account_name": "Research and Development",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 4000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Administrative Expenses - LUK",
+          "account_name": "Administrative Expenses",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 16000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Creditors - LUK",
+          "account_name": "Creditors",
+          "account_type": "Payable",
+          "credit": 16000.0,
+          "debit": 0.0,
+          "root_type": "Liability"
+        },
+        {
+          "account": "Deferred Revenue - LUK",
+          "account_name": "Deferred Revenue",
+          "account_type": "",
+          "credit": 24000.0,
+          "debit": 0.0,
+          "root_type": "Liability"
+        },
+        {
+          "account": "Paid-in Capital - LUK",
+          "account_name": "Paid-in Capital",
+          "account_type": "",
+          "credit": 80000.0,
+          "debit": 0.0,
+          "root_type": "Equity"
+        },
+        {
+          "account": "Retained Earnings - LUK",
+          "account_name": "Retained Earnings",
+          "account_type": "",
+          "credit": 20000.0,
+          "debit": 0.0,
+          "root_type": "Equity"
+        },
+        {
+          "account": "Sales - LUK",
+          "account_name": "Sales",
+          "account_type": "",
+          "credit": 80000.0,
+          "debit": 0.0,
+          "root_type": "Income"
+        }
       ]
     },
     "Lumen US Inc.": {
@@ -578,6 +907,104 @@
           "account_name": "Administrative Expenses",
           "amount": 20000,
           "root_type": "Expense"
+        }
+      ],
+      "trial_balance": [
+        {
+          "account": "Cash - LUS",
+          "account_name": "Cash",
+          "account_type": "Bank",
+          "credit": 0.0,
+          "debit": 120000.0,
+          "root_type": "Asset"
+        },
+        {
+          "account": "Debtors - LUS",
+          "account_name": "Debtors",
+          "account_type": "Receivable",
+          "credit": 0.0,
+          "debit": 50000.0,
+          "root_type": "Asset"
+        },
+        {
+          "account": "Fixed Assets - LUS",
+          "account_name": "Fixed Assets",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 30000.0,
+          "root_type": "Asset"
+        },
+        {
+          "account": "Cost of Goods Sold - LUS",
+          "account_name": "Cost of Goods Sold",
+          "account_type": "Cost of Goods Sold",
+          "credit": 0.0,
+          "debit": 40000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Marketing Expenses - LUS",
+          "account_name": "Marketing Expenses",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 15000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Research and Development - LUS",
+          "account_name": "Research and Development",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 10000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Administrative Expenses - LUS",
+          "account_name": "Administrative Expenses",
+          "account_type": "",
+          "credit": 0.0,
+          "debit": 20000.0,
+          "root_type": "Expense"
+        },
+        {
+          "account": "Creditors - LUS",
+          "account_name": "Creditors",
+          "account_type": "Payable",
+          "credit": 25000.0,
+          "debit": 0.0,
+          "root_type": "Liability"
+        },
+        {
+          "account": "Deferred Revenue - LUS",
+          "account_name": "Deferred Revenue",
+          "account_type": "",
+          "credit": 20000.0,
+          "debit": 0.0,
+          "root_type": "Liability"
+        },
+        {
+          "account": "Paid-in Capital - LUS",
+          "account_name": "Paid-in Capital",
+          "account_type": "",
+          "credit": 100000.0,
+          "debit": 0.0,
+          "root_type": "Equity"
+        },
+        {
+          "account": "Retained Earnings - LUS",
+          "account_name": "Retained Earnings",
+          "account_type": "",
+          "credit": 40000.0,
+          "debit": 0.0,
+          "root_type": "Equity"
+        },
+        {
+          "account": "Sales - LUS",
+          "account_name": "Sales",
+          "account_type": "",
+          "credit": 100000.0,
+          "debit": 0.0,
+          "root_type": "Income"
         }
       ]
     }
